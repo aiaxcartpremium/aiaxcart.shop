@@ -4,104 +4,118 @@
   <meta charset="utf-8"/>
   <title>Aiaxcart Premium | Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <style>
-    body { background: #fefaf7; color: #382f2c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-    .logo { font-size: 2rem; font-weight: 700; display: flex; align-items: center;}
-    header { background: #FFD3D6; padding: 1.3rem 0 1.1rem 0; box-shadow: 0 6px 22px rgba(0,0,0,0.08);}
-    .header-content { display: flex; justify-content: space-between; align-items: center;}
-    nav ul { display: flex; list-style: none;}
-    nav ul li {margin-left: 2.2rem;}
-    nav ul li a { color: #382f2c; text-decoration: none; font-weight: 500; padding: 0.6rem 1.4rem; border-radius: 10px;}
-    nav ul li a.active, nav ul li a:hover {background: #FFC6CA;}
-    .tabs { display: flex; gap: 0.95rem; margin: 2rem 0 1.5rem 0; flex-wrap: wrap;}
-    .tab { padding: 0.85rem 1.55rem; border: none; background: #fff; border-radius: 14px; font-size: 1rem; font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.03); cursor: pointer; transition: background 0.2s; }
-    .tab.active { background: #FFD3D6;}
-    .panel { display: none; }
-    .panel.active { display: block; }
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.3rem; margin-bottom:2rem;}
-    .stat-card { background: #fff; padding: 2rem 0 1.25rem 0; border-radius: 13px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.07);}
-    .stat-card h3 { font-size: 2.1rem; margin-bottom: 0.55rem; color:#FFB0B5;}
-    .card { background: #fff; border-radius: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 2.2rem 1.5rem; margin-bottom: 2rem;}
-    label { margin:1rem 0 0.45rem 0; display: block; }
-    select,input[type="text"],input[type="number"],input[type="email"],input[type="date"],textarea { padding:0.65rem 0.9rem;border-radius:8px;border:1px solid #E8E8E8;font-size:1rem;width:100%;font-family:inherit; }
-    .btn {padding: 0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size: 1rem; cursor:pointer; transition: all 0.3s ease;}
-    .btn-primary {background: #FFB0B5; color:white;} .btn-primary:hover {background: #FF8A90;}
-    .btn-danger {background: #FF6B6B; color:white;} .btn-danger:hover {background: #FF5252;}
-    .btn-warning {background: #FFA726; color:white;} .btn-warning:hover {background: #FF9800;}
-    .btn-success {background: #66BB6A; color:white;} .btn-success:hover {background: #4CAF50;}
-    .btn-info {background: #42A5F5; color:white;} .btn-info:hover {background: #2196F3;}
-    .btn-small {padding:0.3rem 0.8rem;font-size:0.95rem;margin-top:0.25rem;}
-    .stock-list {display:flex;flex-direction:column;gap:1.2rem;}
-    .stock-card {background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04);}
-    .stock-actions {margin-top:0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;}
-    .badge {display:inline-block;padding:0.18rem 0.9rem;border-radius:12px;font-size:0.90rem; font-weight:500;}
-    .badge-pending {background: #fff3cd; color: #856404;} .badge-resolved {background: #d1ecf1; color: #0c5460;}
-    .owner-veri-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;}
-    .modal-card{position:relative;background:white;padding:2.7rem 2.5rem 1.5rem 2.5rem;border-radius:16px;min-width:325px;}
-    .close-btn{position:absolute;top:0.6rem;right:0.7rem;background:none;border:none;font-size:1.55rem;color:#ff7a7a;line-height:1;cursor:pointer;}
-    .records-table {width: 100%; border-collapse: collapse; margin-top: 1rem;}
-    .records-table th, .records-table td {padding: 0.75rem; text-align: left; border-bottom: 1px solid #E8E8E8;}
-    .records-table th {background: #FFD3D6; font-weight: 600;}
-    .records-table tr:hover {background: #f9f9f9;}
-    .report-card {background: #fff; border-left: 4px solid #FFB0B5; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;}
-    .report-actions {margin-top: 0.5rem;}
-    .category-filter {margin-bottom: 1rem;}
-    .category-filter select {width: auto; display: inline-block; margin-right: 1rem;}
-    @media(max-width:1000px){.stats-grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}.tabs{gap:0.45rem;}}
+    body { background:#fefaf7; color:#382f2c; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .container { max-width:1100px; margin:0 auto; padding:0 20px; }
+    .logo { font-size:2rem; font-weight:700; display:flex; align-items:center; }
+    header { background:#FFD3D6; padding:1.3rem 0 1.1rem 0; box-shadow:0 6px 22px rgba(0,0,0,0.08); }
+    .header-content { display:flex; justify-content:space-between; align-items:center; }
+    nav ul { display:flex; list-style:none; }
+    nav ul li { margin-left:2.2rem; }
+    nav ul li a { color:#382f2c; text-decoration:none; font-weight:500; padding:0.6rem 1.4rem; border-radius:10px; }
+    nav ul li a.active, nav ul li a:hover { background:#FFC6CA; }
+
+    .tabs { display:flex; gap:0.95rem; margin:2rem 0 1.5rem 0; flex-wrap:wrap; }
+    .tab { padding:0.85rem 1.55rem; border:none; background:#fff; border-radius:14px; font-size:1rem;
+           font-weight:500; box-shadow:0 1px 4px rgba(0,0,0,0.03); cursor:pointer; transition:background 0.2s; }
+    .tab.active { background:#FFD3D6; }
+    .panel { display:none; }
+    .panel.active { display:block; }
+
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.3rem; margin-bottom:2rem; }
+    .stat-card { background:#fff; padding:2rem 0 1.25rem 0; border-radius:13px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+    .stat-card h3 { font-size:2.1rem; margin-bottom:0.55rem; color:#FFB0B5; }
+
+    .card { background:#fff; border-radius:13px; box-shadow:0 2px 8px rgba(0,0,0,0.07); padding:2.2rem 1.5rem; margin-bottom:2rem; }
+    label { margin:1rem 0 0.45rem 0; display:block; }
+    select, input[type="text"], input[type="number"], input[type="email"], input[type="date"], textarea {
+      padding:0.65rem 0.9rem; border-radius:8px; border:1px solid #E8E8E8; font-size:1rem; width:100%; font-family:inherit;
+    }
+
+    .btn { padding:0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size:1rem; cursor:pointer; transition:all .3s; }
+    .btn-primary { background:#FFB0B5; color:#fff; } .btn-primary:hover { background:#FF8A90; }
+    .btn-danger  { background:#FF6B6B; color:#fff; } .btn-danger:hover  { background:#FF5252; }
+    .btn-warning { background:#FFA726; color:#fff; } .btn-warning:hover { background:#FF9800; }
+    .btn-success { background:#66BB6A; color:#fff; } .btn-success:hover { background:#4CAF50; }
+    .btn-info    { background:#42A5F5; color:#fff; } .btn-info:hover    { background:#2196F3; }
+    .btn-small { padding:0.3rem 0.8rem; font-size:0.95rem; margin-top:0.25rem; }
+
+    .stock-list { display:flex; flex-direction:column; gap:1.2rem; }
+    .stock-card { background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04); }
+    .stock-actions { margin-top:0.5rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+
+    .badge { display:inline-block; padding:0.18rem 0.9rem; border-radius:12px; font-size:0.90rem; font-weight:500; }
+    .badge-pending  { background:#fff3cd; color:#856404; }
+    .badge-resolved { background:#d1ecf1; color:#0c5460; }
+
+    /* Owner modal */
+    .owner-veri-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.37); display:none; align-items:center; justify-content:center; z-index:9999; }
+    .modal-card { position:relative; background:#fff; padding:2.7rem 2.5rem 1.5rem; border-radius:16px; min-width:325px; }
+    .close-btn { position:absolute; top:0.6rem; right:0.7rem; background:none; border:none; font-size:1.55rem; color:#ff7a7a; line-height:1; cursor:pointer; }
+
+    /* Records table */
+    .records-table { width:100%; border-collapse:collapse; margin-top:1rem; }
+    .records-table th, .records-table td { padding:0.75rem; text-align:left; border-bottom:1px solid #E8E8E8; }
+    .records-table th { background:#FFD3D6; font-weight:600; }
+    .records-table tr:hover { background:#f9f9f9; }
+
+    .report-card { background:#fff; border-left:4px solid #FFB0B5; padding:1rem; margin-bottom:1rem; border-radius:8px; }
+    .report-actions { margin-top:0.5rem; }
+
+    .category-filter { margin-bottom:1rem; }
+    .category-filter select { width:auto; display:inline-block; margin-right:1rem; }
+
+    @media(max-width:1000px){ .stats-grid{grid-template-columns:1fr 1fr;} }
+    @media(max-width:700px){ .stats-grid{grid-template-columns:1fr;} .tabs{gap:0.45rem;} }
   </style>
   <link rel="stylesheet" href="assets/css/extras.css"/>
 </head>
 <body>
 
+<!-- ===== Admin Gate (strict) ===== -->
 <script>
-/** ===== Admin Gate v3 (early) ===== **/
-const OWNER_UID  = '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36'; // your UID
-const SESSION_MIN = 30;            // auto-logout after 30 mins idle
-const SESSION_VER = '2025-11-12';  // bump this to invalidate all sessions
+  // CHANGE ONLY IF YOU REPLACE YOUR OWNER UID
+  const OWNER_UID   = '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36';
+  const SESSION_MIN = 30;               // auto-logout after 30 mins idle
+  const SESSION_VER = '2025-11-12';     // bump to force-invalidate all sessions
 
-function clearSession(){
-  localStorage.removeItem('ad-ok');
-  localStorage.removeItem('ad-ok-ts');
-  localStorage.removeItem('ownerVerified');
-  localStorage.removeItem('ad-owner-uid');
-  localStorage.removeItem('ad-session-ver');
-}
+  function clearSession(){
+    localStorage.removeItem('ad-ok');
+    localStorage.removeItem('ad-ok-ts');
+    localStorage.removeItem('ownerVerified');
+    localStorage.removeItem('ad-owner-uid');
+    localStorage.removeItem('ad-session-ver');
+  }
+  function setSession(uid){
+    localStorage.setItem('ad-ok','1');
+    localStorage.setItem('ownerVerified','yes');
+    localStorage.setItem('ad-ok-ts', Date.now().toString());
+    localStorage.setItem('ad-owner-uid', uid);
+    localStorage.setItem('ad-session-ver', SESSION_VER);
+  }
+  function isVerified(){
+    const ok    = localStorage.getItem('ad-ok') === '1' && localStorage.getItem('ownerVerified') === 'yes';
+    const uidOk = localStorage.getItem('ad-owner-uid') === OWNER_UID;
+    const verOk = localStorage.getItem('ad-session-ver') === SESSION_VER;
+    const ts    = parseInt(localStorage.getItem('ad-ok-ts') || '0', 10);
+    const fresh = (Date.now() - ts) < (SESSION_MIN*60*1000);
+    return ok && uidOk && verOk && fresh;
+  }
 
-function setSession(uid){
-  localStorage.setItem('ad-ok','1');
-  localStorage.setItem('ownerVerified','yes');
-  localStorage.setItem('ad-ok-ts', Date.now().toString());
-  localStorage.setItem('ad-owner-uid', uid);
-  localStorage.setItem('ad-session-ver', SESSION_VER);
-}
-
-function isVerified(){
-  const ok    = localStorage.getItem('ad-ok') === '1' && localStorage.getItem('ownerVerified') === 'yes';
-  const ts    = parseInt(localStorage.getItem('ad-ok-ts') || '0', 10);
-  const fresh = (Date.now() - ts) < (SESSION_MIN*60*1000);
-  const uidOk = localStorage.getItem('ad-owner-uid') === OWNER_UID;
-  const verOk = localStorage.getItem('ad-session-ver') === SESSION_VER;
-
-  return ok && fresh && uidOk && verOk;
-}
-
-// Kill any stale/backdoor state:
-// 1) Remove the old "?pass=1" behavior entirely (no backdoor).
-// 2) If OWNER_UID changed or version bumped, clear.
-(function(){
-  try{
-    if (!isVerified()){
-      // clear partial/old flags so hindi mag "true" by accident
-      clearSession();
-    }else{
-      // keep-alive: update timestamp on load para hindi agad ma-expire kapag active ka
-      localStorage.setItem('ad-ok-ts', Date.now().toString());
-    }
-    console.log('[gate-v3] verified?', isVerified());
-  }catch(e){ console.error('[gate-v3] early err', e); clearSession(); }
-})();
+  // Early boot: sanitize any stale flags
+  (function(){
+    try{
+      // remove any "?pass=1" trick by simply not reading query at all
+      if (!isVerified()){
+        clearSession();
+      } else {
+        // keep-alive timestamp refresh
+        localStorage.setItem('ad-ok-ts', Date.now().toString());
+      }
+      console.log('[admin-gate] verified?', isVerified());
+    }catch(e){ console.error('[admin-gate] error', e); clearSession(); }
+  })();
 </script>
 
 <header>
@@ -130,6 +144,7 @@ function isVerified(){
 <!-- Dashboard -->
 <div class="container" id="admin-dashboard" style="display:none;">
   <h1 style="margin-top:2rem;">Admin Console</h1>
+
   <div class="stats-grid">
     <div class="stat-card"><h3 id="stat-products">0</h3><div>Products</div></div>
     <div class="stat-card"><h3 id="stat-stock">0</h3><div>Available Stock</div></div>
@@ -149,7 +164,7 @@ function isVerified(){
     <button class="tab" data-tab="reports">Reports</button>
   </div>
 
-  <!-- Panels -->
+  <!-- ========== PANELS ========== -->
   <div class="panel active" id="panel-add-stock">
     <div class="card">
       <h2 id="stock-form-title">Add Stock</h2>
@@ -166,17 +181,14 @@ function isVerified(){
         <label>Auto-Archive (Days): <input id="stock-arch" type="number" value="0"/></label>
         <label>Premium At (date, optional): <input id="stock-premdate" type="date"/></label>
         <button id="stock-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Stock</button>
-        <button id="stock-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditStock()" style="margin-top:1rem; display:none;">Cancel Edit</button>
+        <button id="stock-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditStock()" style="margin-top:1rem;display:none;">Cancel Edit</button>
       </form>
       <div id="add-stock-msg"></div>
     </div>
   </div>
 
   <div class="panel" id="panel-manage-stocks">
-    <div class="card">
-      <h2>Manage Stocks</h2>
-      <div id="manage-stocks-list"></div>
-    </div>
+    <div class="card"><h2>Manage Stocks</h2><div id="manage-stocks-list"></div></div>
   </div>
 
   <div class="panel" id="panel-pending-orders">
@@ -209,7 +221,7 @@ function isVerified(){
         </label>
         <label>Icon <input id="product-icon" type="text" placeholder="e.g., 📺, 🎵, 🎨" required/></label>
         <button id="product-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Product</button>
-        <button id="product-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditProduct()" style="margin-top:1rem; display:none;">Cancel Edit</button>
+        <button id="product-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditProduct()" style="margin-top:1rem;display:none;">Cancel Edit</button>
       </form>
       <div id="add-product-msg"></div>
     </div>
@@ -243,7 +255,7 @@ function isVerified(){
         </label>
         <label>Rule Text <textarea id="rule-text" rows="3" placeholder="Enter rule description"></textarea></label>
         <button id="rule-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Rule</button>
-        <button id="rule-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRule()" style="margin-top:1rem; display:none;">Cancel Edit</button>
+        <button id="rule-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRule()" style="margin-top:1rem;display:none;">Cancel Edit</button>
       </form>
       <div id="add-rule-msg"></div>
     </div>
@@ -278,18 +290,22 @@ function isVerified(){
         <label>Account Details - PIN <input id="record-pin" type="text"/></label>
         <label>Price <input id="record-price" type="number" step="0.01" required/></label>
         <button id="record-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Record</button>
-        <button id="record-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRecord()" style="margin-top:1rem; display:none;">Cancel Edit</button>
+        <button id="record-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRecord()" style="margin-top:1rem;display:none;">Cancel Edit</button>
       </form>
       <div id="add-record-msg"></div>
     </div>
+
     <div class="card">
       <h2>Records List</h2>
       <table class="records-table">
-        <thead><tr>
-          <th>Order ID</th><th>Buyer/Email</th><th>Source</th><th>Product</th><th>Account Type</th>
-          <th>Duration</th><th>Purchase Date</th><th>Expiration Date</th><th>Additional Days</th>
-          <th>Updated Expiration</th><th>Account Details</th><th>Price</th><th>Actions</th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th>Order ID</th><th>Buyer/Email</th><th>Source</th><th>Product</th>
+            <th>Account Type</th><th>Duration</th><th>Purchase Date</th>
+            <th>Expiration Date</th><th>Additional Days</th><th>Updated Expiration</th>
+            <th>Account Details</th><th>Price</th><th>Actions</th>
+          </tr>
+        </thead>
         <tbody id="records-table-body"></tbody>
       </table>
     </div>
@@ -301,140 +317,588 @@ function isVerified(){
   </div>
 </div>
 
+<!-- ===== Data/Logic (LocalStorage) ===== -->
 <script>
-/* ===== Data & Utils ===== */
-const ACC_TYPES=["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
-const DURATIONS=["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
+  /* ----- Constants & Defaults ----- */
+  const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
+  const DURATIONS = ["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
 
-const DEFAULT_PRODUCTS=[{id:'netflix',name:'Netflix Premium',category:'entertainment',icon:'📺',stock:0,sold:0},{id:'viu',name:'Viu Premium',category:'entertainment',icon:'🎬',stock:0,sold:0},{id:'viva-max',name:'VIVAMAX VIVAONE',category:'entertainment',icon:'🎭',stock:0,sold:0},{id:'wetv',name:'WeTV',category:'entertainment',icon:'📱',stock:0,sold:0},{id:'iwant-tfc',name:'IWANT TFC',category:'entertainment',icon:'📺',stock:0,sold:0},{id:'crunchyroll',name:'Crunchyroll',category:'entertainment',icon:'🎮',stock:0,sold:0},{id:'disney-plus',name:'Disney+',category:'entertainment',icon:'🦁',stock:0,sold:0},{id:'bilibili',name:'Bilibili',category:'entertainment',icon:'📺',stock:0,sold:0},{id:'loklok',name:'Loklok',category:'entertainment',icon:'📱',stock:0,sold:0},{id:'iqiyi',name:'iQiyi',category:'entertainment',icon:'📺',stock:0,sold:0},{id:'hbo-max',name:'HBO Max',category:'entertainment',icon:'📹',stock:0,sold:0},{id:'amazon-prime',name:'Amazon Prime',category:'entertainment',icon:'🛒',stock:0,sold:0},{id:'youku',name:'Youku',category:'entertainment',icon:'📺',stock:0,sold:0},{id:'nba-league-pass',name:'NBA League Pass Premium',category:'entertainment',icon:'🏀',stock:0,sold:0},{id:'youtube',name:'YouTube Premium',category:'streaming',icon:'📹',stock:0,sold:0},{id:'spotify',name:'Spotify Premium',category:'streaming',icon:'🎵',stock:0,sold:0},{id:'apple-music',name:'Apple Music',category:'streaming',icon:'🎧',stock:0,sold:0},{id:'chatgpt',name:'ChatGPT Plus',category:'ai',icon:'🧠',stock:0,sold:0},{id:'blackbox-ai',name:'Blackbox AI',category:'ai',icon:'🤖',stock:0,sold:0},{id:'perplexity',name:'Perplexity AI',category:'ai',icon:'🔍',stock:0,sold:0},{id:'google-one',name:'Google One + Gemini AI',category:'ai',icon:'☁️',stock:0,sold:0},{id:'quizlet',name:'Quizlet+',category:'educational',icon:'📚',stock:0,sold:0},{id:'scribd',name:'Scribd Premium',category:'educational',icon:'📖',stock:0,sold:0},{id:'studocu',name:'Studocu Premium',category:'educational',icon:'🎓',stock:0,sold:0},{id:'duolingo',name:'Duolingo Super',category:'educational',icon:'🧑‍🎓',stock:0,sold:0},{id:'turnitin-student',name:'Turnitin Student',category:'educational',icon:'📝',stock:0,sold:0},{id:'turnitin-instructor',name:'Turnitin Instructor',category:'educational',icon:'👨‍🏫',stock:0,sold:0},{id:'canva',name:'Canva Pro',category:'editing',icon:'🎨',stock:0,sold:0},{id:'picsart',name:'Picsart Gold',category:'editing',icon:'👏',stock:0,sold:0},{id:'capcut',name:'CapCut Pro',category:'editing',icon:'📝',stock:0,sold:0},{id:'alight-motion',name:'Alight Motion Pro',category:'editing',icon:'📱',stock:0,sold:0},{id:'remini',name:'Remini Web',category:'editing',icon:'✨',stock:0,sold:0},{id:'grammarly',name:'Grammarly Premium',category:'educational',icon:'✍️',stock:0,sold:0},{id:'quillbot',name:'Quillbot Premium',category:'educational',icon:'📝',stock:0,sold:0},{id:'ms-365',name:'Microsoft 365',category:'educational',icon:'🤬',stock:0,sold:0},{id:'cams-canner',name:'CamScanner Pro',category:'editing',icon:'📁',stock:0,sold:0},{id:'small-pdf',name:'Small PDF Pro',category:'editing',icon:'📁',stock:0,sold:0},{id:'zoom',name:'Zoom Pro',category:'educational',icon:'📽️',stock:0,sold:0}];
+  const DEFAULT_PRODUCTS = [
+    { id:'netflix', name:'Netflix Premium', category:'entertainment', icon:'📺', stock:0, sold:0 },
+    { id:'viu', name:'Viu Premium', category:'entertainment', icon:'🎬', stock:0, sold:0 },
+    { id:'viva-max', name:'VIVAMAX VIVAONE', category:'entertainment', icon:'🎭', stock:0, sold:0 },
+    { id:'wetv', name:'WeTV', category:'entertainment', icon:'📱', stock:0, sold:0 },
+    { id:'iwant-tfc', name:'IWANT TFC', category:'entertainment', icon:'📺', stock:0, sold:0 },
+    { id:'crunchyroll', name:'Crunchyroll', category:'entertainment', icon:'🎮', stock:0, sold:0 },
+    { id:'disney-plus', name:'Disney+', category:'entertainment', icon:'🦁', stock:0, sold:0 },
+    { id:'bilibili', name:'Bilibili', category:'entertainment', icon:'📺', stock:0, sold:0 },
+    { id:'loklok', name:'Loklok', category:'entertainment', icon:'📱', stock:0, sold:0 },
+    { id:'iqiyi', name:'iQiyi', category:'entertainment', icon:'📺', stock:0, sold:0 },
+    { id:'hbo-max', name:'HBO Max', category:'entertainment', icon:'📹', stock:0, sold:0 },
+    { id:'amazon-prime', name:'Amazon Prime', category:'entertainment', icon:'🛒', stock:0, sold:0 },
+    { id:'youku', name:'Youku', category:'entertainment', icon:'📺', stock:0, sold:0 },
+    { id:'nba-league-pass', name:'NBA League Pass Premium', category:'entertainment', icon:'🏀', stock:0, sold:0 },
+    { id:'youtube', name:'YouTube Premium', category:'streaming', icon:'📹', stock:0, sold:0 },
+    { id:'spotify', name:'Spotify Premium', category:'streaming', icon:'🎵', stock:0, sold:0 },
+    { id:'apple-music', name:'Apple Music', category:'streaming', icon:'🎧', stock:0, sold:0 },
+    { id:'chatgpt', name:'ChatGPT Plus', category:'ai', icon:'🧠', stock:0, sold:0 },
+    { id:'blackbox-ai', name:'Blackbox AI', category:'ai', icon:'🤖', stock:0, sold:0 },
+    { id:'perplexity', name:'Perplexity AI', category:'ai', icon:'🔍', stock:0, sold:0 },
+    { id:'google-one', name:'Google One + Gemini AI', category:'ai', icon:'☁️', stock:0, sold:0 },
+    { id:'quizlet', name:'Quizlet+', category:'educational', icon:'📚', stock:0, sold:0 },
+    { id:'scribd', name:'Scribd Premium', category:'educational', icon:'📖', stock:0, sold:0 },
+    { id:'studocu', name:'Studocu Premium', category:'educational', icon:'🎓', stock:0, sold:0 },
+    { id:'duolingo', name:'Duolingo Super', category:'educational', icon:'🧑‍🎓', stock:0, sold:0 },
+    { id:'turnitin-student', name:'Turnitin Student', category:'educational', icon:'📝', stock:0, sold:0 },
+    { id:'turnitin-instructor', name:'Turnitin Instructor', category:'educational', icon:'👨‍🏫', stock:0, sold:0 },
+    { id:'canva', name:'Canva Pro', category:'editing', icon:'🎨', stock:0, sold:0 },
+    { id:'picsart', name:'Picsart Gold', category:'editing', icon:'👏', stock:0, sold:0 },
+    { id:'capcut', name:'CapCut Pro', category:'editing', icon:'📝', stock:0, sold:0 },
+    { id:'alight-motion', name:'Alight Motion Pro', category:'editing', icon:'📱', stock:0, sold:0 },
+    { id:'remini', name:'Remini Web', category:'editing', icon:'✨', stock:0, sold:0 },
+    { id:'grammarly', name:'Grammarly Premium', category:'educational', icon:'✍️', stock:0, sold:0 },
+    { id:'quillbot', name:'Quillbot Premium', category:'educational', icon:'📝', stock:0, sold:0 },
+    { id:'ms-365', name:'Microsoft 365', category:'educational', icon:'🤬', stock:0, sold:0 },
+    { id:'cams-canner', name:'CamScanner Pro', category:'editing', icon:'📁', stock:0, sold:0 },
+    { id:'small-pdf', name:'Small PDF Pro', category:'editing', icon:'📁', stock:0, sold:0 },
+    { id:'zoom', name:'Zoom Pro', category:'educational', icon:'📽️', stock:0, sold:0 }
+  ];
 
-let stocks=JSON.parse(localStorage.getItem("stocks")||"[]");
-let products=JSON.parse(localStorage.getItem("products")||"[]");
-let rules=JSON.parse(localStorage.getItem("rules")||"[]");
-let records=JSON.parse(localStorage.getItem("records")||"[]");
-let archived=JSON.parse(localStorage.getItem("archived")||"[]");
-let sold=JSON.parse(localStorage.getItem("sold")||"[]");
-let pending=JSON.parse(localStorage.getItem("pending")||"[]");
-let buyerReports=JSON.parse(localStorage.getItem("buyerReports")||"[]");
+  /* ----- LocalStorage State ----- */
+  let stocks       = JSON.parse(localStorage.getItem("stocks") || "[]");
+  let products     = JSON.parse(localStorage.getItem("products") || "[]");
+  let rules        = JSON.parse(localStorage.getItem("rules") || "[]");
+  let records      = JSON.parse(localStorage.getItem("records") || "[]");
+  let archived     = JSON.parse(localStorage.getItem("archived") || "[]");
+  let sold         = JSON.parse(localStorage.getItem("sold") || "[]");
+  let pending      = JSON.parse(localStorage.getItem("pending") || "[]");
+  let buyerReports = JSON.parse(localStorage.getItem("buyerReports") || "[]");
 
-if(products.length===0){products=DEFAULT_PRODUCTS;localStorage.setItem("products",JSON.stringify(products));}
-if(rules.length===0){
-  rules=[{id:genId(),product:"general",text:"All accounts are premium quality"},{id:genId(),product:"general",text:"No refunds after delivery"},{id:genId(),product:"general",text:"Replacement guaranteed within 24 hours for any issues"},{id:genId(),product:"Netflix Premium",text:"No password changing allowed"},{id:genId(),product:"Netflix Premium",text:"Use only on one device at a time"}];
-  localStorage.setItem("rules",JSON.stringify(rules));
-}
-
-function saveAll(){localStorage.setItem("stocks",JSON.stringify(stocks));localStorage.setItem("products",JSON.stringify(products));localStorage.setItem("rules",JSON.stringify(rules));localStorage.setItem("records",JSON.stringify(records));localStorage.setItem("archived",JSON.stringify(archived));localStorage.setItem("sold",JSON.stringify(sold));localStorage.setItem("pending",JSON.stringify(pending));localStorage.setItem("buyerReports",JSON.stringify(buyerReports));}
-function genId(){return Date.now()+'-'+Math.random().toString(36).substr(2,9);}
-function genOrderId(){return 'ORD-'+Date.now()+'-'+Math.random().toString(36).substr(2,9).toUpperCase();}
-function calcExp(purchaseDate,duration,additionalDays=0){const d=new Date(purchaseDate);let add=additionalDays;if(typeof duration==='string'){if(duration.endsWith('d'))add+=parseInt(duration);else if(duration.endsWith('m'))add+=parseInt(duration)*30;else if(duration.endsWith('W'))add+=parseInt(duration)*7;}d.setDate(d.getDate()+add);return d.toISOString().split('T')[0];}
-function fmtDetails(r){let a=[];if(r.email)a.push(`Email: ${r.email}`);if(r.password)a.push(`Password: ${r.password}`);if(r.profile)a.push(`Profile: ${r.profile}`);if(r.pin)a.push(`PIN: ${r.pin}`);return a.join('<br>');}
-
-/* ===== Owner Verify ===== */
-function openOwnerModal(){document.getElementById('ownerUidInput').value='';document.getElementById('ownerVeriMsg').textContent='';document.getElementById("ownerVeriOverlay").style.display="flex";}
-function closeOwnerModal(){document.getElementById("ownerVeriOverlay").style.display="none";}
-<script>
-function verifyOwnerUID(){
-  const uid = document.getElementById('ownerUidInput').value.trim();
-  if (uid === OWNER_UID){
-    setSession(uid);          // ← ito lang ang magseset ng session
-    closeOwnerModal();
-    showAdminPanel();
-    initializeAdmin();
-  }else{
-    document.getElementById('ownerVeriMsg').innerText = '❌ Invalid UID.';
+  if (products.length === 0) {
+    products = DEFAULT_PRODUCTS;
+    localStorage.setItem("products", JSON.stringify(products));
   }
-}
-</script>
-
-/* ===== Renders ===== */
-function updateStats(){document.getElementById("stat-products").innerText=products.length;document.getElementById("stat-stock").innerText=stocks.filter(s=>s.status==='available').length;document.getElementById("stat-pending").innerText=pending.length;const rev=sold.reduce((a,b)=>a+(+b.price||0),0)+records.reduce((a,b)=>a+(+b.price||0),0);document.getElementById("stat-revenue").innerText="₱"+rev;}
-function showStocks(){const list=document.getElementById("manage-stocks-list"),avail=stocks.filter(s=>s.status==='available');list.innerHTML=avail.length?avail.map(st=>`<div class="stock-card"><div><b>${st.product}</b> ${st.type} (${st.duration})</div><div>Email: ${st.email||'N/A'} | Profile: ${st.profile||'N/A'}</div><div class="stock-actions"><button class="btn btn-info btn-small" onclick="editStock('${st.id}')">Edit</button><button class="btn btn-success btn-small" onclick="markSold('${st.id}')">Mark Sold</button><button class="btn btn-warning btn-small" onclick="archiveStock('${st.id}')">Archive</button><button class="btn btn-danger btn-small" onclick="delStock('${st.id}')">Delete</button></div></div>`).join(''):"No available stocks.";}
-function showProducts(){const f=document.getElementById("product-category-filter").value;const arr=(f==='all')?products:products.filter(p=>p.category===f);document.getElementById("products-list").innerHTML=arr.length?arr.map(p=>`<div class="stock-card"><div><b>${p.icon} ${p.name}</b></div><div>Category: ${p.category} | Stock: ${p.stock} | Sold: ${p.sold}</div><div class="stock-actions"><button class="btn btn-info btn-small" onclick="editProduct('${p.id}')">Edit</button><button class="btn btn-danger btn-small" onclick="delProduct('${p.id}')">Delete</button></div></div>`).join(''):"No products found for this category.";}
-function filterProductsByCategory(){showProducts();}
-function showRecords(){const tb=document.getElementById("records-table-body");tb.innerHTML=records.length?records.map(r=>`<tr><td>${r.orderId}</td><td>${r.buyer}</td><td>${r.source}</td><td>${r.product}</td><td>${r.accountType}</td><td>${r.duration}</td><td>${r.purchaseDate}</td><td>${r.expirationDate}</td><td>${r.additionalDays}</td><td>${r.updatedExpiration}</td><td>${fmtDetails(r)}</td><td>₱${r.price}</td><td><button class="btn btn-info btn-small" onclick="editRecord('${r.id}')">Edit</button><button class="btn btn-danger btn-small" onclick="removeRecord('${r.id}')">Remove</button></td></tr>`).join(''):'<tr><td colspan="13" style="text-align:center;">No records found.</td></tr>';}
-function showRules(){const el=document.getElementById("rules-list");el.innerHTML=rules.length?rules.map(rule=>`<div class="stock-card"><div><b>Product:</b> ${rule.product==='general'?'All Products':rule.product}</div><div><b>Rule:</b> ${rule.text}</div><div class="stock-actions"><button class="btn btn-info btn-small" onclick="editRule('${rule.id}')">Edit</button><button class="btn btn-danger btn-small" onclick="delRule('${rule.id}')">Remove</button></div></div>`).join(''):"No rules defined.";}
-function showReports(){const list=document.getElementById("buyer-reports-list");list.innerHTML=buyerReports.length?buyerReports.map(r=>`<div class="report-card"><div><b>Report ID:</b> ${r.id}</div><div><b>Order ID:</b> ${r.orderId||'N/A'}</div><div><b>Buyer:</b> ${r.buyer}</div><div><b>Product:</b> ${r.product}</div><div><b>Issue:</b> ${r.issue}</div><div><b>Status:</b> <span class="badge ${r.status==='resolved'?'badge-resolved':'badge-pending'}">${r.status}</span></div><div><b>Date Reported:</b> ${r.date}</div><div class="report-actions">${r.status!=='resolved'?`<button class="btn btn-success btn-small" onclick="resolveReport('${r.id}')">Mark Resolved</button>`:''}<button class="btn btn-danger btn-small" onclick="deleteReport('${r.id}')">Delete</button></div></div>`).join(''):'<p>No buyer reports yet.</p>';const total=records.reduce((a,b)=>a+(+b.price||0),0);const web=records.filter(r=>r.source==='website').length;const soc=records.filter(r=>r.source!=='website').length;document.getElementById("sales-report").innerHTML=`<p><b>Total Records:</b> ${records.length}</p><p><b>Total Revenue:</b> ₱${total}</p><p><b>Website Orders:</b> ${web}</p><p><b>Social Media Orders:</b> ${soc}</p><p><b>Pending Buyer Reports:</b> ${buyerReports.filter(r=>r.status==='pending').length}</p>`;}
-function showArchived(){document.getElementById("archived-list").innerHTML=archived.length?archived.map(a=>`<div>${a.product}, ${a.type}, archived at: ${a.archivedAt}</div>`).join(''):"No archived stocks";}
-function showPending(){document.getElementById("pending-orders-list").innerHTML=pending.length?pending.map(p=>`<div>${p.product}, order: ${p.orderId}</div>`).join(''):"No pending orders.";}
-function showSold(){document.getElementById("sold-list").innerHTML=sold.length?sold.map(x=>`<div>${x.product}, buyer, price ₱${x.price||0}</div>`).join(''):"No sold accounts yet";}
-
-/* ===== Actions ===== */
-function editStock(id){const s=stocks.find(x=>x.id===id); if(!s) return;
-  document.getElementById("stock-edit-id").value=s.id;
-  document.getElementById("stock-product").value=s.product;
-  document.getElementById("stock-type").value=s.type;
-  document.getElementById("stock-duration").value=s.duration;
-  document.getElementById("stock-email").value=s.email||'';
-  document.getElementById("stock-password").value=s.password||'';
-  document.getElementById("stock-profile").value=s.profile||'';
-  document.getElementById("stock-pin").value=s.pin||'';
-  document.getElementById("stock-arch").value=s.archiveAfter||0;
-  document.getElementById("stock-premdate").value=s.premiumAt||'';
-  document.getElementById("stock-form-title").textContent="Edit Stock";
-  document.getElementById("stock-submit-btn").textContent="Update Stock";
-  document.getElementById("stock-cancel-btn").style.display="inline-block";
-  document.getElementById("stock-qty").style.display="none";
-  const qtyLbl=[...document.querySelectorAll('#addStockForm label')].find(l=>l.textContent.trim().startsWith('Quantity')); if(qtyLbl) qtyLbl.style.display='none';
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-  document.querySelector('.tab[data-tab="add-stock"]').classList.add("active"); document.getElementById("panel-add-stock").classList.add("active");
-}
-function cancelEditStock(){document.getElementById("stock-edit-id").value="";document.getElementById("addStockForm").reset();document.getElementById("stock-form-title").textContent="Add Stock";document.getElementById("stock-submit-btn").textContent="Add Stock";document.getElementById("stock-cancel-btn").style.display="none";document.getElementById("stock-qty").style.display="block";const l=[...document.querySelectorAll('#addStockForm label')].find(x=>x.textContent.trim().startsWith('Quantity')); if(l) l.style.display='block';}
-function delStock(id){if(!confirm('Delete this stock?'))return;stocks=stocks.filter(s=>s.id!==id);saveAll();showStocks();updateStats();}
-function archiveStock(id){const i=stocks.findIndex(s=>s.id==id);if(i>-1){archived.push({...stocks[i],archivedAt:(new Date()).toLocaleDateString()});stocks.splice(i,1);saveAll();showStocks();showArchived();}}
-function markSold(id){const s=stocks.find(x=>x.id==id); if(!s) return; const now=new Date(); const rec={id:genId(),orderId:genOrderId(),buyer:'Website Customer',source:'website',product:s.product,accountType:s.type,duration:s.duration,purchaseDate:now.toISOString().split('T')[0],expirationDate:calcExp(now,s.duration),additionalDays:0,updatedExpiration:calcExp(now,s.duration,0),email:s.email,password:s.password,profile:s.profile,pin:s.pin,price:199,status:'sold',createdAt:now.toISOString()};records.push(rec);sold.push({...s,price:199,soldDate:now.toLocaleDateString()});stocks=stocks.filter(x=>x.id!==id);saveAll();updateStats();showStocks();showSold();showRecords();}
-function editProduct(id){const p=products.find(x=>x.id===id); if(!p) return;document.getElementById("product-edit-id").value=p.id;document.getElementById("product-name").value=p.name;document.getElementById("product-category").value=p.category;document.getElementById("product-icon").value=p.icon;document.getElementById("product-submit-btn").textContent="Update Product";document.getElementById("product-cancel-btn").style.display="inline-block";document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.querySelectorAll(".panel").forEach(pn=>pn.classList.remove("active"));document.querySelector('.tab[data-tab="products"]').classList.add("active");document.getElementById("panel-products").classList.add("active");}
-function cancelEditProduct(){document.getElementById("product-edit-id").value="";document.getElementById("addProductForm").reset();document.getElementById("product-submit-btn").textContent="Add Product";document.getElementById("product-cancel-btn").style.display="none";}
-function delProduct(id){if(!confirm('Delete this product?'))return;products=products.filter(p=>p.id!==id);saveAll();updateProductDropdowns();updateRuleProductDropdown();showProducts();updateStats();}
-function editRecord(id){const r=records.find(x=>x.id===id); if(!r) return;document.getElementById("record-edit-id").value=r.id;document.getElementById("record-orderid").value=r.orderId;document.getElementById("record-buyer").value=r.buyer;document.getElementById("record-source").value=r.source;document.getElementById("record-product").value=r.product;document.getElementById("record-type").value=r.accountType;document.getElementById("record-duration").value=r.duration;document.getElementById("record-purchasedate").value=r.purchaseDate;document.getElementById("record-adddays").value=r.additionalDays;document.getElementById("record-email").value=r.email||'';document.getElementById("record-password").value=r.password||'';document.getElementById("record-profile").value=r.profile||'';document.getElementById("record-pin").value=r.pin||'';document.getElementById("record-price").value=r.price;document.getElementById("record-submit-btn").textContent="Update Record";document.getElementById("record-cancel-btn").style.display="inline-block";document.getElementById("addRecordForm").scrollIntoView();document.getElementById("add-record-msg").textContent="Editing record. Update then click 'Update Record'.";}
-function cancelEditRecord(){document.getElementById("record-edit-id").value="";document.getElementById("addRecordForm").reset();document.getElementById("record-purchasedate").value=new Date().toISOString().split('T')[0];document.getElementById("record-submit-btn").textContent="Add Record";document.getElementById("record-cancel-btn").style.display="none";document.getElementById("add-record-msg").textContent="";}
-function delRule(id){if(!confirm('Remove this rule?'))return;rules=rules.filter(r=>r.id!==id);saveAll();showRules();}
-function removeRecord(id){if(!confirm('Remove this record?'))return;records=records.filter(r=>r.id!==id);saveAll();showRecords();updateStats();}
-function resolveReport(id){const i=buyerReports.findIndex(r=>r.id===id);if(i>-1){buyerReports[i].status='resolved';saveAll();showReports();}}
-function deleteReport(id){if(!confirm('Delete this report?'))return;buyerReports=buyerReports.filter(r=>r.id!==id);saveAll();showReports();}
-function addBuyerReport(report){buyerReports.push({id:genId(),...report,status:'pending',date:new Date().toLocaleDateString()});saveAll();showReports();}
-function processWebsiteOrder(orderData){pending.push({id:genId(),...orderData,timestamp:new Date().toISOString(),status:'pending'});const p=products.find(x=>x.name===orderData.productName);if(p){p.stock=Math.max(0,p.stock-1);p.sold+=1;}saveAll();updateStats();showPending();showProducts();return{success:true,orderId:orderData.orderId,message:'Order processed successfully'};}
-
-/* ===== Init & Forms ===== */
-function updateProductDropdowns(){const s1=document.getElementById("stock-product"),s2=document.getElementById("record-product");if(s1)s1.innerHTML=products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');if(s2)s2.innerHTML=products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');}
-function updateRuleProductDropdown(){const sel=document.getElementById("rule-product");if(!sel)return;sel.innerHTML='<option value="general">General (All Products)</option>'+products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');}
-function setupFormSubmissions(){
-  document.getElementById("addStockForm").onsubmit=function(e){e.preventDefault();const editId=document.getElementById("stock-edit-id").value;if(editId){const i=stocks.findIndex(s=>s.id===editId);if(i>-1){stocks[i]={...stocks[i],product:document.getElementById("stock-product").value,type:document.getElementById("stock-type").value,duration:document.getElementById("stock-duration").value,email:document.getElementById("stock-email").value,password:document.getElementById("stock-password").value,profile:document.getElementById("stock-profile").value,pin:document.getElementById("stock-pin").value,archiveAfter:Number(document.getElementById("stock-arch").value)||0,premiumAt:document.getElementById("stock-premdate").value||""};saveAll();showStocks();document.getElementById("add-stock-msg").textContent="✔ Stock Updated!";cancelEditStock();}}else{let qty=Number(document.getElementById("stock-qty").value)||1;for(let i=0;i<qty;i++){stocks.push({id:genId(),product:document.getElementById("stock-product").value,type:document.getElementById("stock-type").value,duration:document.getElementById("stock-duration").value,email:document.getElementById("stock-email").value,password:document.getElementById("stock-password").value,profile:document.getElementById("stock-profile").value,pin:document.getElementById("stock-pin").value,archiveAfter:Number(document.getElementById("stock-arch").value)||0,premiumAt:document.getElementById("stock-premdate").value||"",status:'available'});}saveAll();this.reset();updateStats();showStocks();document.getElementById("add-stock-msg").textContent="✔ Stock Added!";}setTimeout(()=>document.getElementById("add-stock-msg").textContent='',1500);};
-  document.getElementById("addProductForm").onsubmit=function(e){e.preventDefault();const editId=document.getElementById("product-edit-id").value;const name=document.getElementById("product-name").value;const category=document.getElementById("product-category").value;const icon=document.getElementById("product-icon").value;if(editId){const i=products.findIndex(p=>p.id===editId);if(i>-1){products[i]={...products[i],name,category,icon};saveAll();updateProductDropdowns();updateRuleProductDropdown();showProducts();document.getElementById("add-product-msg").textContent="✔ Product Updated!";cancelEditProduct();}}else{products.push({id:genId(),name,category,icon,stock:0,sold:0});saveAll();this.reset();updateProductDropdowns();updateRuleProductDropdown();showProducts();document.getElementById("add-product-msg").textContent="✔ Product Added!";}setTimeout(()=>document.getElementById("add-product-msg").textContent='',1500);};
-  document.getElementById("addRecordForm").onsubmit=function(e){e.preventDefault();const editId=document.getElementById("record-edit-id").value;const pd=document.getElementById("record-purchasedate").value;const dur=document.getElementById("record-duration").value;const add=Number(document.getElementById("record-adddays").value)||0;if(editId){const i=records.findIndex(r=>r.id===editId);if(i>-1){records[i]={...records[i],orderId:document.getElementById("record-orderid").value,buyer:document.getElementById("record-buyer").value,source:document.getElementById("record-source").value,product:document.getElementById("record-product").value,accountType:document.getElementById("record-type").value,duration:dur,purchaseDate:pd,expirationDate:calcExp(pd,dur),additionalDays:add,updatedExpiration:calcExp(pd,dur,add),email:document.getElementById("record-email").value,password:document.getElementById("record-password").value,profile:document.getElementById("record-profile").value,pin:document.getElementById("record-pin").value,price:Number(document.getElementById("record-price").value)||0};saveAll();showRecords();document.getElementById("add-record-msg").textContent="✔ Record Updated!";cancelEditRecord();}}else{records.push({id:genId(),orderId:document.getElementById("record-orderid").value||genOrderId(),buyer:document.getElementById("record-buyer").value,source:document.getElementById("record-source").value,product:document.getElementById("record-product").value,accountType:document.getElementById("record-type").value,duration:dur,purchaseDate:pd,expirationDate:calcExp(pd,dur),additionalDays:add,updatedExpiration:calcExp(pd,dur,add),email:document.getElementById("record-email").value,password:document.getElementById("record-password").value,profile:document.getElementById("record-profile").value,pin:document.getElementById("record-pin").value,price:Number(document.getElementById("record-price").value)||0,status:'active',createdAt:new Date().toISOString()});saveAll();this.reset();document.getElementById("record-purchasedate").value=new Date().toISOString().split('T')[0];showRecords();updateStats();document.getElementById("add-record-msg").textContent="✔ Record Added!";}setTimeout(()=>document.getElementById("add-record-msg").textContent='',1500);};
-}
-
-/* ===== Initialize ===== */
-function showAdminPanel(){document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();showArchived();showProducts();showRules();showRecords();showReports();showPending();showSold();}
-function initializeAdmin(){const tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");tabs.forEach(t=>{t.onclick=function(){tabs.forEach(x=>x.classList.remove("active"));panels.forEach(x=>x.classList.remove("active"));t.classList.add("active");document.getElementById("panel-"+t.dataset.tab).classList.add("active");};});function fill(id,arr){const el=document.getElementById(id);if(el)el.innerHTML=arr.map(x=>`<option value="${x}">${x}</option>`).join('');}fill("stock-type",ACC_TYPES);fill("stock-duration",DURATIONS);fill("record-type",ACC_TYPES);fill("record-duration",DURATIONS);updateProductDropdowns();updateRuleProductDropdown();document.getElementById("record-purchasedate").value=new Date().toISOString().split('T')[0];setupFormSubmissions();}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  if (isVerified()){
-    showAdminPanel();
-    initializeAdmin();
-  }else{
-    // force clean, then open modal
-    clearSession();
-    openOwnerModal();
+  if (rules.length === 0) {
+    rules = [
+      { id:genId(), product:"general",          text:"All accounts are premium quality" },
+      { id:genId(), product:"general",          text:"No refunds after delivery" },
+      { id:genId(), product:"general",          text:"Replacement guaranteed within 24 hours for any issues" },
+      { id:genId(), product:"Netflix Premium",  text:"No password changing allowed" },
+      { id:genId(), product:"Netflix Premium",  text:"Use only on one device at a time" }
+    ];
+    localStorage.setItem("rules", JSON.stringify(rules));
   }
-});
 
-// OPTIONAL: auto-logout after idle (visibility-based)
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible'){
-    if (!isVerified()){
-      clearSession();
-      location.hash = ''; // avoid any accidental #safe bypasses
-      openOwnerModal();
-    }else{
-      // refresh session timestamp habang active ka
-      localStorage.setItem('ad-ok-ts', Date.now().toString());
+  /* ----- Utils ----- */
+  function saveAll(){
+    localStorage.setItem("stocks", JSON.stringify(stocks));
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("rules", JSON.stringify(rules));
+    localStorage.setItem("records", JSON.stringify(records));
+    localStorage.setItem("archived", JSON.stringify(archived));
+    localStorage.setItem("sold", JSON.stringify(sold));
+    localStorage.setItem("pending", JSON.stringify(pending));
+    localStorage.setItem("buyerReports", JSON.stringify(buyerReports));
+  }
+  function genId(){ return Date.now() + '-' + Math.random().toString(36).substr(2,9); }
+  function genOrderId(){ return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2,9).toUpperCase(); }
+  function calcExp(purchaseDate, duration, additionalDays=0){
+    const d = new Date(purchaseDate);
+    let add = additionalDays;
+    if (typeof duration === 'string'){
+      if (duration.endsWith('d')) add += parseInt(duration);
+      else if (duration.endsWith('m')) add += parseInt(duration) * 30;
+      else if (duration.endsWith('W')) add += parseInt(duration) * 7;
+    }
+    d.setDate(d.getDate() + add);
+    return d.toISOString().split('T')[0];
+  }
+  function fmtDetails(r){
+    const a=[]; if(r.email) a.push(`Email: ${r.email}`);
+    if(r.password) a.push(`Password: ${r.password}`);
+    if(r.profile) a.push(`Profile: ${r.profile}`);
+    if(r.pin) a.push(`PIN: ${r.pin}`);
+    return a.join('<br>');
+  }
+
+  /* ----- Owner Modal + Verify ----- */
+  function openOwnerModal(){
+    document.getElementById('ownerUidInput').value='';
+    document.getElementById('ownerVeriMsg').textContent='';
+    document.getElementById('ownerVeriOverlay').style.display='flex';
+  }
+  function closeOwnerModal(){
+    document.getElementById('ownerVeriOverlay').style.display='none';
+  }
+  function verifyOwnerUID(){
+    const uid = document.getElementById('ownerUidInput').value.trim();
+    if (uid === OWNER_UID){
+      setSession(uid);               // secure session set
+      closeOwnerModal();
+      showAdminPanel();
+      initializeAdmin();
+    } else {
+      document.getElementById('ownerVeriMsg').innerText = '❌ Invalid UID.';
     }
   }
-});
+  window.verifyOwnerUID = verifyOwnerUID;   // expose for button
+  window.openOwnerModal = openOwnerModal;   // expose for modal close btn
+  window.closeOwnerModal = closeOwnerModal;
+
+  /* ----- Renders ----- */
+  function updateStats(){
+    document.getElementById("stat-products").innerText = products.length;
+    document.getElementById("stat-stock").innerText    = stocks.filter(s=>s.status==='available').length;
+    document.getElementById("stat-pending").innerText  = pending.length;
+    const rev = sold.reduce((a,b)=>a+(+b.price||0),0) + records.reduce((a,b)=>a+(+b.price||0),0);
+    document.getElementById("stat-revenue").innerText  = "₱" + rev;
+  }
+  function showStocks(){
+    const el   = document.getElementById("manage-stocks-list");
+    const avail= stocks.filter(s=>s.status==='available');
+    el.innerHTML = avail.length
+      ? avail.map(st=>`
+          <div class="stock-card">
+            <div><b>${st.product}</b> ${st.type} (${st.duration})</div>
+            <div>Email: ${st.email||'N/A'} | Profile: ${st.profile||'N/A'}</div>
+            <div class="stock-actions">
+              <button class="btn btn-info btn-small"    onclick="editStock('${st.id}')">Edit</button>
+              <button class="btn btn-success btn-small" onclick="markSold('${st.id}')">Mark Sold</button>
+              <button class="btn btn-warning btn-small" onclick="archiveStock('${st.id}')">Archive</button>
+              <button class="btn btn-danger btn-small"  onclick="delStock('${st.id}')">Delete</button>
+            </div>
+          </div>`).join('')
+      : "No available stocks.";
+  }
+  function showProducts(){
+    const f = document.getElementById("product-category-filter").value;
+    const arr = (f==='all') ? products : products.filter(p=>p.category===f);
+    document.getElementById("products-list").innerHTML = arr.length
+      ? arr.map(p=>`
+          <div class="stock-card">
+            <div><b>${p.icon} ${p.name}</b></div>
+            <div>Category: ${p.category} | Stock: ${p.stock} | Sold: ${p.sold}</div>
+            <div class="stock-actions">
+              <button class="btn btn-info btn-small"   onclick="editProduct('${p.id}')">Edit</button>
+              <button class="btn btn-danger btn-small" onclick="delProduct('${p.id}')">Delete</button>
+            </div>
+          </div>`).join('')
+      : "No products found for this category.";
+  }
+  function filterProductsByCategory(){ showProducts(); }
+
+  function showRecords(){
+    const tb = document.getElementById("records-table-body");
+    tb.innerHTML = records.length
+      ? records.map(r=>`
+          <tr>
+            <td>${r.orderId}</td><td>${r.buyer}</td><td>${r.source}</td>
+            <td>${r.product}</td><td>${r.accountType}</td><td>${r.duration}</td>
+            <td>${r.purchaseDate}</td><td>${r.expirationDate}</td>
+            <td>${r.additionalDays}</td><td>${r.updatedExpiration}</td>
+            <td>${fmtDetails(r)}</td><td>₱${r.price}</td>
+            <td>
+              <button class="btn btn-info btn-small"   onclick="editRecord('${r.id}')">Edit</button>
+              <button class="btn btn-danger btn-small" onclick="removeRecord('${r.id}')">Remove</button>
+            </td>
+          </tr>`).join('')
+      : '<tr><td colspan="13" style="text-align:center;">No records found.</td></tr>';
+  }
+
+  function showRules(){
+    const el = document.getElementById("rules-list");
+    el.innerHTML = rules.length
+      ? rules.map(rule=>`
+        <div class="stock-card">
+          <div><b>Product:</b> ${rule.product==='general' ? 'All Products' : rule.product}</div>
+          <div><b>Rule:</b> ${rule.text}</div>
+          <div class="stock-actions">
+            <button class="btn btn-info btn-small"   onclick="editRule('${rule.id}')">Edit</button>
+            <button class="btn btn-danger btn-small" onclick="delRule('${rule.id}')">Remove</button>
+          </div>
+        </div>`).join('')
+      : "No rules defined.";
+  }
+
+  function showReports(){
+    const list = document.getElementById("buyer-reports-list");
+    list.innerHTML = buyerReports.length
+      ? buyerReports.map(r=>`
+        <div class="report-card">
+          <div><b>Report ID:</b> ${r.id}</div>
+          <div><b>Order ID:</b> ${r.orderId || 'N/A'}</div>
+          <div><b>Buyer:</b> ${r.buyer}</div>
+          <div><b>Product:</b> ${r.product}</div>
+          <div><b>Issue:</b> ${r.issue}</div>
+          <div><b>Status:</b> <span class="badge ${r.status==='resolved'?'badge-resolved':'badge-pending'}">${r.status}</span></div>
+          <div><b>Date Reported:</b> ${r.date}</div>
+          <div class="report-actions">
+            ${r.status!=='resolved' ? `<button class="btn btn-success btn-small" onclick="resolveReport('${r.id}')">Mark Resolved</button>` : ''}
+            <button class="btn btn-danger btn-small" onclick="deleteReport('${r.id}')">Delete</button>
+          </div>
+        </div>`).join('')
+      : '<p>No buyer reports yet.</p>';
+
+    const total = records.reduce((a,b)=>a+(+b.price||0),0);
+    const web   = records.filter(r=>r.source==='website').length;
+    const soc   = records.filter(r=>r.source!=='website').length;
+    document.getElementById("sales-report").innerHTML =
+      `<p><b>Total Records:</b> ${records.length}</p>
+       <p><b>Total Revenue:</b> ₱${total}</p>
+       <p><b>Website Orders:</b> ${web}</p>
+       <p><b>Social Media Orders:</b> ${soc}</p>
+       <p><b>Pending Buyer Reports:</b> ${buyerReports.filter(r=>r.status==='pending').length}</p>`;
+  }
+
+  function showArchived(){ document.getElementById("archived-list").innerHTML =
+    archived.length ? archived.map(a=>`<div>${a.product}, ${a.type}, archived at: ${a.archivedAt}</div>`).join('') : "No archived stocks"; }
+  function showPending(){ document.getElementById("pending-orders-list").innerHTML =
+    pending.length ? pending.map(p=>`<div>${p.product}, order: ${p.orderId}</div>`).join('') : "No pending orders."; }
+  function showSold(){ document.getElementById("sold-list").innerHTML =
+    sold.length ? sold.map(x=>`<div>${x.product}, buyer, price ₱${x.price||0}</div>`).join('') : "No sold accounts yet"; }
+
+  /* ----- Actions ----- */
+  function editStock(id){const s=stocks.find(x=>x.id===id); if(!s) return;
+    document.getElementById("stock-edit-id").value=s.id;
+    document.getElementById("stock-product").value=s.product;
+    document.getElementById("stock-type").value=s.type;
+    document.getElementById("stock-duration").value=s.duration;
+    document.getElementById("stock-email").value=s.email||'';
+    document.getElementById("stock-password").value=s.password||'';
+    document.getElementById("stock-profile").value=s.profile||'';
+    document.getElementById("stock-pin").value=s.pin||'';
+    document.getElementById("stock-arch").value=s.archiveAfter||0;
+    document.getElementById("stock-premdate").value=s.premiumAt||'';
+    document.getElementById("stock-form-title").textContent="Edit Stock";
+    document.getElementById("stock-submit-btn").textContent="Update Stock";
+    document.getElementById("stock-cancel-btn").style.display="inline-block";
+    document.getElementById("stock-qty").style.display="none";
+    const qtyLbl=[...document.querySelectorAll('#addStockForm label')].find(l=>l.textContent.trim().startsWith('Quantity'));
+    if(qtyLbl) qtyLbl.style.display='none';
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    document.querySelector('.tab[data-tab="add-stock"]').classList.add("active");
+    document.getElementById("panel-add-stock").classList.add("active");
+  }
+  function cancelEditStock(){
+    document.getElementById("stock-edit-id").value="";
+    document.getElementById("addStockForm").reset();
+    document.getElementById("stock-form-title").textContent="Add Stock";
+    document.getElementById("stock-submit-btn").textContent="Add Stock";
+    document.getElementById("stock-cancel-btn").style.display="none";
+    document.getElementById("stock-qty").style.display="block";
+    const l=[...document.querySelectorAll('#addStockForm label')].find(x=>x.textContent.trim().startsWith('Quantity'));
+    if(l) l.style.display='block';
+  }
+  function delStock(id){ if(!confirm('Delete this stock?')) return;
+    stocks = stocks.filter(s=>s.id!==id); saveAll(); showStocks(); updateStats();
+  }
+  function archiveStock(id){
+    const i = stocks.findIndex(s=>s.id==id);
+    if(i>-1){ archived.push({...stocks[i], archivedAt:(new Date()).toLocaleDateString()});
+      stocks.splice(i,1); saveAll(); showStocks(); showArchived(); }
+  }
+  function markSold(id){
+    const s = stocks.find(x=>x.id==id); if(!s) return;
+    const now = new Date();
+    const rec = {
+      id:genId(), orderId:genOrderId(), buyer:'Website Customer', source:'website',
+      product:s.product, accountType:s.type, duration:s.duration,
+      purchaseDate:now.toISOString().split('T')[0],
+      expirationDate:calcExp(now, s.duration), additionalDays:0,
+      updatedExpiration:calcExp(now, s.duration, 0),
+      email:s.email, password:s.password, profile:s.profile, pin:s.pin,
+      price:199, status:'sold', createdAt:now.toISOString()
+    };
+    records.push(rec);
+    sold.push({...s, price:199, soldDate: now.toLocaleDateString()});
+    stocks = stocks.filter(x=>x.id!==id);
+    saveAll(); updateStats(); showStocks(); showSold(); showRecords();
+  }
+
+  function editProduct(id){ const p=products.find(x=>x.id===id); if(!p) return;
+    document.getElementById("product-edit-id").value=p.id;
+    document.getElementById("product-name").value=p.name;
+    document.getElementById("product-category").value=p.category;
+    document.getElementById("product-icon").value=p.icon;
+    document.getElementById("product-submit-btn").textContent="Update Product";
+    document.getElementById("product-cancel-btn").style.display="inline-block";
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(pn=>pn.classList.remove("active"));
+    document.querySelector('.tab[data-tab="products"]').classList.add("active");
+    document.getElementById("panel-products").classList.add("active");
+  }
+  function cancelEditProduct(){
+    document.getElementById("product-edit-id").value="";
+    document.getElementById("addProductForm").reset();
+    document.getElementById("product-submit-btn").textContent="Add Product";
+    document.getElementById("product-cancel-btn").style.display="none";
+  }
+  function delProduct(id){
+    if(!confirm('Delete this product?')) return;
+    products = products.filter(p=>p.id!==id);
+    saveAll(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts(); updateStats();
+  }
+
+  function editRecord(id){ const r=records.find(x=>x.id===id); if(!r) return;
+    document.getElementById("record-edit-id").value=r.id;
+    document.getElementById("record-orderid").value=r.orderId;
+    document.getElementById("record-buyer").value=r.buyer;
+    document.getElementById("record-source").value=r.source;
+    document.getElementById("record-product").value=r.product;
+    document.getElementById("record-type").value=r.accountType;
+    document.getElementById("record-duration").value=r.duration;
+    document.getElementById("record-purchasedate").value=r.purchaseDate;
+    document.getElementById("record-adddays").value=r.additionalDays;
+    document.getElementById("record-email").value=r.email||'';
+    document.getElementById("record-password").value=r.password||'';
+    document.getElementById("record-profile").value=r.profile||'';
+    document.getElementById("record-pin").value=r.pin||'';
+    document.getElementById("record-price").value=r.price;
+    document.getElementById("record-submit-btn").textContent="Update Record";
+    document.getElementById("record-cancel-btn").style.display="inline-block";
+    document.getElementById("addRecordForm").scrollIntoView();
+    document.getElementById("add-record-msg").textContent="Editing record. Update then click 'Update Record'.";
+  }
+  function cancelEditRecord(){
+    document.getElementById("record-edit-id").value="";
+    document.getElementById("addRecordForm").reset();
+    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+    document.getElementById("record-submit-btn").textContent="Add Record";
+    document.getElementById("record-cancel-btn").style.display="none";
+    document.getElementById("add-record-msg").textContent="";
+  }
+
+  function delRule(id){ if(!confirm('Remove this rule?')) return;
+    rules = rules.filter(r=>r.id!==id); saveAll(); showRules();
+  }
+  function removeRecord(id){ if(!confirm('Remove this record?')) return;
+    records = records.filter(r=>r.id!==id); saveAll(); showRecords(); updateStats();
+  }
+  function resolveReport(id){ const i=buyerReports.findIndex(r=>r.id===id);
+    if(i>-1){ buyerReports[i].status='resolved'; saveAll(); showReports(); }
+  }
+  function deleteReport(id){ if(!confirm('Delete this report?')) return;
+    buyerReports = buyerReports.filter(r=>r.id!==id); saveAll(); showReports();
+  }
+  function addBuyerReport(report){
+    buyerReports.push({ id:genId(), ...report, status:'pending', date:new Date().toLocaleDateString() });
+    saveAll(); showReports();
+  }
+  function processWebsiteOrder(orderData){
+    pending.push({ id:genId(), ...orderData, timestamp:new Date().toISOString(), status:'pending' });
+    const p = products.find(x=>x.name===orderData.productName);
+    if (p){ p.stock = Math.max(0, p.stock-1); p.sold += 1; }
+    saveAll(); updateStats(); showPending(); showProducts();
+    return { success:true, orderId:orderData.orderId, message:'Order processed successfully' };
+  }
+
+  /* ----- Form wiring ----- */
+  function updateProductDropdowns(){
+    const a = products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+    const s1 = document.getElementById("stock-product");
+    const s2 = document.getElementById("record-product");
+    if (s1) s1.innerHTML = a;
+    if (s2) s2.innerHTML = a;
+  }
+  function updateRuleProductDropdown(){
+    const sel = document.getElementById("rule-product");
+    if (!sel) return;
+    sel.innerHTML = '<option value="general">General (All Products)</option>' +
+      products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+  }
+  function setupFormSubmissions(){
+    // Add/Update Stock
+    document.getElementById("addStockForm").onsubmit = function(e){
+      e.preventDefault();
+      const editId = document.getElementById("stock-edit-id").value;
+      if (editId){
+        const i = stocks.findIndex(s=>s.id===editId);
+        if (i>-1){
+          stocks[i] = {
+            ...stocks[i],
+            product:  document.getElementById("stock-product").value,
+            type:     document.getElementById("stock-type").value,
+            duration: document.getElementById("stock-duration").value,
+            email:    document.getElementById("stock-email").value,
+            password: document.getElementById("stock-password").value,
+            profile:  document.getElementById("stock-profile").value,
+            pin:      document.getElementById("stock-pin").value,
+            archiveAfter: Number(document.getElementById("stock-arch").value)||0,
+            premiumAt:    document.getElementById("stock-premdate").value||""
+          };
+          saveAll(); showStocks();
+          document.getElementById("add-stock-msg").textContent = "✔ Stock Updated!";
+          cancelEditStock();
+        }
+      } else {
+        const qty = Number(document.getElementById("stock-qty").value)||1;
+        for(let i=0;i<qty;i++){
+          stocks.push({
+            id:genId(),
+            product:  document.getElementById("stock-product").value,
+            type:     document.getElementById("stock-type").value,
+            duration: document.getElementById("stock-duration").value,
+            email:    document.getElementById("stock-email").value,
+            password: document.getElementById("stock-password").value,
+            profile:  document.getElementById("stock-profile").value,
+            pin:      document.getElementById("stock-pin").value,
+            archiveAfter:Number(document.getElementById("stock-arch").value)||0,
+            premiumAt:document.getElementById("stock-premdate").value||"",
+            status:'available'
+          });
+        }
+        saveAll(); this.reset(); updateStats(); showStocks();
+        document.getElementById("add-stock-msg").textContent = "✔ Stock Added!";
+      }
+      setTimeout(()=>document.getElementById("add-stock-msg").textContent='',1500);
+    };
+
+    // Add/Update Product
+    document.getElementById("addProductForm").onsubmit = function(e){
+      e.preventDefault();
+      const editId  = document.getElementById("product-edit-id").value;
+      const name    = document.getElementById("product-name").value;
+      const category= document.getElementById("product-category").value;
+      const icon    = document.getElementById("product-icon").value;
+      if (editId){
+        const i = products.findIndex(p=>p.id===editId);
+        if (i>-1){
+          products[i] = { ...products[i], name, category, icon };
+          saveAll(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts();
+          document.getElementById("add-product-msg").textContent = "✔ Product Updated!";
+          cancelEditProduct();
+        }
+      } else {
+        products.push({ id:genId(), name, category, icon, stock:0, sold:0 });
+        saveAll(); this.reset(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts();
+        document.getElementById("add-product-msg").textContent = "✔ Product Added!";
+      }
+      setTimeout(()=>document.getElementById("add-product-msg").textContent='',1500);
+    };
+
+    // Add/Update Record
+    document.getElementById("addRecordForm").onsubmit = function(e){
+      e.preventDefault();
+      const editId = document.getElementById("record-edit-id").value;
+      const pd     = document.getElementById("record-purchasedate").value;
+      const dur    = document.getElementById("record-duration").value;
+      const add    = Number(document.getElementById("record-adddays").value)||0;
+
+      if (editId){
+        const i = records.findIndex(r=>r.id===editId);
+        if (i>-1){
+          records[i] = {
+            ...records[i],
+            orderId: document.getElementById("record-orderid").value,
+            buyer:   document.getElementById("record-buyer").value,
+            source:  document.getElementById("record-source").value,
+            product: document.getElementById("record-product").value,
+            accountType: document.getElementById("record-type").value,
+            duration: dur,
+            purchaseDate: pd,
+            expirationDate:   calcExp(pd, dur),
+            additionalDays:   add,
+            updatedExpiration:calcExp(pd, dur, add),
+            email:    document.getElementById("record-email").value,
+            password: document.getElementById("record-password").value,
+            profile:  document.getElementById("record-profile").value,
+            pin:      document.getElementById("record-pin").value,
+            price:    Number(document.getElementById("record-price").value)||0
+          };
+          saveAll(); showRecords();
+          document.getElementById("add-record-msg").textContent = "✔ Record Updated!";
+          cancelEditRecord();
+        }
+      } else {
+        records.push({
+          id:genId(),
+          orderId: document.getElementById("record-orderid").value || genOrderId(),
+          buyer:   document.getElementById("record-buyer").value,
+          source:  document.getElementById("record-source").value,
+          product: document.getElementById("record-product").value,
+          accountType: document.getElementById("record-type").value,
+          duration: dur,
+          purchaseDate: pd,
+          expirationDate:   calcExp(pd, dur),
+          additionalDays:   add,
+          updatedExpiration:calcExp(pd, dur, add),
+          email:    document.getElementById("record-email").value,
+          password: document.getElementById("record-password").value,
+          profile:  document.getElementById("record-profile").value,
+          pin:      document.getElementById("record-pin").value,
+          price:    Number(document.getElementById("record-price").value)||0,
+          status:'active',
+          createdAt: new Date().toISOString()
+        });
+        saveAll(); this.reset();
+        document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+        showRecords(); updateStats();
+        document.getElementById("add-record-msg").textContent = "✔ Record Added!";
+      }
+      setTimeout(()=>document.getElementById("add-record-msg").textContent='',1500);
+    };
+  }
+
+  /* ----- Init / Tabs / Gate ----- */
+  function showAdminPanel(){
+    document.getElementById('admin-dashboard').style.display='block';
+    updateStats(); showStocks(); showArchived(); showProducts(); showRules();
+    showRecords(); showReports(); showPending(); showSold();
+  }
+  function initializeAdmin(){
+    const tabs   = document.querySelectorAll(".tab");
+    const panels = document.querySelectorAll(".panel");
+    tabs.forEach(tab=>{
+      tab.onclick = function(){
+        tabs.forEach(tb=>tb.classList.remove("active"));
+        panels.forEach(pl=>pl.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+      };
+    });
+    const fill = (id, opts)=>{ const el=document.getElementById(id); if(el) el.innerHTML = opts.map(x=>`<option value="${x}">${x}</option>`).join(''); };
+    fill("stock-type", ACC_TYPES); fill("stock-duration", DURATIONS);
+    fill("record-type", ACC_TYPES); fill("record-duration", DURATIONS);
+    updateProductDropdowns(); updateRuleProductDropdown();
+    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+    setupFormSubmissions();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (isVerified()){
+      showAdminPanel(); initializeAdmin();
+    } else {
+      clearSession();
+      openOwnerModal();
+    }
+  });
+
+  // Idle/visibility check → auto-logout when stale
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible'){
+      if (!isVerified()){
+        clearSession();
+        openOwnerModal();
+      } else {
+        localStorage.setItem('ad-ok-ts', Date.now().toString());
+      }
+    }
+  });
+
+  // Expose some handlers globally for buttons
+  window.editStock=editStock; window.cancelEditStock=cancelEditStock;
+  window.delStock=delStock; window.archiveStock=archiveStock; window.markSold=markSold;
+  window.editProduct=editProduct; window.cancelEditProduct=cancelEditProduct; window.delProduct=delProduct;
+  window.editRecord=editRecord; window.cancelEditRecord=cancelEditRecord; window.removeRecord=removeRecord;
+  window.filterProductsByCategory=filterProductsByCategory;
+  window.editRule=editRule; window.delRule=delRule;
+  window.resolveReport=resolveReport; window.deleteReport=deleteReport;
+  window.addBuyerReport=addBuyerReport; window.processWebsiteOrder=processWebsiteOrder;
 </script>
 
-<!-- Optional libs -->
+<!-- (Optional) Supabase client if you’ll wire this later -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="assets/js/aiaxcart/supabase.js?v=2"></script>
+<script src="assets/js/aiaxcart/supabase.js"></script>
 </body>
 </html>
