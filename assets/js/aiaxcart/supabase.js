@@ -1,6 +1,11 @@
-// supabase.js — client bootstrap (keep your UI; just include this before other scripts)
+// supabase.js — bootstrap Supabase client using window.CONFIG
 const { createClient } = window.supabase;
-const url  = window.CONFIG_PRIVATE?.DATABASE?.SUPABASE_URL;
-const key  = window.CONFIG_PRIVATE?.DATABASE?.SUPABASE_ANON_KEY;
-if(!url || !key) console.warn("Missing Supabase URL/ANON KEY in config.private.js");
-window.supabaseClient = createClient(url, key);
+
+if (!window.CONFIG || !window.CONFIG.DATABASE) {
+  console.error("CONFIG missing. Load config.private.js (local) or config.js (public) first.");
+}
+
+const URL = window.CONFIG?.DATABASE?.SUPABASE_URL;
+const KEY = window.CONFIG?.DATABASE?.SUPABASE_ANON_KEY;
+
+window.supabaseClient = createClient(URL, KEY);
