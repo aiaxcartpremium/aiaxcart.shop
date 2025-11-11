@@ -502,15 +502,17 @@ function closeOwnerModal() {
 }
 
 function verifyOwnerUID() {
-    let uid = document.getElementById('ownerUidInput').value.trim();
-    if (uid === OWNER_UID) {
-        localStorage.setItem('ownerVerified', 'yes');
-        closeOwnerModal();
-        showAdminPanel();
-        initializeAdmin();
-    } else {
-        document.getElementById('ownerVeriMsg').textContent = '❌ Invalid UID.';
-    }
+  let uid = document.getElementById('ownerUidInput').value.trim();
+  if (uid === OWNER_UID) {
+    localStorage.setItem('ownerVerified', 'yes');
+    localStorage.setItem('ad-ok', '1');
+    localStorage.setItem('ad-ok-ts', Date.now().toString()); // ← add this line
+    closeOwnerModal();
+    showAdminPanel();
+    initializeAdmin();
+  } else {
+    document.getElementById('ownerVeriMsg').innerText = '❌ Invalid UID.';
+  }
 }
 
 function showAdminPanel() {
