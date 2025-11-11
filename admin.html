@@ -79,19 +79,6 @@
 </style>
 <link href="assets/css/extras.css" rel="stylesheet"/></head>
 <body>
-    <!-- SAFE FAST GATE (no loop, has #safe bypass) -->
-<script>
-(function(){
-  try{
-    if (location.hash === '#safe') return;          // manual bypass if needed
-    var ok = localStorage.getItem('ad-ok') === '1'; // set by verification
-    console.log('[gate-top] ad-ok =', ok);
-    if (!ok) location.replace('index.html#need-verify');
-  } catch(e){
-    console.error('[gate-top] error', e);
-  }
-})();
-</script>
 <header>
 <div class="container header-content">
 <div class="logo">🛒 Aiaxcart Premium</div>
@@ -1242,26 +1229,15 @@ document.addEventListener("DOMContentLoaded", function() {
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=2"></script>
 
+<!-- HARD GUARD: redirect non-admins -->
 <script type="module">
-import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=5";
-
-(async () => {
-  try{
-    const okAuth = await guardAdmin();                      // auth-based check (optional)
-    const okLocal = localStorage.getItem('ad-ok') === '1';  // verified by UID modal
-    console.log('[gate-bottom]', { okAuth, okLocal });
-
-    if (!okAuth && !okLocal && location.hash !== '#safe') {
-      location.replace('index.html#need-verify');
-    }
-  }catch(e){
-    console.error('[gate-bottom] error', e);
-    if (localStorage.getItem('ad-ok') !== '1' && location.hash !== '#safe') {
-      location.replace('index.html#need-verify');
-    }
-  }
-})();
+  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
+  (async () => {
+    const ok = await guardAdmin();
+    if (!ok) location.replace("index.html");
+  })();
 </script>
+
 <!-- Admin UI: dropdowns + realtime orders + confirm -->
 <script type="module">
   import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js?v=2";
