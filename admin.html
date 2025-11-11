@@ -1254,14 +1254,25 @@ document.addEventListener("DOMContentLoaded", function() {
 <!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=2"></script>
-
-<!-- HARD GUARD: redirect non-admins -->
 <script type="module">
-  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
-  (async () => {
-    const ok = await guardAdmin();
-    if (!ok) location.replace("index.html");
-  })();
+import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=7";
+
+(async () => {
+  try {
+    const okAuth  = await guardAdmin();                      // auth-based (optional)
+    const okLocal = localStorage.getItem('ad-ok') === '1';   // verified by UID
+    console.log('[gate-bottom]', { okAuth, okLocal });
+
+    if (!okAuth && !okLocal && location.hash !== '#safe') {
+      location.replace('index.html#need-verify');
+    }
+  } catch (e) {
+    console.error('[gate-bottom] error', e);
+    if (localStorage.getItem('ad-ok') !== '1' && location.hash !== '#safe') {
+      location.replace('index.html#need-verify');
+    }
+  }
+})();
 </script>
 
 <!-- Admin UI: dropdowns + realtime orders + confirm -->
