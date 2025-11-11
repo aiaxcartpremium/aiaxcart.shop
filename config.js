@@ -1,4 +1,5 @@
 const CONFIG = {
+  ADMIN: { SESSION_MINUTES: 30 },
     SHOP: {
         NAME: 'Aiaxcart Premium',
         LOGO: '🛒',
