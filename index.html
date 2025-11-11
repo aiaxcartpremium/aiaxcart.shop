@@ -2098,9 +2098,24 @@
         document.getElementById('login-btn').addEventListener('click', openAuthModal);
         document.getElementById('logout-btn').addEventListener('click', logout);
     </script>
-<!-- Aiaxcart: DB/Realtime wiring (non-visual) -->
-<script src="config.private.js"></script>
+<!-- Config selection (private if exists, else public) -->
+<script>
+  window.CONFIG_PRIVATE = undefined;
+  window.CONFIG_PUBLIC = undefined;
+</script>
+<script src="config.private.js"></script> <!-- local only, ignored in git -->
+<script src="config.js"></script>          <!-- safe public fallback -->
+<script>
+  window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
+</script>
+
+<!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.CONFIG.DATABASE;
+  window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
 <script src="assets/js/aiaxcart/supabase.js"></script>
 <script type="module">
   import { fetchCatalog, fetchOptions, bindRealtime } from "./assets/js/aiaxcart/catalog.js";
