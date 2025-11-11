@@ -79,28 +79,30 @@
 </style>
 <link href="assets/css/extras.css" rel="stylesheet"/></head>
 <body>
-    <!-- SAFE FAST GATE (no loop; with bypass) -->
+    <!-- SAFE FAST GATE (no redirect; accepts either flag; has bypass) -->
 <script>
-(function () {
-  try {
-    // Bypass: https://…/admin.html?pass=1
-    var qs = new URLSearchParams(location.search);
+(function(){
+  try{
+    const qs = new URLSearchParams(location.search);
     if (qs.get('pass') === '1') {
-      localStorage.setItem('ad-ok', '1');
+      localStorage.setItem('ad-ok','1');
+      localStorage.setItem('ownerVerified','yes');   // set both flags
       console.log('[gate-top] bypass via ?pass=1');
       return;
     }
-
-    // Optional bypass: …/admin.html#safe
     if (location.hash === '#safe') {
       console.log('[gate-top] bypass via #safe');
       return;
     }
 
-    var ok = localStorage.getItem('ad-ok') === '1';
-    console.log('[gate-top] ad-ok =', ok);
-    if (!ok) location.replace('index.html#need-verify');
-  } catch (e) {
+    // ✅ accept EITHER flag as verified
+    const ok =
+      localStorage.getItem('ad-ok') === '1' ||
+      localStorage.getItem('ownerVerified') === 'yes';
+
+    // ❌ DO NOT redirect here; let the modal handle it
+    console.log('[gate-top] verified =', ok);
+  }catch(e){
     console.error('[gate-top] error', e);
   }
 })();
@@ -1258,23 +1260,21 @@ document.addEventListener("DOMContentLoaded", function() {
 import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=7";
 
 (async () => {
-  try {
-    const okAuth  = await guardAdmin();                      // auth-based (optional)
-    const okLocal = localStorage.getItem('ad-ok') === '1';   // verified by UID
+  try{
+    const okAuth  = await guardAdmin();                      // optional
+    const okLocal =
+      localStorage.getItem('ad-ok') === '1' ||
+      localStorage.getItem('ownerVerified') === 'yes';
+
     console.log('[gate-bottom]', { okAuth, okLocal });
 
-    if (!okAuth && !okLocal && location.hash !== '#safe') {
-      location.replace('index.html#need-verify');
-    }
-  } catch (e) {
+    // ❌ No redirect — the modal (below) will open if not verified
+  }catch(e){
     console.error('[gate-bottom] error', e);
-    if (localStorage.getItem('ad-ok') !== '1' && location.hash !== '#safe') {
-      location.replace('index.html#need-verify');
-    }
+    // still no redirect; fail open to let modal show
   }
 })();
 </script>
-
 <!-- Admin UI: dropdowns + realtime orders + confirm -->
 <script type="module">
   import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js?v=2";
