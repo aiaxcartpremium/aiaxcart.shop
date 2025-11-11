@@ -2098,12 +2098,14 @@
         document.getElementById('login-btn').addEventListener('click', openAuthModal);
         document.getElementById('logout-btn').addEventListener('click', logout);
     </script>
+<!-- Aiaxcart: DB/Realtime wiring (non-visual) -->
+
 <!-- Config selection (private if exists, else public) -->
 <script>
   window.CONFIG_PRIVATE = undefined;
   window.CONFIG_PUBLIC = undefined;
 </script>
-<script src="config.private.js"></script> <!-- local only, ignored in git -->
+<script src="config.private.js"></script> <!-- local only, gitignored -->
 <script src="config.js"></script>          <!-- safe public fallback -->
 <script>
   window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
@@ -2111,18 +2113,14 @@
 
 <!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-  const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.CONFIG.DATABASE;
-  window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
-
 <script src="assets/js/aiaxcart/supabase.js"></script>
+
+<!-- Render homepage + hide admin btn when not admin -->
 <script type="module">
-  import { fetchCatalog, fetchOptions, bindRealtime } from "./assets/js/aiaxcart/catalog.js";
-  import { createOrder, confirmPayment } from "./assets/js/aiaxcart/orders.js";
+  import { renderHomepageProducts } from "./assets/js/aiaxcart/catalog.render.js";
   import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
-  import { submitReport, leaveFeedback } from "./assets/js/aiaxcart/reports.js";
-  window.AIAXCART = { fetchCatalog, fetchOptions, bindRealtime, createOrder, confirmPayment, guardAdmin, submitReport, leaveFeedback };
+  guardAdmin('admin-btn');        // hide Admin button if not admin
+  renderHomepageProducts();       // draw products, stock, sold, category
 </script>
 </body>
 </html>
