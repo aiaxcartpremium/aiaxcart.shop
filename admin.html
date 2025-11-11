@@ -1219,19 +1219,19 @@ document.addEventListener("DOMContentLoaded", function() {
   window.CONFIG_PRIVATE = undefined;
   window.CONFIG_PUBLIC = undefined;
 </script>
-<script src="config.private.js"></script> <!-- local only -->
-<script src="config.js"></script>          <!-- public fallback -->
+<script src="config.private.js?v=2"></script> <!-- local only -->
+<script src="config.js?v=2"></script>          <!-- public fallback -->
 <script>
   window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
 
 <!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="assets/js/aiaxcart/supabase.js"></script>
+<script src="assets/js/aiaxcart/supabase.js?v=2"></script>
 
 <!-- HARD GUARD: redirect non-admins -->
 <script type="module">
-  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
+  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
   (async () => {
     const ok = await guardAdmin();
     if (!ok) location.replace("index.html");
@@ -1240,7 +1240,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <!-- Admin UI: dropdowns + realtime orders + confirm -->
 <script type="module">
-  import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js";
+  import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js?v=2";
   initAdminUI();
 </script>
 </body>
