@@ -55,34 +55,52 @@
 </head>
 <body>
 
-<!-- CONFIG LOAD (early) -->
-<script>window.CONFIG_PRIVATE=undefined;window.CONFIG_PUBLIC=undefined;</script>
-<script src="config.private.js?v=2"></script>
-<script src="config.js?v=2"></script>
-<script>window.CONFIG=window.CONFIG_PRIVATE||window.CONFIG_PUBLIC||{};</script>
-
-<!-- OWNER UID -->
-<script>window.OWNER_UID='2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36';</script>
-
-<!-- ADMIN GATE (no backdoors) -->
 <script>
+/** ===== Admin Gate v3 (early) ===== **/
+const OWNER_UID  = '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36'; // your UID
+const SESSION_MIN = 30;            // auto-logout after 30 mins idle
+const SESSION_VER = '2025-11-12';  // bump this to invalidate all sessions
+
+function clearSession(){
+  localStorage.removeItem('ad-ok');
+  localStorage.removeItem('ad-ok-ts');
+  localStorage.removeItem('ownerVerified');
+  localStorage.removeItem('ad-owner-uid');
+  localStorage.removeItem('ad-session-ver');
+}
+
+function setSession(uid){
+  localStorage.setItem('ad-ok','1');
+  localStorage.setItem('ownerVerified','yes');
+  localStorage.setItem('ad-ok-ts', Date.now().toString());
+  localStorage.setItem('ad-owner-uid', uid);
+  localStorage.setItem('ad-session-ver', SESSION_VER);
+}
+
+function isVerified(){
+  const ok    = localStorage.getItem('ad-ok') === '1' && localStorage.getItem('ownerVerified') === 'yes';
+  const ts    = parseInt(localStorage.getItem('ad-ok-ts') || '0', 10);
+  const fresh = (Date.now() - ts) < (SESSION_MIN*60*1000);
+  const uidOk = localStorage.getItem('ad-owner-uid') === OWNER_UID;
+  const verOk = localStorage.getItem('ad-session-ver') === SESSION_VER;
+
+  return ok && fresh && uidOk && verOk;
+}
+
+// Kill any stale/backdoor state:
+// 1) Remove the old "?pass=1" behavior entirely (no backdoor).
+// 2) If OWNER_UID changed or version bumped, clear.
 (function(){
   try{
-    const TTL_MIN=(window.CONFIG?.ADMIN?.SESSION_MINUTES)||30, TTL_MS=TTL_MIN*60*1000;
-    function isVerified(){
-      const ok=localStorage.getItem('ad-ok')==='1';
-      const ts=parseInt(localStorage.getItem('ad-ok-ts')||'0',10);
-      const uid=(localStorage.getItem('owner-uid')||'').toLowerCase();
-      const match=uid && uid===(window.OWNER_UID||'').toLowerCase();
-      const fresh=(Date.now()-ts)<TTL_MS;
-      return ok&&fresh&&match;
+    if (!isVerified()){
+      // clear partial/old flags so hindi mag "true" by accident
+      clearSession();
+    }else{
+      // keep-alive: update timestamp on load para hindi agad ma-expire kapag active ka
+      localStorage.setItem('ad-ok-ts', Date.now().toString());
     }
-    window.__isAdminVerified=isVerified;
-    if(!isVerified()){
-      localStorage.removeItem('ad-ok');
-      localStorage.removeItem('ad-ok-ts');
-    }
-  }catch(e){console.error('[gate-init]',e);}
+    console.log('[gate-v3] verified?', isVerified());
+  }catch(e){ console.error('[gate-v3] early err', e); clearSession(); }
 })();
 </script>
 
@@ -314,15 +332,19 @@ function fmtDetails(r){let a=[];if(r.email)a.push(`Email: ${r.email}`);if(r.pass
 /* ===== Owner Verify ===== */
 function openOwnerModal(){document.getElementById('ownerUidInput').value='';document.getElementById('ownerVeriMsg').textContent='';document.getElementById("ownerVeriOverlay").style.display="flex";}
 function closeOwnerModal(){document.getElementById("ownerVeriOverlay").style.display="none";}
+<script>
 function verifyOwnerUID(){
-  const uid=(document.getElementById('ownerUidInput').value||'').trim();
-  if(uid.toLowerCase()===(window.OWNER_UID||'').toLowerCase()){
-    localStorage.setItem('owner-uid',uid);
-    localStorage.setItem('ad-ok','1');
-    localStorage.setItem('ad-ok-ts',Date.now().toString());
-    closeOwnerModal(); showAdminPanel(); initializeAdmin();
-  }else{document.getElementById('ownerVeriMsg').innerText='❌ Invalid UID.';}
+  const uid = document.getElementById('ownerUidInput').value.trim();
+  if (uid === OWNER_UID){
+    setSession(uid);          // ← ito lang ang magseset ng session
+    closeOwnerModal();
+    showAdminPanel();
+    initializeAdmin();
+  }else{
+    document.getElementById('ownerVeriMsg').innerText = '❌ Invalid UID.';
+  }
 }
+</script>
 
 /* ===== Renders ===== */
 function updateStats(){document.getElementById("stat-products").innerText=products.length;document.getElementById("stat-stock").innerText=stocks.filter(s=>s.status==='available').length;document.getElementById("stat-pending").innerText=pending.length;const rev=sold.reduce((a,b)=>a+(+b.price||0),0)+records.reduce((a,b)=>a+(+b.price||0),0);document.getElementById("stat-revenue").innerText="₱"+rev;}
@@ -384,10 +406,31 @@ function setupFormSubmissions(){
 /* ===== Initialize ===== */
 function showAdminPanel(){document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();showArchived();showProducts();showRules();showRecords();showReports();showPending();showSold();}
 function initializeAdmin(){const tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");tabs.forEach(t=>{t.onclick=function(){tabs.forEach(x=>x.classList.remove("active"));panels.forEach(x=>x.classList.remove("active"));t.classList.add("active");document.getElementById("panel-"+t.dataset.tab).classList.add("active");};});function fill(id,arr){const el=document.getElementById(id);if(el)el.innerHTML=arr.map(x=>`<option value="${x}">${x}</option>`).join('');}fill("stock-type",ACC_TYPES);fill("stock-duration",DURATIONS);fill("record-type",ACC_TYPES);fill("record-duration",DURATIONS);updateProductDropdowns();updateRuleProductDropdown();document.getElementById("record-purchasedate").value=new Date().toISOString().split('T')[0];setupFormSubmissions();}
-document.addEventListener("DOMContentLoaded",function(){if(window.__isAdminVerified&&window.__isAdminVerified()){showAdminPanel();initializeAdmin();}else{openOwnerModal();}});
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (isVerified()){
+    showAdminPanel();
+    initializeAdmin();
+  }else{
+    // force clean, then open modal
+    clearSession();
+    openOwnerModal();
+  }
+});
 
-/* ===== Session refresh & expiry ===== */
-(function(){const TTL_MIN=(window.CONFIG?.ADMIN?.SESSION_MINUTES)||30,TTL_MS=TTL_MIN*60*1000;function touch(){if(window.__isAdminVerified&&window.__isAdminVerified()){localStorage.setItem('ad-ok-ts',Date.now().toString());}}['click','keydown','mousemove','scroll','touchstart','visibilitychange'].forEach(e=>window.addEventListener(e,touch,{passive:true}));setInterval(()=>{if(!(window.__isAdminVerified&&window.__isAdminVerified())){const dash=document.getElementById('admin-dashboard');if(dash)dash.style.display='none';openOwnerModal();}},60*1000);})();
+// OPTIONAL: auto-logout after idle (visibility-based)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible'){
+    if (!isVerified()){
+      clearSession();
+      location.hash = ''; // avoid any accidental #safe bypasses
+      openOwnerModal();
+    }else{
+      // refresh session timestamp habang active ka
+      localStorage.setItem('ad-ok-ts', Date.now().toString());
+    }
+  }
+});
 </script>
 
 <!-- Optional libs -->
