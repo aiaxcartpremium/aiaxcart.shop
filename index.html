@@ -2138,5 +2138,13 @@
     }
   })();
 </script>
+<!-- Hide Admin button if not verified -->
+<script>
+  (function(){
+    const ok = localStorage.getItem('ad-ok') === '1';
+    const btn = document.getElementById('admin-btn');
+    if (btn) btn.style.display = ok ? '' : 'none';
+  })();
+</script>
 </body>
 </html>
