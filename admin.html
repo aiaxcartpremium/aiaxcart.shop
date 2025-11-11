@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Aiaxcart Premium | Admin</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+    body { background: #fefaf7; color: #382f2c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .logo { font-size: 2rem; font-weight: 700; display: flex; align-items: center;}
+    header { background: #FFD3D6; padding: 1.3rem 0 1.1rem 0; box-shadow: 0 6px 22px rgba(0,0,0,0.08);}
+    .header-content { display: flex; justify-content: space-between; align-items: center;}
+    nav ul { display: flex; list-style: none;}
+    nav ul li {margin-left: 2.2rem;}
+    nav ul li a { color: #382f2c; text-decoration: none; font-weight: 500; padding: 0.6rem 1.4rem; border-radius: 10px;}
+    nav ul li a.active, nav ul li a:hover {background: #FFC6CA;}
+    .tabs { display: flex; gap: 0.95rem; margin: 2rem 0 1.5rem 0; flex-wrap: wrap;}
+    .tab {
+        padding: 0.85rem 1.55rem;
+        border: none;
+        background: #fff;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 500;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .tab.active { background: #FFD3D6;}
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.3rem; margin-bottom:2rem;}
+    .stat-card { background: #fff; padding: 2rem 0 1.25rem 0; border-radius: 13px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.07);}
+    .stat-card h3 { font-size: 2.1rem; margin-bottom: 0.55rem; color:#FFB0B5;}
+    .card { background: #fff; border-radius: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 2.2rem 1.5rem; margin-bottom: 2rem;}
+    label { margin:1rem 0 0.45rem 0; display: block; }
+    select,input[type="text"],input[type="number"],input[type="email"],input[type="date"],textarea {
+        padding:0.65rem 0.9rem;border-radius:8px;border:1px solid #E8E8E8;font-size:1rem;width:100%;font-family:inherit;
+    }
+    .btn {padding: 0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size: 1rem; cursor:pointer; transition: all 0.3s ease;}
+    .btn-primary {background: #FFB0B5; color:white;}
+    .btn-primary:hover {background: #FF8A90;}
+    .btn-danger {background: #FF6B6B; color:white;}
+    .btn-danger:hover {background: #FF5252;}
+    .btn-warning {background: #FFA726; color:white;}
+    .btn-warning:hover {background: #FF9800;}
+    .btn-success {background: #66BB6A; color:white;}
+    .btn-success:hover {background: #4CAF50;}
+    .btn-info {background: #42A5F5; color:white;}
+    .btn-info:hover {background: #2196F3;}
+    .btn-small {padding:0.3rem 0.8rem;font-size:0.95rem;margin-top:0.25rem;}
+    .stock-list {display:flex;flex-direction:column;gap:1.2rem;}
+    .stock-card {background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04);}
+    .stock-actions {margin-top:0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;}
+    .badge {display:inline-block;padding:0.18rem 0.9rem;border-radius:12px;font-size:0.90rem; font-weight:500;}
+    .badge-premium {background:#ffe3ed;color:#CC348D;}
+    .badge-archived {background:#e7e6ef;color:#8c73b1;}
+    .badge-pending {background: #fff3cd; color: #856404;}
+    .badge-resolved {background: #d1ecf1; color: #0c5460;}
+    .toggle-row {display:flex;align-items:center;gap:1.3rem; margin-top:0.85rem;}
+    .error-message {color:red; margin-top:0.5rem;}
+    .success-message {color:green; margin-top:0.5rem;}
+    /* Modal Styles */
+    .owner-veri-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;}
+    .modal-card{position:relative;background:white;padding:2.7rem 2.5rem 1.5rem 2.5rem;border-radius:16px;min-width:325px;}
+    .close-btn{position:absolute;top:0.6rem;right:0.7rem;background:none;border:none;font-size:1.55rem;color:#ff7a7a;line-height:1;cursor:pointer;}
+    /* Records Table */
+    .records-table {width: 100%; border-collapse: collapse; margin-top: 1rem;}
+    .records-table th, .records-table td {padding: 0.75rem; text-align: left; border-bottom: 1px solid #E8E8E8;}
+    .records-table th {background: #FFD3D6; font-weight: 600;}
+    .records-table tr:hover {background: #f9f9f9;}
+    .report-card {background: #fff; border-left: 4px solid #FFB0B5; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;}
+    .report-actions {margin-top: 0.5rem;}
+    .category-filter {margin-bottom: 1rem;}
+    .category-filter select {width: auto; display: inline-block; margin-right: 1rem;}
+    @media(max-width:1000px){.stats-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}.tabs{gap:0.45rem;}}
+</style>
+<link href="assets/css/extras.css" rel="stylesheet"/></head>
+<body>
+<header>
+<div class="container header-content">
+<div class="logo">🛒 Aiaxcart Premium</div>
+<nav>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a class="active" href="admin.html">Admin</a></li>
+</ul>
+</nav>
+</div>
+</header>
+<!-- Owner Verification Modal -->
+<div class="owner-veri-overlay" id="ownerVeriOverlay">
+<div class="modal-card">
+<button class="close-btn" onclick="closeOwnerModal()">×</button>
+<h2>🔐 Owner Verification</h2>
+<input id="ownerUidInput" placeholder="Enter Owner UID" style="width:100%;margin-bottom:1.3rem;" type="text"/>
+<button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;padding:0.65rem 1.5rem;width:100%;border:none;border-radius:8px;">Verify Access</button>
+<div id="ownerVeriMsg" style="color:red;margin-top:0.8rem;font-size:1.1em;"></div>
+</div>
+</div>
+<div class="container" id="admin-dashboard" style="display:none;">
+<h1 style="margin-top:2rem;">Admin Console</h1>
+<div class="stats-grid">
+<div class="stat-card"><h3 id="stat-products">0</h3><div>Products</div></div>
+<div class="stat-card"><h3 id="stat-stock">0</h3><div>Available Stock</div></div>
+<div class="stat-card"><h3 id="stat-pending">0</h3><div>Pending Orders</div></div>
+<div class="stat-card"><h3 id="stat-revenue">₱0</h3><div>Total Revenue</div></div>
+</div>
+<div class="tabs">
+<button class="tab active" data-tab="add-stock">Add Stock</button>
+<button class="tab" data-tab="manage-stocks">Manage Stocks</button>
+<button class="tab" data-tab="pending-orders">Pending Orders</button>
+<button class="tab" data-tab="sold-accounts">Sold Accounts</button>
+<button class="tab" data-tab="archived-stocks">Archived Stocks</button>
+<button class="tab" data-tab="products">Products</button>
+<button class="tab" data-tab="store-rules">Store Rules</button>
+<button class="tab" data-tab="records">Records</button>
+<button class="tab" data-tab="reports">Reports</button>
+</div>
+<!-- Panels -->
+<div class="panel active" id="panel-add-stock">
+<div class="card">
+<h2 id="stock-form-title">Add Stock</h2>
+<form id="addStockForm">
+<input id="stock-edit-id" type="hidden" value=""/>
+<label>Product
+                    <select id="stock-product"></select>
+</label>
+<label>Account Type
+                    <select id="stock-type"></select>
+</label>
+<label>Duration
+                    <select id="stock-duration"></select>
+</label>
+<label>Quantity <input id="stock-qty" min="1" type="number" value="1"/></label>
+<label>Email <input id="stock-email" type="text"/></label>
+<label>Password <input id="stock-password" type="text"/></label>
+<label>Profile <input id="stock-profile" type="text"/></label>
+<label>PIN <input id="stock-pin" type="text"/></label>
+<label>Auto-Archive (Days): <input id="stock-arch" type="number" value="0"/></label>
+<label>Premium At (date, optional): <input id="stock-premdate" type="date"/></label>
+<button class="btn btn-primary" id="stock-submit-btn" style="margin-top:1rem;" type="submit">Add Stock</button>
+<button class="btn btn-warning" id="stock-cancel-btn" onclick="cancelEditStock()" style="margin-top:1rem; display:none;" type="button">Cancel Edit</button>
+</form>
+<div id="add-stock-msg"></div>
+</div>
+</div>
+<div class="panel" id="panel-manage-stocks">
+<div class="card">
+<h2>Manage Stocks</h2>
+<div id="manage-stocks-list"></div>
+</div>
+</div>
+<div class="panel" id="panel-pending-orders">
+<div class="card">
+<h2>Pending Orders</h2>
+<div id="pending-orders-list"></div>
+</div>
+</div>
+<div class="panel" id="panel-sold-accounts">
+<div class="card">
+<h2>Sold Accounts</h2>
+<div id="sold-list"></div>
+</div>
+</div>
+<div class="panel" id="panel-archived-stocks">
+<div class="card">
+<h2>Archived Stocks</h2>
+<div id="archived-list"></div>
+</div>
+</div>
+<!-- PRODUCTS PANEL -->
+<div class="panel" id="panel-products">
+<div class="card">
+<h2>Add Product</h2>
+<form id="addProductForm">
+<input id="product-edit-id" type="hidden" value=""/>
+<label>Product Name
+                    <input id="product-name" placeholder="Enter product name" required="" type="text"/>
+</label>
+<label>Category
+                    <select id="product-category" required="">
+<option value="">Select Category</option>
+<option value="entertainment">🎬 Entertainment</option>
+<option value="streaming">🎵 Music &amp; Streaming</option>
+<option value="educational">📚 Educational</option>
+<option value="editing">🎨 Editing Tools</option>
+<option value="ai">🤖 AI Tools</option>
+</select>
+</label>
+<label>Icon
+                    <input id="product-icon" placeholder="e.g., 📺, 🎵, 🎨" required="" type="text"/>
+</label>
+<button class="btn btn-primary" id="product-submit-btn" style="margin-top:1rem;" type="submit">Add Product</button>
+<button class="btn btn-warning" id="product-cancel-btn" onclick="cancelEditProduct()" style="margin-top:1rem; display:none;" type="button">Cancel Edit</button>
+</form>
+<div id="add-product-msg"></div>
+</div>
+<div class="card">
+<h2>Products Management</h2>
+<div class="category-filter">
+<label>Filter by Category:
+                    <select id="product-category-filter" onchange="filterProductsByCategory()">
+<option value="all">All Categories</option>
+<option value="entertainment">🎬 Entertainment</option>
+<option value="streaming">🎵 Music &amp; Streaming</option>
+<option value="educational">📚 Educational</option>
+<option value="editing">🎨 Editing Tools</option>
+<option value="ai">🤖 AI Tools</option>
+</select>
+</label>
+</div>
+<div id="products-list"></div>
+</div>
+</div>
+<!-- STORE RULES PANEL -->
+<div class="panel" id="panel-store-rules">
+<div class="card">
+<h2>Add Store Rule</h2>
+<form id="addRuleForm">
+<input id="rule-edit-id" type="hidden" value=""/>
+<label>Product
+                    <select id="rule-product">
+<option value="general">General (All Products)</option>
+</select>
+</label>
+<label>Rule Text
+                    <textarea id="rule-text" placeholder="Enter rule description" rows="3"></textarea>
+</label>
+<button class="btn btn-primary" id="rule-submit-btn" style="margin-top:1rem;" type="submit">Add Rule</button>
+<button class="btn btn-warning" id="rule-cancel-btn" onclick="cancelEditRule()" style="margin-top:1rem; display:none;" type="button">Cancel Edit</button>
+</form>
+<div id="add-rule-msg"></div>
+</div>
+<div class="card">
+<h2>Store Rules</h2>
+<div id="rules-list"></div>
+</div>
+</div>
+<!-- RECORDS PANEL -->
+<div class="panel" id="panel-records">
+<div class="card">
+<h2>Add Record</h2>
+<form id="addRecordForm">
+<input id="record-edit-id" type="hidden" value=""/>
+<label>Order ID (Auto-generated for website orders)
+                    <input id="record-orderid" placeholder="Leave empty for auto-generation" type="text"/>
+</label>
+<label>Buyer Information
+                    <input id="record-buyer" placeholder="Buyer name or email" required="" type="text"/>
+</label>
+<label>Source
+                    <select id="record-source" required="">
+<option value="">Select Source</option>
+<option value="website">Website</option>
+<option value="facebook">Facebook</option>
+<option value="instagram">Instagram</option>
+<option value="telegram">Telegram</option>
+<option value="tiktok">TikTok</option>
+</select>
+</label>
+<label>Product
+                    <select id="record-product" required=""></select>
+</label>
+<label>Account Type
+                    <select id="record-type" required=""></select>
+</label>
+<label>Duration
+                    <select id="record-duration" required=""></select>
+</label>
+<label>Purchase Date
+                    <input id="record-purchasedate" required="" type="date"/>
+</label>
+<label>Additional Days
+                    <input id="record-adddays" min="0" type="number" value="0"/>
+</label>
+<label>Account Details - Email
+                    <input id="record-email" type="text"/>
+</label>
+<label>Account Details - Password
+                    <input id="record-password" type="text"/>
+</label>
+<label>Account Details - Profile
+                    <input id="record-profile" type="text"/>
+</label>
+<label>Account Details - PIN
+                    <input id="record-pin" type="text"/>
+</label>
+<label>Price
+                    <input id="record-price" required="" step="0.01" type="number"/>
+</label>
+<button class="btn btn-primary" id="record-submit-btn" style="margin-top:1rem;" type="submit">Add Record</button>
+<button class="btn btn-warning" id="record-cancel-btn" onclick="cancelEditRecord()" style="margin-top:1rem; display:none;" type="button">Cancel Edit</button>
+</form>
+<div id="add-record-msg"></div>
+</div>
+<div class="card">
+<h2>Records List</h2>
+<table class="records-table">
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Buyer/Email</th>
+<th>Source</th>
+<th>Product</th>
+<th>Account Type</th>
+<th>Duration</th>
+<th>Purchase Date</th>
+<th>Expiration Date</th>
+<th>Additional Days</th>
+<th>Updated Expiration</th>
+<th>Account Details</th>
+<th>Price</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="records-table-body">
+<!-- Records will be populated here -->
+</tbody>
+</table>
+</div>
+</div>
+<!-- REPORTS PANEL -->
+<div class="panel" id="panel-reports">
+<div class="card">
+<h2>Buyer Reports</h2>
+<div id="buyer-reports-list">
+<!-- Buyer reports will be displayed here -->
+</div>
+</div>
+<div class="card">
+<h2>Sales Report</h2>
+<div id="sales-report">
+<!-- Sales report will be displayed here -->
+</div>
+</div>
+</div>
+</div>
+<script>
+// Constants
+const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
+const DURATIONS = ["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
+
+// DEFAULT PRODUCTS DATA with stock set to 0
+const DEFAULT_PRODUCTS = [
+    { id: 'netflix', name: 'Netflix Premium', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'viu', name: 'Viu Premium', category: 'entertainment', icon: '🎬', stock: 0, sold: 0 },
+    { id: 'viva-max', name: 'VIVAMAX VIVAONE', category: 'entertainment', icon: '🎭', stock: 0, sold: 0 },
+    { id: 'wetv', name: 'WeTV', category: 'entertainment', icon: '📱', stock: 0, sold: 0 },
+    { id: 'iwant-tfc', name: 'IWANT TFC', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'crunchyroll', name: 'Crunchyroll', category: 'entertainment', icon: '🎮', stock: 0, sold: 0 },
+    { id: 'disney-plus', name: 'Disney+', category: 'entertainment', icon: '🦁', stock: 0, sold: 0 },
+    { id: 'bilibili', name: 'Bilibili', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'loklok', name: 'Loklok', category: 'entertainment', icon: '📱', stock: 0, sold: 0 },
+    { id: 'iqiyi', name: 'iQiyi', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'hbo-max', name: 'HBO Max', category: 'entertainment', icon: '📹', stock: 0, sold: 0 },
+    { id: 'amazon-prime', name: 'Amazon Prime', category: 'entertainment', icon: '🛒', stock: 0, sold: 0 },
+    { id: 'youku', name: 'Youku', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'nba-league-pass', name: 'NBA League Pass Premium', category: 'entertainment', icon: '🏀', stock: 0, sold: 0 },
+    { id: 'youtube', name: 'YouTube Premium', category: 'streaming', icon: '📹', stock: 0, sold: 0 },
+    { id: 'spotify', name: 'Spotify Premium', category: 'streaming', icon: '🎵', stock: 0, sold: 0 },
+    { id: 'apple-music', name: 'Apple Music', category: 'streaming', icon: '🎧', stock: 0, sold: 0 },
+    { id: 'chatgpt', name: 'ChatGPT Plus', category: 'ai', icon: '🧠', stock: 0, sold: 0 },
+    { id: 'blackbox-ai', name: 'Blackbox AI', category: 'ai', icon: '🤖', stock: 0, sold: 0 },
+    { id: 'perplexity', name: 'Perplexity AI', category: 'ai', icon: '🔍', stock: 0, sold: 0 },
+    { id: 'google-one', name: 'Google One + Gemini AI', category: 'ai', icon: '☁️', stock: 0, sold: 0 },
+    { id: 'quizlet', name: 'Quizlet+', category: 'educational', icon: '📚', stock: 0, sold: 0 },
+    { id: 'scribd', name: 'Scribd Premium', category: 'educational', icon: '📖', stock: 0, sold: 0 },
+    { id: 'studocu', name: 'Studocu Premium', category: 'educational', icon: '🎓', stock: 0, sold: 0 },
+    { id: 'duolingo', name: 'Duolingo Super', category: 'educational', icon: '🧑‍🎓', stock: 0, sold: 0 },
+    { id: 'turnitin-student', name: 'Turnitin Student', category: 'educational', icon: '📝', stock: 0, sold: 0 },
+    { id: 'turnitin-instructor', name: 'Turnitin Instructor', category: 'educational', icon: '👨‍🏫', stock: 0, sold: 0 },
+    { id: 'canva', name: 'Canva Pro', category: 'editing', icon: '🎨', stock: 0, sold: 0 },
+    { id: 'picsart', name: 'Picsart Gold', category: 'editing', icon: '👏', stock: 0, sold: 0 },
+    { id: 'capcut', name: 'CapCut Pro', category: 'editing', icon: '📝', stock: 0, sold: 0 },
+    { id: 'alight-motion', name: 'Alight Motion Pro', category: 'editing', icon: '📱', stock: 0, sold: 0 },
+    { id: 'remini', name: 'Remini Web', category: 'editing', icon: '✨', stock: 0, sold: 0 },
+    { id: 'grammarly', name: 'Grammarly Premium', category: 'educational', icon: '✍️', stock: 0, sold: 0 },
+    { id: 'quillbot', name: 'Quillbot Premium', category: 'educational', icon: '📝', stock: 0, sold: 0 },
+    { id: 'ms-365', name: 'Microsoft 365', category: 'educational', icon: '🤬', stock: 0, sold: 0 },
+    { id: 'cams-canner', name: 'CamScanner Pro', category: 'editing', icon: '📁', stock: 0, sold: 0 },
+    { id: 'small-pdf', name: 'Small PDF Pro', category: 'editing', icon: '📁', stock: 0, sold: 0 },
+    { id: 'zoom', name: 'Zoom Pro', category: 'educational', icon: '📽️', stock: 0, sold: 0 }
+];
+
+// Data Storage
+let stocks = JSON.parse(localStorage.getItem("stocks") || "[]");
+let products = JSON.parse(localStorage.getItem("products") || "[]");
+let rules = JSON.parse(localStorage.getItem("rules") || "[]");
+let records = JSON.parse(localStorage.getItem("records") || "[]");
+let archived = JSON.parse(localStorage.getItem("archived") || "[]");
+let sold = JSON.parse(localStorage.getItem("sold") || "[]");
+let pending = JSON.parse(localStorage.getItem("pending") || "[]");
+let buyerReports = JSON.parse(localStorage.getItem("buyerReports") || "[]");
+
+// Initialize default products if empty
+if (products.length === 0) {
+    products = DEFAULT_PRODUCTS;
+    localStorage.setItem("products", JSON.stringify(products));
+}
+
+// Initialize default rules if empty
+if (rules.length === 0) {
+    rules = [
+        { id: generateId(), product: "general", text: "All accounts are premium quality" },
+        { id: generateId(), product: "general", text: "No refunds after delivery" },
+        { id: generateId(), product: "general", text: "Replacement guaranteed within 24 hours for any issues" },
+        { id: generateId(), product: "Netflix Premium", text: "No password changing allowed" },
+        { id: generateId(), product: "Netflix Premium", text: "Use only on one device at a time" }
+    ];
+    localStorage.setItem("rules", JSON.stringify(rules));
+}
+
+// Save all data function
+function saveAll() {
+    localStorage.setItem("stocks", JSON.stringify(stocks));
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("rules", JSON.stringify(rules));
+    localStorage.setItem("records", JSON.stringify(records));
+    localStorage.setItem("archived", JSON.stringify(archived));
+    localStorage.setItem("sold", JSON.stringify(sold));
+    localStorage.setItem("pending", JSON.stringify(pending));
+    localStorage.setItem("buyerReports", JSON.stringify(buyerReports));
+}
+
+// Utility Functions
+function generateId() {
+    return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+
+function generateOrderId() {
+    return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+}
+
+function calculateExpirationDate(purchaseDate, duration, additionalDays = 0) {
+    const date = new Date(purchaseDate);
+    let daysToAdd = additionalDays;
+
+    // Calculate base duration
+    if (duration.endsWith('d')) {
+        daysToAdd += parseInt(duration);
+    } else if (duration.endsWith('m')) {
+        daysToAdd += parseInt(duration) * 30;
+    } else if (duration.endsWith('W')) {
+        daysToAdd += parseInt(duration) * 7;
+    }
+
+    date.setDate(date.getDate() + daysToAdd);
+    return date.toISOString().split('T')[0];
+}
+
+function formatAccountDetails(record) {
+    let details = [];
+    if (record.email) details.push(`Email: ${record.email}`);
+    if (record.password) details.push(`Password: ${record.password}`);
+    if (record.profile) details.push(`Profile: ${record.profile}`);
+    if (record.pin) details.push(`PIN: ${record.pin}`);
+    return details.join('<br>');
+}
+
+// Owner Verification - FIXED SECURITY
+const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
+
+function openOwnerModal() {
+    document.getElementById('ownerUidInput').value = '';
+    document.getElementById('ownerVeriMsg').textContent = '';
+    document.getElementById("ownerVeriOverlay").style.display = "flex";
+}
+
+function closeOwnerModal() {
+    document.getElementById("ownerVeriOverlay").style.display = "none";
+}
+
+function verifyOwnerUID() {
+    let uid = document.getElementById('ownerUidInput').value.trim();
+    if (uid === OWNER_UID) {
+        localStorage.setItem('ownerVerified', 'yes');
+        closeOwnerModal();
+        showAdminPanel();
+        initializeAdmin();
+    } else {
+        document.getElementById('ownerVeriMsg').textContent = '❌ Invalid UID.';
+    }
+}
+
+function showAdminPanel() {
+    document.getElementById('admin-dashboard').style.display = 'block';
+    updateStats();
+    showStocks();
+    showArchived();
+    showProducts();
+    showRules();
+    showRecords();
+    showReports();
+    showPending();
+    showSold();
+}
+
+// Initialize admin after verification
+function initializeAdmin() {
+    // Setup tab switching
+    let tabs = document.querySelectorAll(".tab");
+    let panels = document.querySelectorAll(".panel");
+    
+    tabs.forEach(tab => {
+        tab.onclick = function() {
+            tabs.forEach(tb => tb.classList.remove("active"));
+            panels.forEach(pl => pl.classList.remove("active"));
+            tab.classList.add("active");
+            document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+        };
+    });
+
+    // Setup dropdowns
+    function populateSelect(selectId, options) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = options.map(x => `<option value="${x}">${x}</option>`).join('');
+    }
+
+    populateSelect("stock-type", ACC_TYPES);
+    populateSelect("stock-duration", DURATIONS);
+    populateSelect("record-type", ACC_TYPES);
+    populateSelect("record-duration", DURATIONS);
+    
+    // Populate product dropdowns
+    updateProductDropdowns();
+    
+    // Populate rule product dropdown
+    updateRuleProductDropdown();
+
+    // Set today's date as default for purchase date
+    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+
+    // Setup form submissions
+    setupFormSubmissions();
+}
+
+// Setup form submissions separately
+function setupFormSubmissions() {
+    // Add Stock Form
+    document.getElementById("addStockForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        const editId = document.getElementById("stock-edit-id").value;
+        
+        if (editId) {
+            // Update existing stock
+            const stockIndex = stocks.findIndex(s => s.id === editId);
+            if (stockIndex > -1) {
+                stocks[stockIndex] = {
+                    ...stocks[stockIndex],
+                    product: document.getElementById("stock-product").value,
+                    type: document.getElementById("stock-type").value,
+                    duration: document.getElementById("stock-duration").value,
+                    email: document.getElementById("stock-email").value,
+                    password: document.getElementById("stock-password").value,
+                    profile: document.getElementById("stock-profile").value,
+                    pin: document.getElementById("stock-pin").value,
+                    archiveAfter: Number(document.getElementById("stock-arch").value) || 0,
+                    premiumAt: document.getElementById("stock-premdate").value || ""
+                };
+                
+                saveAll();
+                showStocks();
+                document.getElementById("add-stock-msg").textContent = "✔ Stock Updated!";
+                cancelEditStock();
+            }
+        } else {
+            // Add new stock
+            let qty = Number(document.getElementById("stock-qty").value) || 1;
+            
+            for (let i = 0; i < qty; i++) {
+                stocks.push({
+                    id: generateId(),
+                    product: document.getElementById("stock-product").value,
+                    type: document.getElementById("stock-type").value,
+                    duration: document.getElementById("stock-duration").value,
+                    email: document.getElementById("stock-email").value,
+                    password: document.getElementById("stock-password").value,
+                    profile: document.getElementById("stock-profile").value,
+                    pin: document.getElementById("stock-pin").value,
+                    archiveAfter: Number(document.getElementById("stock-arch").value) || 0,
+                    premiumAt: document.getElementById("stock-premdate").value || "",
+                    status: 'available'
+                });
+            }
+            
+            saveAll();
+            this.reset();
+            updateStats();
+            showStocks();
+            document.getElementById("add-stock-msg").textContent = "✔ Stock Added!";
+        }
+        
+        setTimeout(() => document.getElementById("add-stock-msg").textContent = '', 1500);
+    };
+
+    // Add Product Form
+    document.getElementById("addProductForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        const editId = document.getElementById("product-edit-id").value;
+        const name = document.getElementById("product-name").value;
+        const category = document.getElementById("product-category").value;
+        const icon = document.getElementById("product-icon").value;
+        
+        if (editId) {
+            // Update existing product
+            const productIndex = products.findIndex(p => p.id === editId);
+            if (productIndex > -1) {
+                products[productIndex] = {
+                    ...products[productIndex],
+                    name: name,
+                    category: category,
+                    icon: icon
+                };
+                
+                saveAll();
+                updateProductDropdowns();
+                updateRuleProductDropdown();
+                showProducts();
+                document.getElementById("add-product-msg").textContent = "✔ Product Updated!";
+                cancelEditProduct();
+            }
+        } else {
+            // Add new product
+            const product = {
+                id: generateId(),
+                name: name,
+                category: category,
+                icon: icon,
+                stock: 0,
+                sold: 0
+            };
+
+            products.push(product);
+            saveAll();
+            this.reset();
+            updateProductDropdowns();
+            updateRuleProductDropdown();
+            showProducts();
+            
+            document.getElementById("add-product-msg").textContent = "✔ Product Added!";
+        }
+        
+        setTimeout(() => document.getElementById("add-product-msg").textContent = '', 1500);
+    };
+
+    // Add Record Form
+    document.getElementById("addRecordForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        const editId = document.getElementById("record-edit-id").value;
+        const purchaseDate = document.getElementById("record-purchasedate").value;
+        const duration = document.getElementById("record-duration").value;
+        const additionalDays = Number(document.getElementById("record-adddays").value) || 0;
+        
+        if (editId) {
+            // Update existing record
+            const recordIndex = records.findIndex(r => r.id === editId);
+            if (recordIndex > -1) {
+                records[recordIndex] = {
+                    ...records[recordIndex],
+                    orderId: document.getElementById("record-orderid").value,
+                    buyer: document.getElementById("record-buyer").value,
+                    source: document.getElementById("record-source").value,
+                    product: document.getElementById("record-product").value,
+                    accountType: document.getElementById("record-type").value,
+                    duration: duration,
+                    purchaseDate: purchaseDate,
+                    expirationDate: calculateExpirationDate(purchaseDate, duration),
+                    additionalDays: additionalDays,
+                    updatedExpiration: calculateExpirationDate(purchaseDate, duration, additionalDays),
+                    email: document.getElementById("record-email").value,
+                    password: document.getElementById("record-password").value,
+                    profile: document.getElementById("record-profile").value,
+                    pin: document.getElementById("record-pin").value,
+                    price: Number(document.getElementById("record-price").value) || 0
+                };
+                
+                saveAll();
+                showRecords();
+                document.getElementById("add-record-msg").textContent = "✔ Record Updated!";
+                cancelEditRecord();
+            }
+        } else {
+            // Add new record
+            const record = {
+                id: generateId(),
+                orderId: document.getElementById("record-orderid").value || generateOrderId(),
+                buyer: document.getElementById("record-buyer").value,
+                source: document.getElementById("record-source").value,
+                product: document.getElementById("record-product").value,
+                accountType: document.getElementById("record-type").value,
+                duration: duration,
+                purchaseDate: purchaseDate,
+                expirationDate: calculateExpirationDate(purchaseDate, duration),
+                additionalDays: additionalDays,
+                updatedExpiration: calculateExpirationDate(purchaseDate, duration, additionalDays),
+                email: document.getElementById("record-email").value,
+                password: document.getElementById("record-password").value,
+                profile: document.getElementById("record-profile").value,
+                pin: document.getElementById("record-pin").value,
+                price: Number(document.getElementById("record-price").value) || 0,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            records.push(record);
+            saveAll();
+            this.reset();
+            document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+            showRecords();
+            updateStats();
+            
+            document.getElementById("add-record-msg").textContent = "✔ Record Added!";
+        }
+        
+        setTimeout(() => document.getElementById("add-record-msg").textContent = '', 1500);
+    };
+
+    // Add Rule Form
+    document.getElementById("addRuleForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        const editId = document.getElementById("rule-edit-id").value;
+        const product = document.getElementById("rule-product").value;
+        const text = document.getElementById("rule-text").value;
+        
+        if (editId) {
+            // Update existing rule
+            const ruleIndex = rules.findIndex(r => r.id === editId);
+            if (ruleIndex > -1) {
+                rules[ruleIndex] = {
+                    ...rules[ruleIndex],
+                    product: product,
+                    text: text
+                };
+                
+                saveAll();
+                showRules();
+                document.getElementById("add-rule-msg").textContent = "✔ Rule Updated!";
+                cancelEditRule();
+            }
+        } else {
+            // Add new rule
+            const rule = {
+                id: generateId(),
+                product: product,
+                text: text
+            };
+
+            rules.push(rule);
+            saveAll();
+            this.reset();
+            showRules();
+            
+            document.getElementById("add-rule-msg").textContent = "✔ Rule Added!";
+        }
+        
+        setTimeout(() => document.getElementById("add-rule-msg").textContent = '', 1500);
+    };
+}
+
+// Update product dropdowns
+function updateProductDropdowns() {
+    const stockProductSelect = document.getElementById("stock-product");
+    const recordProductSelect = document.getElementById("record-product");
+    
+    if (stockProductSelect) {
+        stockProductSelect.innerHTML = products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    }
+    if (recordProductSelect) {
+        recordProductSelect.innerHTML = products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    }
+}
+
+function updateRuleProductDropdown() {
+    const ruleProductSelect = document.getElementById("rule-product");
+    if (ruleProductSelect) {
+        ruleProductSelect.innerHTML = '<option value="general">General (All Products)</option>' + 
+            products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    }
+}
+
+// Panel Display Functions
+function updateStats() {
+    document.getElementById("stat-products").innerText = products.length;
+    document.getElementById("stat-stock").innerText = stocks.filter(s => s.status === 'available').length;
+    document.getElementById("stat-pending").innerText = pending.length;
+    
+    const totalRevenue = sold.reduce((a, b) => a + (Number(b.price) || 0), 0) + 
+                        records.reduce((a, b) => a + (Number(b.price) || 0), 0);
+    document.getElementById("stat-revenue").innerText = "₱" + totalRevenue;
+}
+
+function showStocks() {
+    let availableStocks = stocks.filter(s => s.status === 'available');
+    document.getElementById("manage-stocks-list").innerHTML = availableStocks.length ? 
+        availableStocks.map(st => `
+            <div class="stock-card">
+                <div><b>${st.product}</b> ${st.type} (${st.duration})</div>
+                <div>Email: ${st.email || 'N/A'} | Profile: ${st.profile || 'N/A'}</div>
+                <div class="stock-actions">
+                    <button class="btn btn-info btn-small" onclick="editStock('${st.id}')">Edit</button>
+                    <button class="btn btn-success btn-small" onclick="markSold('${st.id}')">Mark Sold</button>
+                    <button class="btn btn-warning btn-small" onclick="archiveStock('${st.id}')">Archive</button>
+                    <button class="btn btn-danger btn-small" onclick="delStock('${st.id}')">Delete</button>
+                </div>
+            </div>
+        `).join('') : "No available stocks.";
+}
+
+function showProducts() {
+    const categoryFilter = document.getElementById("product-category-filter").value;
+    const filteredProducts = categoryFilter === 'all' ? 
+        products : products.filter(p => p.category === categoryFilter);
+    
+    document.getElementById("products-list").innerHTML = filteredProducts.length ? 
+        filteredProducts.map(product => `
+            <div class="stock-card">
+                <div><b>${product.icon} ${product.name}</b></div>
+                <div>Category: ${product.category} | Stock: ${product.stock} | Sold: ${product.sold}</div>
+                <div class="stock-actions">
+                    <button class="btn btn-info btn-small" onclick="editProduct('${product.id}')">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="delProduct('${product.id}')">Delete</button>
+                </div>
+            </div>
+        `).join('') : 
+        "No products found for this category.";
+}
+
+function filterProductsByCategory() {
+    showProducts();
+}
+
+function showRecords() {
+    const tbody = document.getElementById("records-table-body");
+    tbody.innerHTML = records.length ? 
+        records.map(record => `
+            <tr>
+                <td>${record.orderId}</td>
+                <td>${record.buyer}</td>
+                <td>${record.source}</td>
+                <td>${record.product}</td>
+                <td>${record.accountType}</td>
+                <td>${record.duration}</td>
+                <td>${record.purchaseDate}</td>
+                <td>${record.expirationDate}</td>
+                <td>${record.additionalDays}</td>
+                <td>${record.updatedExpiration}</td>
+                <td>${formatAccountDetails(record)}</td>
+                <td>₱${record.price}</td>
+                <td>
+                    <button class="btn btn-info btn-small" onclick="editRecord('${record.id}')">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="removeRecord('${record.id}')">Remove</button>
+                </td>
+            </tr>
+        `).join('') : 
+        '<tr><td colspan="13" style="text-align:center;">No records found.</td></tr>';
+}
+
+function showRules() {
+    document.getElementById("rules-list").innerHTML = rules.length ? 
+        rules.map(rule => `
+            <div class="stock-card">
+                <div><b>Product:</b> ${rule.product === 'general' ? 'All Products' : rule.product}</div>
+                <div><b>Rule:</b> ${rule.text}</div>
+                <div class="stock-actions">
+                    <button class="btn btn-info btn-small" onclick="editRule('${rule.id}')">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="delRule('${rule.id}')">Remove</button>
+                </div>
+            </div>
+        `).join('') : 
+        "No rules defined.";
+}
+
+function showReports() {
+    // Buyer Reports
+    const buyerReportsList = document.getElementById("buyer-reports-list");
+    buyerReportsList.innerHTML = buyerReports.length ? 
+        buyerReports.map(report => `
+            <div class="report-card">
+                <div><b>Report ID:</b> ${report.id}</div>
+                <div><b>Order ID:</b> ${report.orderId || 'N/A'}</div>
+                <div><b>Buyer:</b> ${report.buyer}</div>
+                <div><b>Product:</b> ${report.product}</div>
+                <div><b>Issue:</b> ${report.issue}</div>
+                <div><b>Status:</b> <span class="badge ${report.status === 'resolved' ? 'badge-resolved' : 'badge-pending'}">${report.status}</span></div>
+                <div><b>Date Reported:</b> ${report.date}</div>
+                <div class="report-actions">
+                    ${report.status !== 'resolved' ? 
+                        `<button class="btn btn-success btn-small" onclick="resolveReport('${report.id}')">Mark Resolved</button>` : ''}
+                    <button class="btn btn-danger btn-small" onclick="deleteReport('${report.id}')">Delete</button>
+                </div>
+            </div>
+        `).join('') : 
+        '<p>No buyer reports yet.</p>';
+
+    // Sales Report
+    const salesReport = document.getElementById("sales-report");
+    const totalRevenue = records.reduce((a, b) => a + (Number(b.price) || 0), 0);
+    const websiteOrders = records.filter(r => r.source === 'website').length;
+    const socialOrders = records.filter(r => r.source !== 'website').length;
+    
+    salesReport.innerHTML = `
+        <p><b>Total Records:</b> ${records.length}</p>
+        <p><b>Total Revenue:</b> ₱${totalRevenue}</p>
+        <p><b>Website Orders:</b> ${websiteOrders}</p>
+        <p><b>Social Media Orders:</b> ${socialOrders}</p>
+        <p><b>Pending Buyer Reports:</b> ${buyerReports.filter(r => r.status === 'pending').length}</p>
+    `;
+}
+
+function showArchived() {
+    document.getElementById("archived-list").innerHTML = archived.length ? 
+        archived.map(a => `<div>${a.product}, ${a.type}, archived at: ${a.archivedAt}</div>`).join('') : 
+        "No archived stocks";
+}
+
+function showPending() {
+    document.getElementById("pending-orders-list").innerHTML = pending.length ? 
+        pending.map(p => `<div>${p.product}, order: ${p.orderId}</div>`).join('') : 
+        "No pending orders.";
+}
+
+function showSold() {
+    document.getElementById("sold-list").innerHTML = sold.length ? 
+        sold.map(x => `<div>${x.product}, buyer, price ₱${x.price || 0}</div>`).join('') : 
+        "No sold accounts yet";
+}
+
+// Action Functions - FIXED EDIT BUTTON AND MARK AS SOLD
+function editStock(id) {
+    const stock = stocks.find(s => s.id === id);
+    if (stock) {
+        document.getElementById("stock-edit-id").value = stock.id;
+        document.getElementById("stock-product").value = stock.product;
+        document.getElementById("stock-type").value = stock.type;
+        document.getElementById("stock-duration").value = stock.duration;
+        document.getElementById("stock-email").value = stock.email || '';
+        document.getElementById("stock-password").value = stock.password || '';
+        document.getElementById("stock-profile").value = stock.profile || '';
+        document.getElementById("stock-pin").value = stock.pin || '';
+        document.getElementById("stock-arch").value = stock.archiveAfter || 0;
+        document.getElementById("stock-premdate").value = stock.premiumAt || '';
+        
+        document.getElementById("stock-form-title").textContent = "Edit Stock";
+        document.getElementById("stock-submit-btn").textContent = "Update Stock";
+        document.getElementById("stock-cancel-btn").style.display = "inline-block";
+        document.getElementById("stock-qty").style.display = "none";
+        document.querySelector('label[for="stock-qty"]').style.display = "none";
+        
+        // Switch to add stock tab
+        document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        document.querySelector('.tab[data-tab="add-stock"]').classList.add("active");
+        document.getElementById("panel-add-stock").classList.add("active");
+    }
+}
+
+function cancelEditStock() {
+    document.getElementById("stock-edit-id").value = "";
+    document.getElementById("addStockForm").reset();
+    document.getElementById("stock-form-title").textContent = "Add Stock";
+    document.getElementById("stock-submit-btn").textContent = "Add Stock";
+    document.getElementById("stock-cancel-btn").style.display = "none";
+    document.getElementById("stock-qty").style.display = "block";
+    document.querySelector('label[for="stock-qty"]').style.display = "block";
+}
+
+function editProduct(id) {
+    const product = products.find(p => p.id === id);
+    if (product) {
+        document.getElementById("product-edit-id").value = product.id;
+        document.getElementById("product-name").value = product.name;
+        document.getElementById("product-category").value = product.category;
+        document.getElementById("product-icon").value = product.icon;
+
+        document.getElementById("product-submit-btn").textContent = "Update Product";
+        document.getElementById("product-cancel-btn").style.display = "inline-block";
+        
+        // Switch to products tab
+        document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        document.querySelector('.tab[data-tab="products"]').classList.add("active");
+        document.getElementById("panel-products").classList.add("active");
+    }
+}
+
+function cancelEditProduct() {
+    document.getElementById("product-edit-id").value = "";
+    document.getElementById("addProductForm").reset();
+    document.getElementById("product-submit-btn").textContent = "Add Product";
+    document.getElementById("product-cancel-btn").style.display = "none";
+}
+
+function editRecord(id) {
+    const record = records.find(r => r.id === id);
+    if (record) {
+        document.getElementById("record-edit-id").value = record.id;
+        document.getElementById("record-orderid").value = record.orderId;
+        document.getElementById("record-buyer").value = record.buyer;
+        document.getElementById("record-source").value = record.source;
+        document.getElementById("record-product").value = record.product;
+        document.getElementById("record-type").value = record.accountType;
+        document.getElementById("record-duration").value = record.duration;
+        document.getElementById("record-purchasedate").value = record.purchaseDate;
+        document.getElementById("record-adddays").value = record.additionalDays;
+        document.getElementById("record-email").value = record.email || '';
+        document.getElementById("record-password").value = record.password || '';
+        document.getElementById("record-profile").value = record.profile || '';
+        document.getElementById("record-pin").value = record.pin || '';
+        document.getElementById("record-price").value = record.price;
+
+        document.getElementById("record-submit-btn").textContent = "Update Record";
+        document.getElementById("record-cancel-btn").style.display = "inline-block";
+        
+        // Scroll to form
+        document.getElementById("addRecordForm").scrollIntoView();
+        document.getElementById("add-record-msg").textContent = "Editing record. Update and click 'Update Record' to save changes.";
+    }
+}
+
+function cancelEditRecord() {
+    document.getElementById("record-edit-id").value = "";
+    document.getElementById("addRecordForm").reset();
+    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
+    document.getElementById("record-submit-btn").textContent = "Add Record";
+    document.getElementById("record-cancel-btn").style.display = "none";
+    document.getElementById("add-record-msg").textContent = "";
+}
+
+function editRule(id) {
+    const rule = rules.find(r => r.id === id);
+    if (rule) {
+        document.getElementById("rule-edit-id").value = rule.id;
+        document.getElementById("rule-product").value = rule.product;
+        document.getElementById("rule-text").value = rule.text;
+
+        document.getElementById("rule-submit-btn").textContent = "Update Rule";
+        document.getElementById("rule-cancel-btn").style.display = "inline-block";
+    }
+}
+
+function cancelEditRule() {
+    document.getElementById("rule-edit-id").value = "";
+    document.getElementById("addRuleForm").reset();
+    document.getElementById("rule-submit-btn").textContent = "Add Rule";
+    document.getElementById("rule-cancel-btn").style.display = "none";
+}
+
+function delStock(id) {
+    if (confirm('Are you sure you want to delete this stock?')) {
+        stocks = stocks.filter(s => s.id != id);
+        saveAll();
+        showStocks();
+        updateStats();
+    }
+}
+
+function delProduct(id) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id !== id);
+        saveAll();
+        updateProductDropdowns();
+        updateRuleProductDropdown();
+        showProducts();
+        updateStats();
+    }
+}
+
+function archiveStock(id) {
+    let idx = stocks.findIndex(s => s.id == id);
+    if (idx > -1) {
+        archived.push({
+            ...stocks[idx],
+            archivedAt: (new Date()).toLocaleDateString()
+        });
+        stocks.splice(idx, 1);
+        saveAll();
+        showStocks();
+        showArchived();
+    }
+}
+
+// FIXED: Mark as Sold function - now properly moves stock to sold without deleting
+function markSold(id) {
+    let stock = stocks.find(s => s.id == id);
+    if (stock) {
+        // Create record from stock
+        const record = {
+            id: generateId(),
+            orderId: generateOrderId(),
+            buyer: 'Website Customer',
+            source: 'website',
+            product: stock.product,
+            accountType: stock.type,
+            duration: stock.duration,
+            purchaseDate: new Date().toISOString().split('T')[0],
+            expirationDate: calculateExpirationDate(new Date(), stock.duration),
+            additionalDays: 0,
+            updatedExpiration: calculateExpirationDate(new Date(), stock.duration, 0),
+            email: stock.email,
+            password: stock.password,
+            profile: stock.profile,
+            pin: stock.pin,
+            price: 199, // Default price
+            status: 'sold',
+            createdAt: new Date().toISOString()
+        };
+        
+        records.push(record);
+        sold.push({ ...stock, price: 199, soldDate: new Date().toLocaleDateString() });
+        
+        // Remove from stocks
+        stocks = stocks.filter(s => s.id !== id);
+        
+        saveAll();
+        updateStats();
+        showStocks();
+        showSold();
+        showRecords();
+    }
+}
+
+function delRule(id) {
+    if (confirm('Are you sure you want to remove this rule?')) {
+        rules = rules.filter(r => r.id !== id);
+        saveAll();
+        showRules();
+    }
+}
+
+function removeRecord(id) {
+    if (confirm('Are you sure you want to remove this record?')) {
+        records = records.filter(r => r.id !== id);
+        saveAll();
+        showRecords();
+        updateStats();
+    }
+}
+
+function resolveReport(id) {
+    const reportIndex = buyerReports.findIndex(r => r.id === id);
+    if (reportIndex > -1) {
+        buyerReports[reportIndex].status = 'resolved';
+        saveAll();
+        showReports();
+    }
+}
+
+function deleteReport(id) {
+    if (confirm('Are you sure you want to delete this report?')) {
+        buyerReports = buyerReports.filter(r => r.id !== id);
+        saveAll();
+        showReports();
+    }
+}
+
+// Function to add a buyer report (to be called from buyer panel)
+function addBuyerReport(report) {
+    buyerReports.push({
+        id: generateId(),
+        ...report,
+        status: 'pending',
+        date: new Date().toLocaleDateString()
+    });
+    saveAll();
+    showReports();
+}
+
+// Function to process order from website (to be called from index.html)
+function processWebsiteOrder(orderData) {
+    // Add to pending orders
+    pending.push({
+        id: generateId(),
+        ...orderData,
+        timestamp: new Date().toISOString(),
+        status: 'pending'
+    });
+    
+    // Update product stock
+    const product = products.find(p => p.name === orderData.productName);
+    if (product) {
+        product.stock = Math.max(0, product.stock - 1);
+        product.sold += 1;
+    }
+    
+    saveAll();
+    updateStats();
+    showPending();
+    showProducts();
+    
+    return {
+        success: true,
+        orderId: orderData.orderId,
+        message: 'Order processed successfully'
+    };
+}
+
+// Initialize the page - FIXED SECURITY CHECK
+document.addEventListener("DOMContentLoaded", function() {
+    // Check owner verification FIRST before setting up anything else
+    if (localStorage.getItem('ownerVerified') !== 'yes') {
+        openOwnerModal();
+    } else {
+        showAdminPanel();
+        initializeAdmin();
+    }
+});
+</script>
+<!-- Aiaxcart: DB/Realtime wiring (non-visual) -->
+<script src="config.private.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="assets/js/aiaxcart/supabase.js"></script>
+<script type="module">
+  import { fetchCatalog, fetchOptions, bindRealtime } from "./assets/js/aiaxcart/catalog.js";
+  import { createOrder, confirmPayment } from "./assets/js/aiaxcart/orders.js";
+  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
+  import { submitReport, leaveFeedback } from "./assets/js/aiaxcart/reports.js";
+  window.AIAXCART = { fetchCatalog, fetchOptions, bindRealtime, createOrder, confirmPayment, guardAdmin, submitReport, leaveFeedback };
+</script>
+</body>
+</html>

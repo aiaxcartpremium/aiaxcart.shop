@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Account - Aiaxcart Premium</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="assets/css/extras.css" rel="stylesheet"/></head>
+<body>
+<header>
+<div class="container header-content">
+<div class="logo">🛒 Aiaxcart Premium</div>
+<nav>
+<a href="index.html">Home</a>
+<a class="active" href="account.html">My Account</a>
+</nav>
+<button class="btn-auth" id="logout-btn">Logout</button>
+</div>
+</header>
+<main class="container" style="padding:2rem 0;">
+<h1>My Account</h1>
+<div class="card">
+<h2>📦 My Orders</h2>
+<div id="orders-container">
+<p class="text-muted">You have no orders yet.</p>
+</div>
+</div>
+<div class="card">
+<h2>📋 Order History</h2>
+<div id="history-container">
+<p class="text-muted">No order history.</p>
+</div>
+</div>
+<div class="card">
+<h2>🚨 Report an Issue</h2>
+<form id="report-form">
+<select class="input-field" required="">
+<option value="">Select Order</option>
+</select>
+<textarea class="input-field" placeholder="Describe your issue..." required="" rows="4"></textarea>
+<button class="btn-primary full-width" type="submit">Submit Report</button>
+</form>
+</div>
+</main>
+<script>
+        // Check if logged in
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!user) {
+            alert('Please login first');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('logout-btn').onclick = () => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        };
+
+        document.getElementById('report-form').onsubmit = (e) => {
+            e.preventDefault();
+            alert('Report submitted! We will review it shortly.');
+            e.target.reset();
+        };
+    </script>
+<script src="config.js"></script>
+<script src="config.private.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="supabase.js"></script>
+<!-- Aiaxcart: DB/Realtime wiring (non-visual) -->
+<script src="config.private.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="assets/js/aiaxcart/supabase.js"></script>
+<script type="module">
+  import { fetchCatalog, fetchOptions, bindRealtime } from "./assets/js/aiaxcart/catalog.js";
+  import { createOrder, confirmPayment } from "./assets/js/aiaxcart/orders.js";
+  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
+  import { submitReport, leaveFeedback } from "./assets/js/aiaxcart/reports.js";
+  window.AIAXCART = { fetchCatalog, fetchOptions, bindRealtime, createOrder, confirmPayment, guardAdmin, submitReport, leaveFeedback };
+</script>
+</body>
+</html>

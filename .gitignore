@@ -1,0 +1,24 @@
+cat > .gitignore << 'EOF'
+# --- Sensitive Config ---
+config.private.js
+*.env
+.env.local
+/secrets/
+supabase/functions/tg-notify/secrets.env
+
+# --- Node / build folders (if any) ---
+node_modules/
+dist/
+build/
+
+# --- System / editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Backup or temp ---
+*.bak
+*.tmp
+*.zip
+EOF

@@ -1,0 +1,6 @@
+/* extras.css — small UI additions only; original design untouched */
+.btn-logout{
+  background:#FFD3D6;color:#5a3e36;border:0;
+  padding:.6rem 1rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+.btn-logout:hover{ filter:brightness(.97); }
