@@ -79,6 +79,19 @@
 </style>
 <link href="assets/css/extras.css" rel="stylesheet"/></head>
 <body>
+    <!-- SAFE FAST GATE (no loop, has #safe bypass) -->
+<script>
+(function(){
+  try{
+    if (location.hash === '#safe') return;          // manual bypass if needed
+    var ok = localStorage.getItem('ad-ok') === '1'; // set by verification
+    console.log('[gate-top] ad-ok =', ok);
+    if (!ok) location.replace('index.html#need-verify');
+  } catch(e){
+    console.error('[gate-top] error', e);
+  }
+})();
+</script>
 <header>
 <div class="container header-content">
 <div class="logo">🛒 Aiaxcart Premium</div>
