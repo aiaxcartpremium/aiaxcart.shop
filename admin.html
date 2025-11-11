@@ -79,31 +79,37 @@
 </style>
 <link href="assets/css/extras.css" rel="stylesheet"/></head>
 <body>
-    <!-- SAFE FAST GATE (no redirect; accepts either flag; has bypass) -->
 <script>
 (function(){
   try{
     const qs = new URLSearchParams(location.search);
     if (qs.get('pass') === '1') {
       localStorage.setItem('ad-ok','1');
-      localStorage.setItem('ownerVerified','yes');   // set both flags
-      console.log('[gate-top] bypass via ?pass=1');
+      localStorage.setItem('ownerVerified','yes');
+      localStorage.setItem('ad-ok-ts', Date.now().toString()); // timestamp
       return;
     }
-    if (location.hash === '#safe') {
-      console.log('[gate-top] bypass via #safe');
-      return;
+    if (location.hash === '#safe') return;
+
+    const ttl = ((window.CONFIG && window.CONFIG.ADMIN && window.CONFIG.ADMIN.SESSION_MINUTES) || 30) * 60 * 1000;
+    const ts  = parseInt(localStorage.getItem('ad-ok-ts') || '0', 10);
+    const fresh = (Date.now() - ts) < ttl;
+
+    const okFlag =
+      (localStorage.getItem('ad-ok') === '1' || localStorage.getItem('ownerVerified') === 'yes');
+
+    const verified = okFlag && fresh;
+
+    if (!verified) {
+      // expired or missing → clear and let modal handle
+      localStorage.removeItem('ad-ok');
+      localStorage.removeItem('ownerVerified');
+      localStorage.removeItem('ad-ok-ts');
+      // NOTE: huwag mag-redirect; hayaan ang modal mag-open
     }
-
-    // ✅ accept EITHER flag as verified
-    const ok =
-      localStorage.getItem('ad-ok') === '1' ||
-      localStorage.getItem('ownerVerified') === 'yes';
-
-    // ❌ DO NOT redirect here; let the modal handle it
-    console.log('[gate-top] verified =', ok);
+    console.log('[gate] verified=', verified, 'fresh=', fresh);
   }catch(e){
-    console.error('[gate-top] error', e);
+    console.error('[gate] error', e);
   }
 })();
 </script>
