@@ -2105,22 +2105,38 @@
   window.CONFIG_PRIVATE = undefined;
   window.CONFIG_PUBLIC = undefined;
 </script>
-<script src="config.private.js"></script> <!-- local only, gitignored -->
-<script src="config.js"></script>          <!-- safe public fallback -->
+<script src="config.private.js?v=2"></script> <!-- local only, gitignored -->
+<script src="config.js?v=2"></script>          <!-- safe public fallback -->
 <script>
   window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
 
 <!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="assets/js/aiaxcart/supabase.js"></script>
+<script src="assets/js/aiaxcart/supabase.js?v=2"></script>
 
 <!-- Render homepage + hide admin btn when not admin -->
 <script type="module">
-  import { renderHomepageProducts } from "./assets/js/aiaxcart/catalog.render.js";
-  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
+  import { renderHomepageProducts } from "./assets/js/aiaxcart/catalog.render.js?v=2";
+  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
   guardAdmin('admin-btn');        // hide Admin button if not admin
   renderHomepageProducts();       // draw products, stock, sold, category
+</script>
+<script>
+  console.log("Aiaxcart BOOT v2025-11-12 22:00");
+  console.log("CONFIG =", window.CONFIG);
+</script>
+<script>
+  (async () => {
+    try {
+      if (!window.supabaseClient) throw new Error("supabaseClient missing");
+      const { data, error } = await window.supabaseClient
+        .from("products").select("key,name").limit(3);
+      console.log("Probe products data:", data, "error:", error);
+    } catch (e) {
+      console.error("Probe failed:", e);
+    }
+  })();
 </script>
 </body>
 </html>
