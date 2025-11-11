@@ -4,6 +4,10 @@ const CONFIG = {
         LOGO: '🛒',
         TAGLINE: 'Your trusted source for premium digital accounts'
     },
+    ADMIN: {
+    OWNER_UID: '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36',
+    SESSION_MINUTES: 30   // auto-expire after 30 minutes
+  },
     PAYMENT: {
         GCASH: {
             ENABLED: true
@@ -18,11 +22,4 @@ const CONFIG = {
             TEXT_COLOR: '#5a3e36'
         }
     }
-    // More non-sensitive global config here as needed
-  ADMIN: {
-    OWNER_UID: '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36',
-    SESSION_MINUTES: 30   // auto-expire after 30 minutes
-  },
-  PAYMENT: { /* … */ },
-  UI: { /* … */ }
 };
