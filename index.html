@@ -2169,43 +2169,78 @@
     );
   })();
 
-  // Ito ang mismong Step 2: RPC call -> is_uid_admin
+  <!-- ==== OWNER VERIFY (drop-in) ==== -->
+<div id="owner-verify-box" style="margin:14px 0;">
+  <input id="owner-uid" type="text" placeholder="Paste your UID here"
+         style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;">
+  <button type="button" onclick="verifyOwnerAccess()"
+          style="margin-top:8px;padding:10px 14px;border-radius:8px;border:0;background:#5a3e36;color:#fff;">
+    Verify Admin Access
+  </button>
+  <small id="owner-verify-msg" style="display:block;margin-top:6px;color:#d33;"></small>
+</div>
+
+<!-- Auto-scroll to verify box if redirected from admin -->
+<script>
+  (function(){
+    if (location.hash === '#need-verify') {
+      const box = document.getElementById('owner-verify-box');
+      if (box) box.scrollIntoView({ behavior: 'smooth' });
+    }
+  })();
+</script>
+
+<!-- Supabase lib (ok even if you already load it above) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<!-- Verification via RPC: is_uid_admin -->
+<script>
+  const sb = window.supabase.createClient(
+    "https://oujvsjnbxmgpdoftzpxl.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo"
+  );
+
   async function verifyOwnerAccess() {
-    const uidEl = document.querySelector('#owner-uid');
-    const msgEl = document.querySelector('#owner-verify-msg');
+    const uidEl = document.getElementById('owner-uid');
+    const msgEl = document.getElementById('owner-verify-msg');
     const typed = (uidEl?.value || '').trim();
 
-    if (!typed) {
-      if (msgEl) msgEl.textContent = 'Please enter your UID.';
-      return;
-    }
+    if (!typed) { msgEl.textContent = 'Please enter your UID.'; return; }
 
     try {
-      // Tawag sa RPC na ginawa mo sa SQL
+      // RPC you already created in SQL
       const { data, error } = await sb.rpc('is_uid_admin', { p_uid: typed });
+      console.log('[verify] RPC ->', { data, error });
 
-      console.log('RPC is_uid_admin ->', { data, error }); // para makita mo sa Console
-
-      if (error) {
-        if (msgEl) msgEl.textContent = 'Verification error.';
-        return;
-      }
+      if (error) { msgEl.textContent = 'Verification error.'; return; }
 
       if (data === true) {
-        localStorage.setItem('ad-ok', '1'); // mark as verified
-        if (msgEl) { msgEl.style.color = '#2a7'; msgEl.textContent = 'Verified. Redirecting…'; }
+        localStorage.setItem('ad-ok','1');            // mark verified
+        msgEl.style.color = '#2a7';
+        msgEl.textContent = 'Verified. Redirecting…';
         location.href = 'admin.html';
       } else {
         localStorage.removeItem('ad-ok');
-        if (msgEl) { msgEl.style.color = '#d33'; msgEl.textContent = 'Invalid UID.'; }
+        msgEl.style.color = '#d33';
+        msgEl.textContent = 'Invalid UID.';
       }
     } catch (e) {
       localStorage.removeItem('ad-ok');
-      if (msgEl) msgEl.textContent = 'Verification failed.';
-      console.error('verifyOwnerAccess exception:', e);
+      msgEl.textContent = 'Verification failed.';
+      console.error('[verify] exception', e);
     }
   }
 </script>
+
+<!-- Hide Admin button until verified (id must be 'admin-btn') -->
+<script>
+  (function(){
+    var ok = localStorage.getItem('ad-ok') === '1';
+    var btn = document.getElementById('admin-btn'); // change if your button id is different
+    if (btn) btn.style.display = ok ? '' : 'none';
+  })();
+</script>
+<!-- ==== /OWNER VERIFY ==== -->
 <!-- ==== /OWNER VERIFY ==== -->
 </body>
 </html>
