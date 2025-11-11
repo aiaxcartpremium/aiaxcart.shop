@@ -1243,25 +1243,25 @@ document.addEventListener("DOMContentLoaded", function() {
 <script src="assets/js/aiaxcart/supabase.js?v=2"></script>
 
 <script type="module">
-import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
+import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=5";
 
 (async () => {
-  try {
-    const ok = await guardAdmin();
-    // ✅ kung verified via localStorage, hayaan lang pumasok
-    const verified = localStorage.getItem('ad-ok') === '1';
-    if (!ok && !verified) {
-      location.replace("index.html#need-verify");
+  try{
+    const okAuth = await guardAdmin();                      // auth-based check (optional)
+    const okLocal = localStorage.getItem('ad-ok') === '1';  // verified by UID modal
+    console.log('[gate-bottom]', { okAuth, okLocal });
+
+    if (!okAuth && !okLocal && location.hash !== '#safe') {
+      location.replace('index.html#need-verify');
     }
-  } catch (e) {
-    console.error("guardAdmin error:", e);
-    // fallback lang kung may error
-    const verified = localStorage.getItem('ad-ok') === '1';
-    if (!verified) location.replace("index.html#need-verify");
+  }catch(e){
+    console.error('[gate-bottom] error', e);
+    if (localStorage.getItem('ad-ok') !== '1' && location.hash !== '#safe') {
+      location.replace('index.html#need-verify');
+    }
   }
 })();
 </script>
-
 <!-- Admin UI: dropdowns + realtime orders + confirm -->
 <script type="module">
   import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js?v=2";
