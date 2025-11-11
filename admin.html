@@ -1220,45 +1220,28 @@ document.addEventListener("DOMContentLoaded", function() {
   window.CONFIG_PUBLIC = undefined;
 </script>
 <script src="config.private.js"></script> <!-- local only -->
-<script src="config.js"></script>          <!-- safe public fallback -->
+<script src="config.js"></script>          <!-- public fallback -->
 <script>
   window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
 
 <!-- Supabase client + bootstrap -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-  const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.CONFIG.DATABASE;
-  window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
-
 <script src="assets/js/aiaxcart/supabase.js"></script>
 
-<!-- Hard redirect guard: kick non-admins back to home -->
+<!-- HARD GUARD: redirect non-admins -->
 <script type="module">
   import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js";
   (async () => {
     const ok = await guardAdmin();
-    if (!ok) location.replace("index.html"); // redirect if not admin
+    if (!ok) location.replace("index.html");
   })();
 </script>
 
-<!-- Aiaxcart shared logic (no UI redesign) -->
+<!-- Admin UI: dropdowns + realtime orders + confirm -->
 <script type="module">
-  import { fetchCatalog, fetchOptions, bindRealtime } from "./assets/js/aiaxcart/catalog.js";
-  import { createOrder, confirmPayment } from "./assets/js/aiaxcart/orders.js";
-  import { submitReport, leaveFeedback } from "./assets/js/aiaxcart/reports.js";
-
-  window.AIAXCART = {
-    fetchCatalog,
-    fetchOptions,
-    bindRealtime,
-    createOrder,
-    confirmPayment,
-    submitReport,
-    leaveFeedback
-  };
+  import { initAdminUI } from "./assets/js/aiaxcart/admin.ui.js";
+  initAdminUI();
 </script>
 </body>
 </html>
-
