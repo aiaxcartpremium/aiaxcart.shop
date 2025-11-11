@@ -1,8 +1,8 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 /* ===== Supabase bootstrap ===== */
-const SB_URL  = "https://bwndinezdmvhdtrqrmby.supabase.co";  // ← Project URL mo
-const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....";  // ← anon key mo                  // <-- put yours
+const SB_URL  = "https://oujvsjnbxmgpdoftzpxl.supabase.co";  // ← Project URL mo
+const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo";  // ← anon key mo                  // <-- put yours
 window.sb = supabase.createClient(SB_URL, SB_ANON);
 
 /* ===== Products & Stock (RPC-based, safe) ===== */
