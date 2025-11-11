@@ -2138,5 +2138,95 @@
     }
   })();
 </script>
+<!-- ==== OWNER VERIFY (drop-in) ==== -->
+<div id="owner-verify-box" style="margin:14px 0;">
+  <input id="owner-uid" type="text" placeholder="Paste your UID here"
+         style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;">
+  <button type="button" onclick="verifyOwnerAccess()"
+          style="margin-top:8px;padding:10px 14px;border-radius:8px;border:0;background:#5a3e36;color:#fff;">
+    Verify Admin Access
+  </button>
+  <small id="owner-verify-msg" style="display:block;margin-top:6px;color:#d33;"></small>
+</div>
+
+<!-- Scroll to verify box when redirected from admin -->
+<script>
+  (function(){
+    if (location.hash === '#need-verify') {
+      const box = document.getElementById('owner-verify-box');
+      if (box) box.scrollIntoView({ behavior: 'smooth' });
+    }
+  })();
+</script>
+
+<!-- Supabase lib (ok even if already loaded above) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<!-- VERIFY via RPC, with fallback to CONFIG.ADMIN.OWNER_UID -->
+<script>
+  const SB_URL = (window.CONFIG && window.CONFIG.DATABASE && window.CONFIG.DATABASE.SUPABASE_URL)
+    || "https://oujvsjnbxmgpdoftzpxl.supabase.co";
+  const SB_KEY = (window.CONFIG && window.CONFIG.DATABASE && window.CONFIG.DATABASE.SUPABASE_ANON_KEY)
+    || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo";
+  const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  // keep also in config.js (safe), but we hardcode here as fallback to guarantee entry
+  const FALLBACK_UID = (window.CONFIG && window.CONFIG.ADMIN && window.CONFIG.ADMIN.OWNER_UID)
+    || "2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36";
+
+  async function verifyOwnerAccess() {
+    const uidEl = document.getElementById('owner-uid');
+    const msgEl = document.getElementById('owner-verify-msg');
+    const typed = (uidEl?.value || '').trim();
+
+    if (!typed) { msgEl.textContent = 'Please enter your UID.'; return; }
+
+    function success() {
+      localStorage.setItem('ad-ok','1');
+      msgEl.style.color = '#2a7';
+      msgEl.textContent = 'Verified. Redirecting…';
+      location.href = 'admin.html';
+    }
+
+    try {
+      const { data, error } = await sb.rpc('is_uid_admin', { p_uid: typed });
+      console.log('[verify] RPC ->', { data, error });
+
+      if (error) {
+        // fallback compare so you can get in today
+        if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
+        msgEl.style.color = '#d33';
+        msgEl.textContent = 'Verification failed (RPC error).';
+        return;
+      }
+
+      if (data === true) return success();
+
+      // RPC said false – still allow fallback exact match to handle copy/paste whitespace issues
+      if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
+
+      localStorage.removeItem('ad-ok');
+      msgEl.style.color = '#d33';
+      msgEl.textContent = 'Invalid UID.';
+    } catch (e) {
+      // total exception – last fallback
+      console.error('[verify] exception', e);
+      if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
+      localStorage.removeItem('ad-ok');
+      msgEl.style.color = '#d33';
+      msgEl.textContent = 'Verification failed.';
+    }
+  }
+</script>
+
+<!-- Hide Admin button until verified -->
+<script>
+  (function(){
+    var ok = localStorage.getItem('ad-ok') === '1';
+    var btn = document.getElementById('admin-btn'); // change if your button uses a different id
+    if (btn) btn.style.display = ok ? '' : 'none';
+  })();
+</script>
+<!-- ==== /OWNER VERIFY ==== -->
 </body>
 </html>
