@@ -1,6 +1,5 @@
-// orders.js — buyer flow + admin confirm and Telegram ping
+// orders.js — create orders & confirm payment (auto-fulfill via DB trigger)
 async function sb(){ return window.supabaseClient; }
-
 async function ensureBuyer(){
   const s = await sb();
   const { data, error } = await s.rpc('rpc_upsert_buyer');
@@ -17,16 +16,14 @@ export async function createOrder({ product_key, account_type, duration_code, pr
     .single();
   if (error) throw error;
 
-  // Telegram
-  if (window.CONFIG_PRIVATE?.TELEGRAM?.ENABLED) {
-    try{
-      await fetch('/functions/v1/tg-notify', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ text: `🛒 New order\nProduct: ${product_key}\nType: ${account_type}\nDuration: ${duration_code}` })
-      });
-    }catch(e){ console.warn('tg failed', e); }
-  }
+  // Notify TG (Edge Function secrets)
+  try{
+    await fetch('/functions/v1/tg-notify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: `🛒 New order\nProduct: ${product_key}\nType: ${account_type}\nDuration: ${duration_code}` })
+    });
+  }catch(e){}
+
   return data.id;
 }
 
@@ -34,14 +31,11 @@ export async function confirmPayment(order_id){
   const s = await sb();
   const { error } = await s.rpc('rpc_confirm_payment', { p_order_id: order_id });
   if (error) throw error;
-  // Notify
-  if (window.CONFIG_PRIVATE?.TELEGRAM?.ENABLED) {
-    try{
-      await fetch('/functions/v1/tg-notify', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ text: `✅ Payment confirmed\nOrder: ${order_id}` })
-      });
-    }catch(e){}
-  }
+
+  try{
+    await fetch('/functions/v1/tg-notify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: `✅ Payment confirmed\nOrder: ${order_id}` })
+    });
+  }catch(e){}
 }
