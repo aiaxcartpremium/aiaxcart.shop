@@ -1,2231 +1,400 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium Shop</title>
+<link rel="stylesheet" href="assets/css/extras.css"/>
 <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #fefaf7;
-            color: #5a3e36;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background: #FFD3D6;
-            padding: 1rem 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 1.5rem;
-        }
-
-        nav ul li a {
-            color: #5a3e36;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .auth-buttons button {
-            padding: 0.6rem 1.5rem;
-            border: 1px solid #5a3e36;
-            background: transparent;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #FFD3D6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* Search Container */
-        .search-container {
-            margin: 1.5rem 0;
-            position: relative;
-        }
-
-        #product-search {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid #F9E6E4;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        #product-search:focus {
-            outline: 2px solid #FFB0B5;
-            outline-offset: 2px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-        }
-
-        /* TABS SECTION */
-        .tabs {
-            display: flex;
-            margin: 0;
-            background: white;
-            border-radius: 0 0 12px 12px;
-            padding: 0.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            border-top: 1px solid #F9E6E4;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .tab {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            border-radius: 8px;
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .tab.active {
-            background: #FFD3D6;
-        }
-
-        .tab:hover {
-            background: #FFE5E7;
-        }
-
-        /* PRODUCTS SECTION */
-        .products-section {
-            margin: 2rem 0;
-        }
-
-        .products-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
-        }
-
-        .category-section {
-            margin-bottom: 3rem;
-        }
-
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .category-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            border-bottom: 2px solid #FFD3D6;
-            padding-bottom: 0.5rem;
-        }
-
-        .view-all-btn {
-            background: #FFD3D6;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .view-all-btn:hover {
-            background: #FFB0B5;
-        }
-
-        .products-category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            height: 120px;
-            background: #F9E6E4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-stock {
-            background: #d4edda;
-            color: #155724;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .stock-out {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .product-sold {
-            background: #e2e3e5;
-            color: #383d41;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-        }
-
-        .account-type-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .account-type-btn {
-            padding: 0.5rem 0.8rem;
-            border: 1px solid #F9E6E4;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            text-align: center;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .account-type-btn.active {
-            background: #FFD3D6;
-            border-color: #FFB0B5;
-            font-weight: 600;
-        }
-
-        .account-type-btn:hover {
-            background: #FFE5E7;
-        }
-
-        .duration-scroll {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-        }
-
-        .duration-btn {
-            flex-shrink: 0;
-            padding: 0.5rem 0.8rem;
-            border: 1px solid #F9E6E4;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            text-align: center;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .duration-btn.active {
-            background: #F9DCC0;
-            border-color: #FFB0B5;
-            font-weight: 600;
-        }
-
-        .duration-btn:hover {
-            background: #F9E6E4;
-        }
-
-        .price-display {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #FFB0B5;
-            margin: 1rem 0;
-            text-align: center;
-            min-height: 2rem;
-        }
-
-        .select-price-message {
-            color: #666;
-            font-style: italic;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: #FFB0B5;
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary:hover {
-            background: #FF8A90;
-        }
-
-        .btn-primary:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .btn-primary:focus {
-            outline: 2px solid #FFB0B5;
-            outline-offset: 2px;
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* TAB CONTENTS */
-        .tab-content {
-            display: none;
-            margin: 2rem 0;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        /* AUTHENTICATION MODAL */
-        .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .auth-overlay.active {
-            display: flex;
-        }
-
-        .auth-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            width: 90%;
-            max-width: 450px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .auth-header {
-            background: #FFD3D6;
-            padding: 1.5rem;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .auth-tabs {
-            display: flex;
-            border-bottom: 1px solid #F9E6E4;
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-tab.active {
-            background: #FFD3D6;
-            font-weight: 600;
-        }
-
-        .auth-body {
-            padding: 1.5rem;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        /* CHECKOUT MODAL */
-        .checkout-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .checkout-overlay.active {
-            display: flex;
-        }
-
-        .checkout-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .checkout-header {
-            background: #FFD3D6;
-            padding: 1.5rem;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-checkout {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .close-checkout:focus {
-            outline: 2px solid #FFB0B5;
-            outline-offset: 2px;
-        }
-
-        .checkout-body {
-            padding: 1.5rem;
-        }
-
-        .selected-product-checkout {
-            background: #F9E6E4;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .product-icon-checkout {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-price-checkout {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #FFB0B5;
-        }
-
-        .ownership-type-checkout {
-            background: #FFD3D6;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 0.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #F9E6E4;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .form-control:focus {
-            outline: 2px solid #FFB0B5;
-            outline-offset: 2px;
-        }
-
-        .file-upload {
-            border: 2px dashed #F9E6E4;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-upload:hover {
-            border-color: #FFD3D6;
-        }
-
-        .file-preview {
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .file-preview img {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 8px;
-        }
-
-        .payment-guide {
-            background: #F9E6E4;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #F9DCC0;
-            margin: 1rem 0;
-        }
-
-        /* CUSTOM NOTIFICATION MODAL */
-        .notification-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-
-        .notification-overlay.active {
-            display: flex;
-        }
-
-        .notification-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .notification-header {
-            background: #FFD3D6;
-            padding: 1.5rem;
-        }
-
-        .notification-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .notification-body {
-            padding: 2rem 1.5rem;
-        }
-
-        .notification-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #5a3e36;
-        }
-
-        .notification-message {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .notification-footer {
-            padding: 1rem 1.5rem 1.5rem;
-        }
-
-        /* FEEDBACK SECTION */
-        .feedback-item {
-            border-bottom: 1px solid #F9E6E4;
-            padding: 1.5rem 0;
-        }
-
-        .feedback-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .feedback-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #FFD3D6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 1rem;
-        }
-
-        .feedback-user {
-            font-weight: 600;
-        }
-
-        .feedback-date {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .feedback-content {
-            margin-bottom: 1rem;
-        }
-
-        .feedback-image {
-            max-width: 200px;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-
-        .feedback-form {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
-        }
-
-        /* RULES SECTION */
-        .rules-search {
-            margin-bottom: 1.5rem;
-        }
-
-        .rules-category {
-            margin-bottom: 2rem;
-        }
-
-        .rules-category h3 {
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #FFD3D6;
-        }
-
-        .rule-item {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #F9E6E4;
-            border-radius: 8px;
-        }
-
-        /* REPORTS SECTION */
-        .report-item {
-            border: 1px solid #F9E6E4;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-        }
-
-        /* SIMPLIFIED FOOTER */
-        footer {
-            background: #5a3e36;
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        /* MOBILE RESPONSIVENESS */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            nav ul li {
-                margin: 0.25rem;
-            }
-            
-            .products-category-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
-                padding: 0.25rem;
-            }
-            
-            .tab {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .category-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-        }
-    </style>
-<link href="assets/css/extras.css" rel="stylesheet"/></head>
+  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+  header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+  nav ul{display:flex;list-style:none;gap:1rem}
+  nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
+  nav a.active,nav a:hover{background:#FFC6CA}
+  .user-info{display:none;align-items:center;gap:.7rem}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:#FFC6CA;display:grid;place-items:center;font-weight:700}
+  .tabs{display:flex;gap:.4rem;background:#fff;border-radius:0 0 12px 12px;padding:.5rem;box-shadow:0 4px 15px rgba(0,0,0,.08);border-top:1px solid #F9E6E4;overflow-x:auto}
+  .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
+  .tab.active{background:#FFD3D6}
+  .products-grid{display:flex;flex-direction:column;gap:2rem;margin:1.5rem 0}
+  .products-category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .p-title{font-weight:700}
+  .p-stock{margin:.25rem 0}
+  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
+  .btn-primary{background:#FFB0B5;color:#fff}
+  .btn-primary:disabled{background:#ddd;color:#777;cursor:not-allowed}
+  .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
+  .search-wrap{margin:1rem 0;position:relative}
+  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
+  .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999}
+  .modal{background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem}
+  .row{margin:.6rem 0}
+  .row label{display:block;margin:.25rem 0;font-weight:600}
+  .row input,.row select,.row textarea{width:100%;padding:.6rem;border:1px solid #F9E6E4;border-radius:10px}
+  .note{font-size:.9rem;opacity:.8}
+  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
+  footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
+  @media(max-width:768px){nav ul{flex-wrap:wrap}}
+</style>
+</head>
 <body>
+
 <header>
-<div class="container">
-<div class="header-content">
-<div class="logo">
-                    🛒 Aiaxcart Premium
-                </div>
-<nav>
-<ul>
-<li><a class="active" href="index.html">Home</a></li>
-<li><a href="admin.html">Admin</a></li>
-</ul>
-</nav>
-<div class="auth-buttons" id="auth-buttons">
-<button id="login-btn">Login / Sign up</button>
-</div>
-<div class="user-info" id="user-info" style="display: none;">
-<div class="user-avatar" id="user-avatar"></div>
-<span id="user-name"></span>
-<button id="logout-btn">Logout</button>
-</div>
-</div>
-</div>
+  <div class="container header-content">
+    <div class="logo">🛒 Aiaxcart Premium</div>
+    <nav>
+      <ul>
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a id="admin-btn" href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div id="auth-buttons"><button class="btn" id="login-btn">Login / Sign up</button></div>
+    <div id="user-info" class="user-info">
+      <div id="user-avatar" class="user-avatar"></div>
+      <span id="user-name"></span>
+      <button class="btn" id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container tabs">
+    <div class="tab active" data-tab="products">Products</div>
+    <div class="tab" data-tab="accounts">My Account</div>
+    <div class="tab" data-tab="reports">Report Issue</div>
+    <div class="tab" data-tab="payments">Payments</div>
+    <div class="tab" data-tab="rules">Rules</div>
+    <div class="tab" data-tab="feedback">Feedback</div>
+    <div class="tab" data-tab="about">About</div>
+  </div>
 </header>
-<!-- Owner Verification Modal (for admin access) -->
-<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
-<div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
-<h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
-<input id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;" type="text"/>
-<button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
-<div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
-</div>
-</div>
-<!-- TABS SECTION -->
-<div class="container">
-<div class="tabs">
-<div class="tab active" data-tab="products">Products</div>
-<div class="tab" data-tab="accounts">My Account</div>
-<div class="tab" data-tab="reports">Report Issue</div>
-<div class="tab" data-tab="payments">Payments</div>
-<div class="tab" data-tab="rules">Rules</div>
-<div class="tab" data-tab="feedback">Feedback</div>
-<div class="tab" data-tab="about">About</div>
-</div>
-</div>
-<main>
-<div class="container">
-<!-- SEARCH BAR -->
-<div class="search-container">
-<span class="search-icon">🔍</span>
-<input id="product-search" placeholder="Search products..." type="text"/>
-</div>
-<!-- PRODUCTS SECTION -->
-<section class="products-section" id="products-content">
-<h2 style="margin-bottom: 1rem;">Premium Accounts</h2>
-<div class="products-grid" id="products-grid">
-<!-- Products will be loaded here -->
-</div>
-</section>
-<!-- TAB CONTENTS -->
-<div class="tab-content" id="accounts-content">
-<h2 style="margin-bottom: 1rem;">Account Information</h2>
-<div class="card">
-<p>Login to view your account details and order history.</p>
-<button class="btn-primary" onclick="openAuthModal()" style="margin-top: 1rem; width: auto;">Go to My Account</button>
-</div>
-</div>
-<!-- REPORTS TAB -->
-<div class="tab-content" id="reports-content">
-<h2 style="margin-bottom: 1rem;">Report an Issue</h2>
-<div class="card">
-<div id="report-login-message" style="margin-bottom: 1rem;">Please login to report an issue.</div>
-<div id="report-form-content" style="display: none;">
-<div class="form-group">
-<label class="form-label">Order ID (if available)</label>
-<input class="form-control" id="report-orderid" placeholder="Enter your order ID" type="text"/>
-</div>
-<div class="form-group">
-<label class="form-label">Product Name</label>
-<input class="form-control" id="report-product" placeholder="Enter product name" type="text"/>
-</div>
-<div class="form-group">
-<label class="form-label">Issue Description</label>
-<textarea class="form-control" id="report-issue" placeholder="Describe the issue you're experiencing..." required="" rows="4"></textarea>
-</div>
-<button class="btn-primary" onclick="submitReport()">Submit Report</button>
-</div>
-</div>
-<div class="card" id="my-reports-section" style="display: none;">
-<h3>My Reports</h3>
-<div id="my-reports-list">
-<!-- User's reports will be displayed here -->
-</div>
-</div>
-</div>
-<div class="tab-content" id="payments-content">
-<h2 style="margin-bottom: 1rem;">Payment Methods</h2>
-<div class="card">
-<h3>GCash</h3>
-<p>Send payment to: <strong>0962 554 4105</strong></p>
-</div>
-<div class="card">
-<h3>Maya</h3>
-<p>Send payment to: <strong>0929 984 3629</strong></p>
-</div>
-</div>
-<div class="tab-content" id="rules-content">
-<h2 style="margin-bottom: 1rem;">Store Rules</h2>
-<div class="rules-search">
-<input class="form-control" id="rules-search" placeholder="Search for product rules..." type="text"/>
-</div>
-<div id="rules-container">
-<!-- Rules will be loaded here -->
-</div>
-</div>
-<div class="tab-content" id="feedback-content">
-<h2 style="margin-bottom: 1rem;">Customer Feedback</h2>
-<div class="feedback-form">
-<h3>Leave Your Feedback</h3>
-<p id="feedback-login-message" style="margin-bottom: 1rem;">Please login to leave feedback.</p>
-<div id="feedback-form-content" style="display: none;">
-<div class="form-group">
-<label class="form-label">Your Feedback</label>
-<textarea class="form-control" id="feedback-text" placeholder="Share your experience..." rows="4"></textarea>
-</div>
-<div class="form-group">
-<label class="form-label">Upload Image (Optional)</label>
-<div class="file-upload" onclick="document.getElementById('feedback-image').click()">
-<div>📁 Click to upload image</div>
-<div style="font-size: 0.9rem; color: #666;">PNG, JPG up to 5MB</div>
-<input accept="image/*" id="feedback-image" style="display: none;" type="file"/>
-</div>
-</div>
-<button class="btn-primary" onclick="submitFeedback()">Submit Feedback</button>
-</div>
-</div>
-<div id="feedback-list">
-<!-- Feedback will be loaded here -->
-</div>
-</div>
-<div class="tab-content" id="about-content">
-<h2 style="margin-bottom: 1rem;">About Us</h2>
-<div class="card">
-<p>Aiaxcart Premium - Your trusted source for premium digital accounts.</p>
-</div>
-</div>
-<!-- AUTHENTICATION MODAL -->
-<div class="auth-overlay" id="auth-overlay">
-<div class="auth-container">
-<div class="auth-header">
-<h2 id="auth-title">Login</h2>
-<button aria-label="Close authentication modal" class="close-checkout" onclick="closeAuthModal()">×</button>
-</div>
-<div class="auth-tabs">
-<div class="auth-tab active" data-auth-tab="login">Login</div>
-<div class="auth-tab" data-auth-tab="signup">Sign Up</div>
-</div>
-<div class="auth-body">
-<form class="auth-form active" id="login-form">
-<div class="form-group">
-<label class="form-label">Email</label>
-<input class="form-control" id="login-email" placeholder="your@email.com" required="" type="email"/>
-</div>
-<div class="form-group">
-<label class="form-label">Password</label>
-<input class="form-control" id="login-password" placeholder="Your password" required="" type="password"/>
-</div>
-<button class="btn-primary" onclick="login()" type="button">Login</button>
-</form>
-<form class="auth-form" id="signup-form">
-<div class="form-group">
-<label class="form-label">Full Name</label>
-<input class="form-control" id="signup-name" placeholder="Your full name" required="" type="text"/>
-</div>
-<div class="form-group">
-<label class="form-label">Email</label>
-<input class="form-control" id="signup-email" placeholder="your@email.com" required="" type="email"/>
-</div>
-<div class="form-group">
-<label class="form-label">Password</label>
-<input class="form-control" id="signup-password" placeholder="Create a password" required="" type="password"/>
-</div>
-<div class="form-group">
-<label class="form-label">Confirm Password</label>
-<input class="form-control" id="signup-confirm-password" placeholder="Confirm your password" required="" type="password"/>
-</div>
-<button class="btn-primary" onclick="signup()" type="button">Sign Up</button>
-</form>
-</div>
-</div>
-</div>
-<!-- CHECKOUT MODAL -->
-<div class="checkout-overlay" id="checkout-overlay">
-<div class="checkout-container">
-<div class="checkout-header">
-<h2>Checkout</h2>
-<button aria-label="Close checkout modal" class="close-checkout" onclick="closeCheckout()">×</button>
-</div>
-<div class="checkout-body">
-<div class="selected-product-checkout" id="selected-product-checkout">
-<!-- Selected product will be loaded here -->
-</div>
-<div class="form-group">
-<label class="form-label">Your Email</label>
-<input class="form-control" disabled="" id="customer-email" placeholder="your@email.com" required="" type="email"/>
-</div>
-<!-- PAYMENT METHOD FIRST -->
-<div class="form-group">
-<label class="form-label">Payment Method</label>
-<select class="form-control" id="payment-method">
-<option value="gcash">GCash</option>
-<option value="maya">Maya</option>
-</select>
-</div>
-<div class="payment-guide" id="payment-instructions">
-<!-- Payment instructions will be loaded here -->
-</div>
-<!-- THEN PAYMENT PROOF -->
-<div class="form-group">
-<label class="form-label">Payment Proof (Screenshot)</label>
-<div class="file-upload" onclick="document.getElementById('payment-proof').click()">
-<div>📁 Click to upload payment proof</div>
-<div style="font-size: 0.9rem; color: #666;">PNG, JPG up to 5MB</div>
-<input accept="image/*" id="payment-proof" onchange="previewImage(this)" style="display: none;" type="file"/>
-</div>
-<div class="file-preview" id="file-preview">
-<img alt="Payment proof preview" id="preview-image" src=""/>
-<div id="file-name" style="font-size: 0.9rem; margin-top: 0.5rem;"></div>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label">Reference Number (Optional)</label>
-<input class="form-control" id="reference-number" placeholder="GCash reference number" type="text"/>
-</div>
-<button class="btn-primary" id="place-order-btn" onclick="placeOrder()">
-                            Place Order
-                        </button>
-</div>
-</div>
-</div>
-<!-- CUSTOM NOTIFICATION MODAL -->
-<div class="notification-overlay" id="notification-overlay">
-<div class="notification-container">
-<div class="notification-header">
-<div class="notification-icon">✅</div>
-</div>
-<div class="notification-body">
-<h3 class="notification-title" id="notification-title">Order Successful!</h3>
-<p class="notification-message" id="notification-message">
-                            Your order has been placed successfully! Please wait for admin confirmation.
-                        </p>
-</div>
-<div class="notification-footer">
-<button class="btn-primary" onclick="closeNotification()" style="width: auto; padding: 0.5rem 2rem;">
-                            OK
-                        </button>
-</div>
-</div>
-</div>
-</div>
+
+<main class="container">
+  <div class="search-wrap"><span>🔍</span><input id="product-search" placeholder="Search products…"/></div>
+
+  <!-- Products Section -->
+  <section style="margin-top:1.5rem;">
+    <h2>Products</h2>
+    <div id="products-wrap" class="products-grid"></div>
+  </section>
+
+  <!-- Other tabs -->
+  <section id="accounts-content" class="card" style="display:none"></section>
+
+  <section id="reports-content" class="card" style="display:none">
+    <h3>Report an Issue</h3>
+    <div id="report-gate" class="note">Please login to report an issue.</div>
+    <div id="report-form" style="display:none">
+      <div class="row"><label>Order ID (optional)</label><input id="rep-order"/></div>
+      <div class="row"><label>Product</label><input id="rep-product"/></div>
+      <div class="row"><label>Issue</label><textarea id="rep-issue" rows="3"></textarea></div>
+      <button class="btn btn-primary" id="rep-submit">Submit Report</button>
+    </div>
+    <div id="my-reports" style="margin-top:1rem"></div>
+  </section>
+
+  <section id="payments-content" class="card" style="display:none">
+    <h3>Payment Methods</h3>
+    <p>GCash: <b>0962 554 4105</b></p><p>Maya: <b>0929 984 3629</b></p>
+  </section>
+
+  <section id="rules-content" class="card" style="display:none">
+    <h3>Store Rules</h3>
+    <div class="row"><input id="rules-search" placeholder="Search rules…"></div>
+    <div id="rules-wrap"></div>
+  </section>
+
+  <section id="feedback-content" class="card" style="display:none">
+    <h3>Customer Feedback</h3>
+    <div id="fb-gate" class="note">Please login to leave feedback.</div>
+    <div id="fb-form" style="display:none">
+      <div class="row"><label>Your feedback</label><textarea id="fb-text" rows="3"></textarea></div>
+      <button class="btn btn-primary" id="fb-submit">Submit</button>
+    </div>
+    <div id="fb-list" style="margin-top:1rem"></div>
+  </section>
+
+  <section id="about-content" class="card" style="display:none">
+    <p>Aiaxcart Premium — Your trusted source for premium digital accounts.</p>
+  </section>
 </main>
-<footer>
-<div class="container">
-<p>© 2024 Aiaxcart Premium. All rights reserved.</p>
+
+<footer><div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div></footer>
+
+<!-- CHECKOUT MODAL -->
+<div id="coOverlay" class="overlay">
+  <div class="modal">
+    <h3 id="coTitle">Checkout</h3>
+    <form id="coForm" onsubmit="return false;">
+      <input type="hidden" name="product_id"/>
+      <input type="hidden" name="product_name"/>
+      <div class="row"><label>Buyer Name</label><input required name="buyer_name"></div>
+      <div class="row"><label>Email</label><input required type="email" name="buyer_email"></div>
+      <div class="row">
+        <label>Account Type</label>
+        <select name="account_type" required id="co_accType">
+          <option>Solo Profile</option><option>Shared Profile</option>
+          <option>Solo Account</option><option>Shared Account</option>
+          <option>invite</option><option>famhead</option>
+        </select>
+      </div>
+      <div class="row" id="inviteGmailRow" style="display:none">
+        <label>Gmail for Invite (required for invite)</label>
+        <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
+        <small class="note">Must be a Gmail address (separate from login email).</small>
+      </div>
+      <div class="row">
+        <label>Duration</label>
+        <select name="duration_key" required>
+          <option>7d</option><option>14d</option><option>1m</option><option>2m</option>
+          <option>3m</option><option>4m</option><option>6m</option><option>8m</option>
+          <option>10m</option><option>12m</option>
+        </select>
+      </div>
+      <div class="row"><label>Price (₱)</label><input type="number" step="0.01" required name="price"></div>
+      <div style="display:flex;gap:.6rem;margin-top:.9rem;">
+        <button type="button" class="btn" onclick="closeCheckout()">Cancel</button>
+        <button id="coSubmit" type="submit" class="btn btn-primary">Place Order</button>
+      </div>
+    </form>
+    <div id="coMsg" class="note" style="margin-top:.5rem"></div>
+  </div>
 </div>
-</footer>
+
+<!-- AUTH MODAL (simple) -->
+<div id="authOverlay" class="overlay">
+  <div class="modal">
+    <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
+      <button id="tabLogin"  class="btn"        >Login</button>
+      <button id="tabSignup" class="btn btn-primary">Sign up</button>
+      <button style="margin-left:auto" class="btn" onclick="closeAuth()">×</button>
+    </div>
+    <div id="formLogin">
+      <div class="row"><label>Email</label><input id="liEmail" type="email"></div>
+      <div class="row"><label>Password</label><input id="liPass" type="password"></div>
+      <button class="btn btn-primary" id="btnLoginGo">Login</button>
+    </div>
+    <div id="formSignup" style="display:none">
+      <div class="row"><label>Full name</label><input id="suName"></div>
+      <div class="row"><label>Email</label><input id="suEmail" type="email"></div>
+      <div class="row"><label>Password</label><input id="suPass" type="password"></div>
+      <div class="row"><label>Confirm</label><input id="suPass2" type="password"></div>
+      <button class="btn btn-primary" id="btnSignupGo">Create account</button>
+    </div>
+    <div id="authMsg" class="note" style="margin-top:.5rem"></div>
+  </div>
+</div>
+
+<!-- ===== CONFIG (inline fallback; also reads config.private.js/config.js if present) ===== -->
 <script>
-        // PRODUCTS DATA WITH PRICING (from your original data)
-        const productsPricing = {
-            "Netflix Premium": {
-                "solo profile": { '1m': 160, '2m': 280, '3m': 435, '4m': 565, '6m': 850, '8m': 1090, '12m': 1500 },
-                "shared profile": { '1m': 80, '2m': 145, '3m': 205, '4m': 270, '6m': 410, '8m': 520, '12m': 800 }
-            },
-            "Viu Premium": {
-                "solo account": { '1m': 70, '2m': 105, '3m': 145, '4m': 170, '6m': 205, '10m': 280, '12m': 310 },
-                "shared account": { '1m': 30, '2m': 55, '3m': 75, '4m': 90, '6m': 120, '10m': 190, '12m': 220 }
-            },
-            // Add pricing for other products as needed...
-            "YouTube Premium": {
-                "famhead": { '1m': 70, '2m': 90, '3m': 125, '4m': 150, '5m': 175, '6m': 200 },
-                "solo": { '1m': 45, '2m': 60, '3m': 85, '4m': 105, '5m': 125, '6m': 145 },
-                "invite": { '1m': 20, '2m': 35, '3m': 50, '4m': 60, '5m': 70, '6m': 80 }
-            },
-            "Spotify Premium": {
-                "solo fw": { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
-                "solo nw": { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
-            },
-            "ChatGPT Plus": {
-                "solo account": { '1m': 600, '2m': 1050, '3m': 1500 },
-                "shared account": { '1m': 120, '2m': 200, '3m': 290 }
-            },
-            "Canva Pro": {
-                "edu lifetime": {'nw': 19, '3m w': 39, '6m w': 49, '12m w': 69},
-                "teamhead": {'1m': 45, '2m': 55, '3m': 65, '4m': 75, '5m': 85, '6m': 95},
-                "solo": { '1m': 25, '2m': 35, '3m': 45, '4m': 55, '5m': 65, '6m': 75 },
-                "invite": { '1m': 10, '2m': 15, '3m': 20, '4m': 25, '5m': 30, '6m': 35 }
-            }
-        };
-
-        // FEEDBACK DATA
-        const feedbackData = [
-            {
-                id: 1,
-                user: "Maria Santos",
-                date: "2024-02-15",
-                content: "Great service! My Netflix account works perfectly. Will order again!",
-                image: null
-            },
-            {
-                id: 2,
-                user: "Juan Dela Cruz",
-                date: "2024-02-10",
-                content: "Fast delivery and good quality accounts. Highly recommended!",
-                image: null
-            },
-            {
-                id: 3,
-                user: "Ana Reyes",
-                date: "2024-02-05",
-                content: "Had an issue with my Spotify account but support helped me quickly. Good service!",
-                image: null
-            }
-        ];
-
-        let pendingOrder = null;
-        let paymentProofFile = null;
-        let currentUser = null;
-        let expandedCategories = {};
-        let products = [];
-
-        // INITIALIZE APP
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProductsFromStorage();
-            setupTabs();
-            setupSearch();
-            setupCheckoutListeners();
-            setupAuthTabs();
-            loadRulesFromStorage();
-            loadFeedback();
-            checkLoginStatus();
-        });
-
-        function loadProductsFromStorage() {
-            products = JSON.parse(localStorage.getItem("products") || "[]");
-            loadProducts();
-        }
-
-        function loadRulesFromStorage() {
-            const rules = JSON.parse(localStorage.getItem("rules") || "[]");
-            loadRules(rules);
-        }
-
-        function setupCheckoutListeners() {
-            document.getElementById('payment-method').addEventListener('change', showPaymentInstructions);
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('product-search');
-            searchInput.addEventListener('input', debounce(function(e) {
-                filterProducts(e.target.value);
-            }, 300));
-
-            const rulesSearchInput = document.getElementById('rules-search');
-            rulesSearchInput.addEventListener('input', debounce(function(e) {
-                filterRules(e.target.value);
-            }, 300));
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function filterProducts(searchTerm) {
-            const productCards = document.querySelectorAll('.product-card');
-            const searchLower = searchTerm.toLowerCase().trim();
-            
-            if (searchLower === '') {
-                productCards.forEach(card => {
-                    card.style.display = 'block';
-                });
-                return;
-            }
-            
-            productCards.forEach(card => {
-                const productName = card.querySelector('.product-name').textContent.toLowerCase();
-                if (productName.includes(searchLower)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        function filterRules(searchTerm) {
-            const rulesContainer = document.getElementById('rules-container');
-            const searchLower = searchTerm.toLowerCase().trim();
-            
-            if (searchLower === '') {
-                loadRulesFromStorage();
-                return;
-            }
-            
-            const rules = JSON.parse(localStorage.getItem("rules") || "[]");
-            let html = '<div class="rules-category">';
-            html += '<h3>Search Results</h3>';
-            
-            let foundRules = false;
-            
-            // Search in rules
-            rules.forEach(rule => {
-                if (rule.text.toLowerCase().includes(searchLower)) {
-                    html += `<div class="rule-item"><strong>${rule.product === 'general' ? 'General Rule' : rule.product}:</strong> ${rule.text}</div>`;
-                    foundRules = true;
-                }
-            });
-            
-            if (!foundRules) {
-                html += '<p>No rules found matching your search.</p>';
-            }
-            
-            html += '</div>';
-            rulesContainer.innerHTML = html;
-        }
-
-        function loadProducts() {
-            const productsGrid = document.getElementById('products-grid');
-            
-            const productsByCategory = {
-                'entertainment': products.filter(p => p.category === 'entertainment'),
-                'streaming': products.filter(p => p.category === 'streaming'),
-                'educational': products.filter(p => p.category === 'educational'),
-                'editing': products.filter(p => p.category === 'editing'),
-                'ai': products.filter(p => p.category === 'ai')
-            };
-
-            let html = '';
-            
-            for (const [category, categoryProducts] of Object.entries(productsByCategory)) {
-                if (categoryProducts.length === 0) continue;
-                
-                const categoryName = formatCategoryName(category);
-                // Show only first 3 products if category is not expanded
-                const displayProducts = expandedCategories[category] ? categoryProducts : categoryProducts.slice(0, 3);
-                const productsHTML = displayProducts.map(product => createProductCard(product)).join('');
-                
-                html += `
-                    <div class="category-section">
-                        <div class="category-header">
-                            <h3 class="category-title">${categoryName}</h3>
-                            <button class="view-all-btn" onclick="toggleCategory('${category}')">
-                                ${expandedCategories[category] ? 'Show Less' : `View All (${categoryProducts.length})`}
-                            </button>
-                        </div>
-                        <div class="products-category-grid">
-                            ${productsHTML}
-                        </div>
-                    </div>
-                `;
-            }
-
-            productsGrid.innerHTML = html;
-        }
-
-        function toggleCategory(category) {
-            expandedCategories[category] = !expandedCategories[category];
-            loadProducts();
-        }
-
-        function createProductCard(product) {
-            const stockText = product.stock > 0 ? `${product.stock} available` : 'Out of stock';
-            const stockClass = product.stock > 0 ? '' : 'stock-out';
-            const soldText = `${product.sold} sold`;
-
-            // Get available account types for this product
-            const availableAccountTypes = productsPricing[product.name] ? Object.keys(productsPricing[product.name]) : ["solo account"];
-            const accountTypeButtons = availableAccountTypes.map(type => 
-                `<button class="account-type-btn" onclick="selectAccountType(this, '${product.id}', '${type}')">${type}</button>`
-            ).join('');
-
-            return `
-                <div class="product-card">
-                    <div class="product-image">
-                        ${product.icon}
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${product.name}</h3>
-                        <div>
-                            <div class="product-stock ${stockClass}">${stockText}</div>
-                            <div class="product-sold">${soldText}</div>
-                        </div>
-                        
-                        <div class="account-type-options">
-                            ${accountTypeButtons}
-                        </div>
-                        
-                        <div class="duration-selector">
-                            <label>Duration:</label>
-                            <div class="duration-scroll" id="duration-${product.id}">
-                                <!-- Durations will be loaded dynamically -->
-                            </div>
-                        </div>
-                        
-                        <div class="price-display" id="price-${product.id}">
-                            <span class="select-price-message">Select account type & duration</span>
-                        </div>
-                        
-                        <button class="btn-primary" onclick="orderProduct('${product.id}')" 
-                                id="order-btn-${product.id}" ${product.stock === 0 ? 'disabled' : ''}>
-                            ${product.stock === 0 ? 'Out of Stock' : 'Select Options First'}
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function selectAccountType(button, productId, accountType) {
-            const buttons = button.parentElement.querySelectorAll('.account-type-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                product.selectedAccountType = accountType;
-                updateDurationOptions(productId, accountType);
-            }
-        }
-
-        function updateDurationOptions(productId, accountType) {
-            const product = products.find(p => p.id === productId);
-            const durationContainer = document.getElementById(`duration-${productId}`);
-            
-            if (product && productsPricing[product.name] && productsPricing[product.name][accountType]) {
-                const durations = Object.keys(productsPricing[product.name][accountType]);
-                const durationButtons = durations.map(duration => {
-                    const durationText = getDurationText(duration);
-                    return `<button class="duration-btn" onclick="selectDuration(this, '${productId}', '${duration}')">${durationText}</button>`;
-                }).join('');
-                
-                durationContainer.innerHTML = durationButtons;
-                
-                // Auto-select first duration
-                if (durations.length > 0) {
-                    const firstDurationBtn = durationContainer.querySelector('.duration-btn');
-                    if (firstDurationBtn) {
-                        firstDurationBtn.click();
-                    }
-                }
-            }
-        }
-
-        function selectDuration(button, productId, durationKey) {
-            const buttons = button.parentElement.querySelectorAll('.duration-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                product.selectedDuration = durationKey;
-                updatePriceDisplay(productId);
-            }
-        }
-
-        function updatePriceDisplay(productId) {
-            const product = products.find(p => p.id === productId);
-            const priceDisplay = document.getElementById(`price-${productId}`);
-            const orderBtn = document.getElementById(`order-btn-${productId}`);
-
-            if (product.selectedAccountType && product.selectedDuration && productsPricing[product.name]) {
-                const price = productsPricing[product.name][product.selectedAccountType][product.selectedDuration];
-                const durationText = getDurationText(product.selectedDuration);
-                
-                priceDisplay.innerHTML = `₱${price} <small>(${product.selectedAccountType} - ${durationText})</small>`;
-                orderBtn.textContent = `Order Now - ₱${price}`;
-                orderBtn.disabled = false;
-                
-                orderBtn.setAttribute('data-price', price);
-                orderBtn.setAttribute('data-account-type', product.selectedAccountType);
-                orderBtn.setAttribute('data-duration', product.selectedDuration);
-            }
-        }
-
-        function getDurationText(durationKey) {
-            const durationMap = {
-                '7d': '7 Days',
-                '14d': '14 Days',
-                '1m': '1 Month',
-                '2m': '2 Months',
-                '3m': '3 Months',
-                '4m': '4 Months',
-                '5m': '5 Months',
-                '6m': '6 Months',
-                '8m': '8 Months',
-                '10m': '10 Months',
-                '12m': '12 Months',
-                '24m': '24 Months',
-                'nw': 'No Warranty',
-                '3m w': '3 Months Warranty',
-                '6m w': '6 Months Warranty',
-                '12m w': '12 Months Warranty'
-            };
-            return durationMap[durationKey] || durationKey;
-        }
-
-        function formatCategoryName(category) {
-            const names = {
-                'entertainment': '🎬 Entertainment',
-                'streaming': '🎵 Music & Streaming',
-                'educational': '📚 Educational',
-                'editing': '🎨 Editing Tools',
-                'ai': '🤖 AI Tools'
-            };
-            return names[category] || category;
-        }
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        // AUTHENTICATION FUNCTIONS
-        function setupAuthTabs() {
-            const authTabs = document.querySelectorAll('.auth-tab');
-            authTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-auth-tab');
-                    
-                    // Remove active class from all tabs and forms
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.auth-form').forEach(form => {
-                        form.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked tab and form
-                    this.classList.add('active');
-                    document.getElementById(`${tabName}-form`).classList.add('active');
-                    
-                    // Update title
-                    document.getElementById('auth-title').textContent = tabName === 'login' ? 'Login' : 'Sign Up';
-                });
-            });
-        }
-
-        function openAuthModal() {
-            document.getElementById('auth-overlay').classList.add('active');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-overlay').classList.remove('active');
-            // Reset forms
-            document.getElementById('login-form').reset();
-            document.getElementById('signup-form').reset();
-        }
-
-        function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                showNotification('Please fill in all fields.', 'warning');
-                return;
-            }
-            
-            if (!validateEmail(email)) {
-                showNotification('Please enter a valid email address.', 'warning');
-                return;
-            }
-            
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('aiaxcart_current_user', JSON.stringify(user));
-                showNotification('Login successful!', 'success');
-                closeAuthModal();
-                updateUIForUser();
-            } else {
-                showNotification('Invalid email or password.', 'error');
-            }
-        }
-
-        function signup() {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm-password').value;
-            
-            if (!name || !email || !password || !confirmPassword) {
-                showNotification('Please fill in all fields.', 'warning');
-                return;
-            }
-            
-            if (!validateEmail(email)) {
-                showNotification('Please enter a valid email address.', 'warning');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showNotification('Passwords do not match.', 'warning');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showNotification('Password must be at least 6 characters.', 'warning');
-                return;
-            }
-            
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
-            
-            // Check if user already exists
-            if (users.find(u => u.email === email)) {
-                showNotification('User with this email already exists.', 'error');
-                return;
-            }
-            
-            // Create new user
-            const newUser = {
-                id: Date.now(),
-                name: name,
-                email: email,
-                password: password,
-                joinDate: new Date().toISOString()
-            };
-            
-            users.push(newUser);
-            localStorage.setItem('aiaxcart_users', JSON.stringify(users));
-            
-            currentUser = newUser;
-            localStorage.setItem('aiaxcart_current_user', JSON.stringify(newUser));
-            showNotification('Account created successfully!', 'success');
-            closeAuthModal();
-            updateUIForUser();
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('aiaxcart_current_user');
-            showNotification('Logged out successfully.', 'success');
-            updateUIForUser();
-        }
-
-        function checkLoginStatus() {
-            const savedUser = localStorage.getItem('aiaxcart_current_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUIForUser();
-            }
-        }
-
-        function updateUIForUser() {
-            const authButtons = document.getElementById('auth-buttons');
-            const userInfo = document.getElementById('user-info');
-            const feedbackFormContent = document.getElementById('feedback-form-content');
-            const feedbackLoginMessage = document.getElementById('feedback-login-message');
-            const reportFormContent = document.getElementById('report-form-content');
-            const reportLoginMessage = document.getElementById('report-login-message');
-            
-            if (currentUser) {
-                authButtons.style.display = 'none';
-                userInfo.style.display = 'flex';
-                document.getElementById('user-name').textContent = currentUser.name;
-                document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
-                
-                // Update feedback form
-                feedbackFormContent.style.display = 'block';
-                feedbackLoginMessage.style.display = 'none';
-                
-                // Update report form
-                reportFormContent.style.display = 'block';
-                reportLoginMessage.style.display = 'none';
-                
-                // Update My Account tab
-                updateAccountTab();
-                loadUserReports();
-            } else {
-                authButtons.style.display = 'block';
-                userInfo.style.display = 'none';
-                
-                // Update feedback form
-                feedbackFormContent.style.display = 'none';
-                feedbackLoginMessage.style.display = 'block';
-                
-                // Update report form
-                reportFormContent.style.display = 'none';
-                reportLoginMessage.style.display = 'block';
-                document.getElementById('my-reports-section').style.display = 'none';
-                
-                // Reset My Account tab
-                document.getElementById('accounts-content').innerHTML = `
-                    <h2 style="margin-bottom: 1rem;">Account Information</h2>
-                    <div class="card">
-                        <p>Login to view your account details and order history.</p>
-                        <button class="btn-primary" style="margin-top: 1rem; width: auto;" onclick="openAuthModal()">Login / Sign up</button>
-                    </div>
-                `;
-            }
-        }
-
-        function updateAccountTab() {
-            if (!currentUser) return;
-            
-            const userOrders = getCurrentUserOrders();
-            
-            document.getElementById('accounts-content').innerHTML = `
-                <h2 style="margin-bottom: 1rem;">My Account</h2>
-                <div class="card">
-                    <h3>Profile Information</h3>
-                    <p><strong>Name:</strong> ${currentUser.name}</p>
-                    <p><strong>Email:</strong> ${currentUser.email}</p>
-                    <p><strong>Member since:</strong> ${new Date(currentUser.joinDate).toLocaleDateString()}</p>
-                </div>
-                
-                <div class="card">
-                    <h3>Order History</h3>
-                    ${userOrders.length > 0 ? 
-                        userOrders.map(order => `
-                            <div class="order-item" style="border: 1px solid #F9E6E4; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <strong>${order.product.productName}</strong>
-                                        <div>${order.product.accountType} - ${getDurationText(order.product.duration)}</div>
-                                        <div>₱${order.product.price}</div>
-                                    </div>
-                                    <div>
-                                        <span class="stock-status ${order.processed ? 'status-sold' : 'status-reserved'}" style="padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: ${order.processed ? '#d4edda' : '#fff3cd'}; color: ${order.processed ? '#155724' : '#856404'}">
-                                            ${order.processed ? 'Completed' : 'Pending'}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
-                                    Ordered on: ${new Date(order.timestamp).toLocaleDateString()}
-                                    ${order.processedDate ? ` | Completed on: ${new Date(order.processedDate).toLocaleDateString()}` : ''}
-                                </div>
-                            </div>
-                        `).join('') : 
-                        '<p>No orders yet.</p>'
-                    }
-                </div>
-            `;
-        }
-
-        function getCurrentUserOrders() {
-            const orders = JSON.parse(localStorage.getItem('aiaxcart_orders') || '[]');
-            return orders.filter(order => order.user && order.user.email === currentUser.email);
-        }
-
-        function orderProduct(productId) {
-            // Check if user is logged in
-            if (!currentUser) {
-                showNotification('Please login to place an order.', 'warning');
-                openAuthModal();
-                return;
-            }
-            
-            const orderBtn = document.getElementById(`order-btn-${productId}`);
-            const price = orderBtn.getAttribute('data-price');
-            const accountType = orderBtn.getAttribute('data-account-type');
-            const durationKey = orderBtn.getAttribute('data-duration');
-            
-            if (!price || !accountType || !durationKey) {
-                showNotification('Please select account type and duration first.', 'warning');
-                return;
-            }
-
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                const orderDetails = {
-                    productId: productId,
-                    productName: product.name,
-                    price: price,
-                    accountType: accountType,
-                    duration: durationKey,
-                    icon: product.icon
-                };
-                
-                pendingOrder = orderDetails;
-                openCheckout();
-            }
-        }
-
-        function openCheckout() {
-            if (!pendingOrder) {
-                showNotification('No order data found.', 'error');
-                return;
-            }
-
-            const selectedProductDiv = document.getElementById('selected-product-checkout');
-            selectedProductDiv.innerHTML = `
-                <div class="product-icon-checkout">${pendingOrder.icon}</div>
-                <div class="product-details-checkout">
-                    <h3>${pendingOrder.productName}</h3>
-                    <div class="product-price-checkout">₱${pendingOrder.price}</div>
-                    <div class="ownership-type-checkout">${pendingOrder.accountType} - ${getDurationText(pendingOrder.duration)}</div>
-                </div>
-            `;
-
-            // Set the user's email in checkout
-            document.getElementById('customer-email').value = currentUser.email;
-
-            showPaymentInstructions();
-            document.getElementById('checkout-overlay').classList.add('active');
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkout-overlay').classList.remove('active');
-            document.getElementById('payment-proof').value = '';
-            document.getElementById('file-preview').style.display = 'none';
-            document.getElementById('preview-image').src = '';
-            document.getElementById('file-name').textContent = '';
-            paymentProofFile = null;
-        }
-
-        function showPaymentInstructions() {
-            const method = document.getElementById('payment-method').value;
-            const instructionsDiv = document.getElementById('payment-instructions');
-            
-            if (method === 'gcash') {
-                instructionsDiv.innerHTML = `
-                    <h4>GCash Payment Instructions:</h4>
-                    <p><strong>Send to:</strong> 0962 554 4105</p>
-                    <p><strong>Amount:</strong> ₱${pendingOrder.price}</p>
-                    <p>Please include your email in the payment description.</p>
-                `;
-            } else if (method === 'maya') {
-                instructionsDiv.innerHTML = `
-                    <h4>Maya Payment Instructions:</h4>
-                    <p><strong>Send to:</strong> 0929 984 3629</p>
-                    <p><strong>Amount:</strong> ₱${pendingOrder.price}</p>
-                    <p>Please include your email in the payment description.</p>
-                `;
-            }
-        }
-
-        function previewImage(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('preview-image').src = e.target.result;
-                    document.getElementById('file-name').textContent = file.name;
-                    document.getElementById('file-preview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-                paymentProofFile = file;
-            }
-        }
-
-        function showLoading(button) {
-            const originalText = button.textContent;
-            button.innerHTML = '<div class="loading-spinner"></div> Processing...';
-            button.disabled = true;
-            return originalText;
-        }
-
-        function hideLoading(button, originalText) {
-            button.textContent = originalText;
-            button.disabled = false;
-        }
-
-        function placeOrder() {
-            const email = document.getElementById('customer-email').value;
-            const paymentMethod = document.getElementById('payment-method').value;
-            const referenceNumber = document.getElementById('reference-number').value;
-            const placeOrderBtn = document.getElementById('place-order-btn');
-            
-            if (!paymentProofFile) {
-                showNotification('Please upload payment proof.', 'warning');
-                return;
-            }
-
-            // Show loading state
-            const originalText = showLoading(placeOrderBtn);
-
-            // Simulate API call with timeout
-            setTimeout(() => {
-                try {
-                    const orderId = generateOrderId();
-                    
-                    const orderData = {
-                        product: pendingOrder,
-                        user: currentUser,
-                        paymentMethod: paymentMethod,
-                        referenceNumber: referenceNumber,
-                        timestamp: new Date().toISOString(),
-                        orderId: orderId,
-                        processed: false
-                    };
-                    
-                    // Save to localStorage
-                    const orders = JSON.parse(localStorage.getItem('aiaxcart_orders') || '[]');
-                    orders.push(orderData);
-                    localStorage.setItem('aiaxcart_orders', JSON.stringify(orders));
-                    
-                    // Connect with admin panel - update stock and add to pending orders
-                    const adminOrderData = {
-                        productName: pendingOrder.productName,
-                        price: pendingOrder.price,
-                        accountType: pendingOrder.accountType,
-                        duration: pendingOrder.duration,
-                        customer: currentUser.name,
-                        email: currentUser.email,
-                        orderId: orderId
-                    };
-                    
-                    // Try to call admin panel function
-                    try {
-                        if (typeof processWebsiteOrder === 'function') {
-                            processWebsiteOrder(adminOrderData);
-                        }
-                    } catch (e) {
-                        console.log('Admin panel function not available, using fallback');
-                        // Fallback: update product stock directly
-                        const products = JSON.parse(localStorage.getItem('products') || '[]');
-                        const productIndex = products.findIndex(p => p.name === pendingOrder.productName);
-                        if (productIndex > -1) {
-                            products[productIndex].stock = Math.max(0, products[productIndex].stock - 1);
-                            products[productIndex].sold += 1;
-                            localStorage.setItem('products', JSON.stringify(products));
-                        }
-                    }
-                    
-                    showNotification(`Order placed successfully! Your Order ID is: ${orderId}. Please wait for admin confirmation.`, 'success');
-                    closeCheckout();
-                    
-                    // Reset form
-                    document.getElementById('customer-email').value = '';
-                    document.getElementById('reference-number').value = '';
-                    document.getElementById('payment-proof').value = '';
-                    document.getElementById('file-preview').style.display = 'none';
-                    paymentProofFile = null;
-                    
-                    // Reload products to update stock and sold counts
-                    loadProductsFromStorage();
-                    updateAccountTab();
-                    
-                } catch (error) {
-                    console.error('Order error:', error);
-                    showNotification('Order failed. Please try again.', 'error');
-                } finally {
-                    hideLoading(placeOrderBtn, originalText);
-                }
-            }, 1500);
-        }
-
-        function generateOrderId() {
-            return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        }
-
-        function loadRules(rules) {
-            const rulesContainer = document.getElementById('rules-container');
-            let html = '';
-            
-            // Group rules by product
-            const rulesByProduct = {};
-            
-            rules.forEach(rule => {
-                if (!rulesByProduct[rule.product]) {
-                    rulesByProduct[rule.product] = [];
-                }
-                rulesByProduct[rule.product].push(rule);
-            });
-            
-            // Display general rules first
-            if (rulesByProduct['general']) {
-                html += '<div class="rules-category">';
-                html += '<h3>General Rules & Regulations</h3>';
-                rulesByProduct['general'].forEach(rule => {
-                    html += `<div class="rule-item">${rule.text}</div>`;
-                });
-                html += '</div>';
-            }
-            
-            // Display product-specific rules
-            for (const [productName, productRules] of Object.entries(rulesByProduct)) {
-                if (productName === 'general') continue;
-                
-                html += '<div class="rules-category">';
-                html += `<h3>${productName} Rules</h3>`;
-                productRules.forEach(rule => {
-                    html += `<div class="rule-item">${rule.text}</div>`;
-                });
-                html += '</div>';
-            }
-            
-            rulesContainer.innerHTML = html;
-        }
-
-        function loadFeedback() {
-            const feedbackList = document.getElementById('feedback-list');
-            let html = '';
-            
-            feedbackData.forEach(feedback => {
-                html += `
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <div class="feedback-avatar">${feedback.user.charAt(0)}</div>
-                            <div>
-                                <div class="feedback-user">${feedback.user}</div>
-                                <div class="feedback-date">${formatDate(feedback.date)}</div>
-                            </div>
-                        </div>
-                        <div class="feedback-content">
-                            ${feedback.content}
-                        </div>
-                        ${feedback.image ? `<img src="${feedback.image}" class="feedback-image" alt="Feedback image">` : ''}
-                    </div>
-                `;
-            });
-            
-            feedbackList.innerHTML = html;
-        }
-
-        function submitFeedback() {
-            const feedbackText = document.getElementById('feedback-text').value;
-            const feedbackImage = document.getElementById('feedback-image').files[0];
-            
-            if (!feedbackText) {
-                showNotification('Please enter your feedback.', 'warning');
-                return;
-            }
-            
-            // Create new feedback
-            const newFeedback = {
-                id: Date.now(),
-                user: currentUser.name,
-                date: new Date().toISOString().split('T')[0],
-                content: feedbackText,
-                image: null
-            };
-            
-            // Handle image if uploaded
-            if (feedbackImage) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    newFeedback.image = e.target.result;
-                    saveFeedback(newFeedback);
-                };
-                reader.readAsDataURL(feedbackImage);
-            } else {
-                saveFeedback(newFeedback);
-            }
-        }
-
-        function saveFeedback(feedback) {
-            feedbackData.unshift(feedback);
-            loadFeedback();
-            document.getElementById('feedback-text').value = '';
-            document.getElementById('feedback-image').value = '';
-            showNotification('Feedback submitted successfully!', 'success');
-        }
-
-        // REPORT SYSTEM FUNCTIONS
-        function submitReport() {
-            if (!currentUser) {
-                showNotification('Please login to submit a report.', 'warning');
-                return;
-            }
-
-            const orderId = document.getElementById('report-orderid').value;
-            const product = document.getElementById('report-product').value;
-            const issue = document.getElementById('report-issue').value;
-
-            if (!issue) {
-                showNotification('Please describe the issue.', 'warning');
-                return;
-            }
-
-            const report = {
-                orderId: orderId,
-                product: product,
-                issue: issue,
-                buyer: currentUser.name + ' (' + currentUser.email + ')'
-            };
-
-            // Save to admin panel
-            try {
-                if (typeof addBuyerReport === 'function') {
-                    addBuyerReport(report);
-                }
-            } catch (e) {
-                console.log('Admin panel function not available, using fallback');
-            }
-
-            // Also save to user's personal reports
-            const userReports = JSON.parse(localStorage.getItem('userReports_' + currentUser.email) || '[]');
-            userReports.push({
-                id: Date.now(),
-                orderId: orderId,
-                product: product,
-                issue: issue,
-                status: 'pending',
-                date: new Date().toLocaleDateString()
-            });
-            localStorage.setItem('userReports_' + currentUser.email, JSON.stringify(userReports));
-
-            showNotification('Report submitted successfully! We will get back to you soon.', 'success');
-            document.getElementById('report-orderid').value = '';
-            document.getElementById('report-product').value = '';
-            document.getElementById('report-issue').value = '';
-            
-            loadUserReports();
-        }
-
-        function loadUserReports() {
-            if (!currentUser) return;
-            
-            const userReports = JSON.parse(localStorage.getItem('userReports_' + currentUser.email) || '[]');
-            const myReportsList = document.getElementById('my-reports-list');
-            
-            if (userReports.length > 0) {
-                myReportsList.innerHTML = userReports.map(report => `
-                    <div class="report-item">
-                        <div><strong>Report ID:</strong> ${report.id}</div>
-                        <div><strong>Order ID:</strong> ${report.orderId || 'N/A'}</div>
-                        <div><strong>Product:</strong> ${report.product || 'N/A'}</div>
-                        <div><strong>Issue:</strong> ${report.issue}</div>
-                        <div><strong>Status:</strong> <span style="padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; background: ${report.status === 'resolved' ? '#d4edda' : '#fff3cd'}; color: ${report.status === 'resolved' ? '#155724' : '#856404'};">${report.status}</span></div>
-                        <div><strong>Date:</strong> ${report.date}</div>
-                    </div>
-                `).join('');
-                document.getElementById('my-reports-section').style.display = 'block';
-            } else {
-                document.getElementById('my-reports-section').style.display = 'none';
-            }
-        }
-
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification-overlay');
-            const messageElement = document.getElementById('notification-message');
-            const titleElement = document.getElementById('notification-title');
-            const iconElement = document.querySelector('.notification-icon');
-            const headerElement = document.querySelector('.notification-header');
-            
-            // Set icon and colors based on type
-            if (type === 'success') {
-                iconElement.textContent = '✅';
-                headerElement.style.background = '#FFD3D6';
-                titleElement.textContent = 'Success!';
-            } else if (type === 'warning') {
-                iconElement.textContent = '⚠️';
-                headerElement.style.background = '#FFF3CD';
-                titleElement.textContent = 'Please Check';
-            } else if (type === 'error') {
-                iconElement.textContent = '❌';
-                headerElement.style.background = '#F8D7DA';
-                titleElement.textContent = 'Error';
-            }
-            
-            messageElement.textContent = message;
-            notification.classList.add('active');
-        }
-
-        function closeNotification() {
-            document.getElementById('notification-overlay').classList.remove('active');
-        }
-
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    
-                    // Remove active class from all tabs and hide contents
-                    tabs.forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    
-                    // Add active class to clicked tab and show content
-                    this.classList.add('active');
-                    
-                    // Special cases
-                    if (tabName === 'products') {
-                        document.getElementById('products-content').style.display = 'block';
-                    } else if (tabName === 'reports') {
-                        document.getElementById('reports-content').style.display = 'block';
-                        loadUserReports();
-                    } else {
-                        document.getElementById(`${tabName}-content`).style.display = 'block';
-                        document.getElementById('products-content').style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Owner Verification Functions
-        const OWNER_UID = '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36';
-        function showOwnerModal() {
-            document.getElementById("ownerVeriOverlay").style.display = "flex";
-        }
-        
-        function verifyOwnerUID() {
-            let uid = document.getElementById('ownerUidInput').value.trim();
-            if(uid === OWNER_UID) {
-                localStorage.setItem('ownerVerified','yes');
-                document.getElementById("ownerVeriOverlay").style.display = "none";
-                showNotification('Owner access granted!', 'success');
-            } else {
-                document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";
-            }
-        }
-        
-        if(localStorage.getItem('ownerVerified') !== 'yes') {
-            // Only show modal if trying to access admin features
-            if (window.location.href.includes('admin.html')) {
-                showOwnerModal();
-            }
-        }
-
-        // Set up event listeners for buttons
-        document.getElementById('login-btn').addEventListener('click', openAuthModal);
-        document.getElementById('logout-btn').addEventListener('click', logout);
-    </script>
-<!-- Aiaxcart: DB/Realtime wiring (non-visual) -->
-
-<!-- Config selection (private if exists, else public) -->
-<script>
-  window.CONFIG_PRIVATE = undefined;
-  window.CONFIG_PUBLIC = undefined;
-</script>
-<script src="config.private.js?v=2"></script> <!-- local only, gitignored -->
-<script src="config.js?v=2"></script>          <!-- safe public fallback -->
-<script>
+  window.CONFIG_PRIVATE = window.CONFIG_PRIVATE || undefined;
+  window.CONFIG_PUBLIC  = window.CONFIG_PUBLIC  || {
+    DATABASE:{ SUPABASE_URL:"YOUR_SUPABASE_URL_HERE", SUPABASE_ANON_KEY:"YOUR_SUPABASE_ANON_KEY_HERE" },
+    ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
+  };
   window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
+<script src="config.private.js"></script>
+<script src="config.js"></script>
+<script> window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC || window.CONFIG; </script>
 
-<!-- Supabase client + bootstrap -->
+<!-- Supabase + helpers -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="assets/js/aiaxcart/supabase.js?v=3"></script>
+<script src="assets/js/aiaxcart/supabase.js?v=4"></script>
 
-<!-- Render homepage + hide admin btn when not admin -->
-<script type="module">
-  import { renderHomepageProducts } from "./assets/js/aiaxcart/catalog.render.js?v=2";
-  import { guardAdmin } from "./assets/js/aiaxcart/admin-gate.js?v=2";
-  guardAdmin('admin-btn');        // hide Admin button if not admin
-  renderHomepageProducts();       // draw products, stock, sold, category
-</script>
 <script>
-  console.log("Aiaxcart BOOT v2025-11-12 22:00");
-  console.log("CONFIG =", window.CONFIG);
-</script>
-<script>
-  (async () => {
-    try {
-      if (!window.supabaseClient) throw new Error("supabaseClient missing");
-      const { data, error } = await window.supabaseClient
-        .from("products").select("key,name").limit(3);
-      console.log("Probe products data:", data, "error:", error);
-    } catch (e) {
-      console.error("Probe failed:", e);
-    }
-  })();
-</script>
-<!-- ==== OWNER VERIFY (drop-in) ==== -->
-<div id="owner-verify-box" style="margin:14px 0;">
-  <input id="owner-uid" type="text" placeholder="Paste your UID here"
-         style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;">
-  <button type="button" onclick="verifyOwnerAccess()"
-          style="margin-top:8px;padding:10px 14px;border-radius:8px;border:0;background:#5a3e36;color:#fff;">
-    Verify Admin Access
-  </button>
-  <small id="owner-verify-msg" style="display:block;margin-top:6px;color:#d33;"></small>
-</div>
+/* ===== BOOT ===== */
+const SB = createDbClient();                // from supabase.js (hybrid helpers)
+let currentUser = getSavedUser();
 
-<!-- Scroll to verify box when redirected from admin -->
-<script>
-  (function(){
-    if (location.hash === '#need-verify') {
-      const box = document.getElementById('owner-verify-box');
-      if (box) box.scrollIntoView({ behavior: 'smooth' });
-    }
-  })();
-</script>
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const name=t.dataset.tab;
+    document.querySelectorAll('main section.card').forEach(s=>s.style.display='none');
+    document.getElementById('products-wrap').parentElement.style.display=(name==='products')?'block':'none';
+    ['accounts','reports','payments','rules','feedback','about'].forEach(n=>{
+      const el=document.getElementById(`${n}-content`);
+      if(el) el.style.display=(name===n)?'block':'none';
+    });
+    if(name==='accounts') renderAccountTab();
+    if(name==='rules')    renderRules();
+  };
+});
 
-<!-- Supabase lib (ok even if already loaded above) -->
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+document.getElementById('login-btn').onclick=openAuth;
+document.getElementById('logout-btn').onclick=()=>{saveUser(null);refreshAuthUI();};
+document.getElementById('product-search').addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.p-card').forEach(card=>{
+    const name = card.getAttribute('data-name')||'';
+    card.style.display = name.includes(q)?'block':'none';
+  });
+});
+document.getElementById('co_accType').addEventListener('change', e=>{
+  document.getElementById('inviteGmailRow').style.display = (e.target.value.toLowerCase()==='invite')?'block':'none';
+});
 
-<!-- VERIFY via RPC, with fallback to CONFIG.ADMIN.OWNER_UID -->
-<script>
-  const SB_URL = (window.CONFIG && window.CONFIG.DATABASE && window.CONFIG.DATABASE.SUPABASE_URL)
-    || "https://oujvsjnbxmgpdoftzpxl.supabase.co";
-  const SB_KEY = (window.CONFIG && window.CONFIG.DATABASE && window.CONFIG.DATABASE.SUPABASE_ANON_KEY)
-    || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo";
-  const sb = window.supabase.createClient(SB_URL, SB_KEY);
-
-  // keep also in config.js (safe), but we hardcode here as fallback to guarantee entry
-  const FALLBACK_UID = (window.CONFIG && window.CONFIG.ADMIN && window.CONFIG.ADMIN.OWNER_UID)
-    || "2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36";
-
-  async function verifyOwnerAccess() {
-    const uidEl = document.getElementById('owner-uid');
-    const msgEl = document.getElementById('owner-verify-msg');
-    const typed = (uidEl?.value || '').trim();
-
-    if (!typed) { msgEl.textContent = 'Please enter your UID.'; return; }
-
-    function success() {
-      localStorage.setItem('ad-ok','1');
-      msgEl.style.color = '#2a7';
-      msgEl.textContent = 'Verified. Redirecting…';
-      location.href = 'admin.html';
-    }
-
-    try {
-      const { data, error } = await sb.rpc('is_uid_admin', { p_uid: typed });
-      console.log('[verify] RPC ->', { data, error });
-
-      if (error) {
-        // fallback compare so you can get in today
-        if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
-        msgEl.style.color = '#d33';
-        msgEl.textContent = 'Verification failed (RPC error).';
-        return;
-      }
-
-      if (data === true) return success();
-
-      // RPC said false – still allow fallback exact match to handle copy/paste whitespace issues
-      if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
-
-      localStorage.removeItem('ad-ok');
-      msgEl.style.color = '#d33';
-      msgEl.textContent = 'Invalid UID.';
-    } catch (e) {
-      // total exception – last fallback
-      console.error('[verify] exception', e);
-      if (typed.toLowerCase() === FALLBACK_UID.toLowerCase()) return success();
-      localStorage.removeItem('ad-ok');
-      msgEl.style.color = '#d33';
-      msgEl.textContent = 'Verification failed.';
-    }
+/* ===== PRODUCTS (DB-first; local fallback) ===== */
+async function renderProducts(){
+  const wrap = document.getElementById('products-wrap');
+  wrap.innerHTML = 'Loading…';
+  try{
+    const prods = await db_listProductsWithStock(); // [{product_id,name,icon,category,stock_count,sold_count}]
+    const grouped = groupBy(prods, 'category');
+    wrap.innerHTML = Object.entries(grouped).map(([cat,arr])=>{
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:.2rem 0 .6rem">
+            <h3>${prettyCat(cat)}</h3>
+            <span class="note">${arr.length} items</span>
+          </div>
+          <div class="products-category-grid">
+            ${arr.map(p=>pCard(p)).join('')}
+          </div>
+        </div>`;
+    }).join('');
+  }catch(e){
+    const local = JSON.parse(localStorage.getItem('products')||'[]');
+    wrap.innerHTML = (local.length? local.map(p=>pCard({
+      product_id:p.id,name:p.name,icon:p.icon,category:p.category,stock_count:p.stock||0,sold_count:p.sold||0
+    })).join(''): '<div class="note">No products.</div>');
   }
-</script>
+}
+function pCard(p){
+  const oos = (p.stock_count||0)<=0;
+  return `
+  <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
+    <div class="p-title">${p.icon||'🛒'} ${p.name}</div>
+    <div class="note">${p.category||''}</div>
+    <div class="p-stock" style="${oos?'color:#b22':''}">
+      ${oos? 'Out of stock' : `In stock: ${p.stock_count}`} &nbsp;<span class="pill">${p.sold_count||0} sold</span>
+    </div>
+    <button class="btn btn-primary" ${oos?'disabled':''}
+      onclick="openCheckout('${p.product_id}','${encodeURIComponent(p.name)}')">${oos?'Unavailable':'Buy'}</button>
+  </div>`;
+}
+function prettyCat(c){const map={entertainment:'🎬 Entertainment',streaming:'🎵 Music & Streaming',educational:'📚 Educational',editing:'🎨 Editing Tools',ai:'🤖 AI Tools'};return map[c]||c;}
+function groupBy(arr,k){return arr.reduce((a,x)=>((a[x[k]]=a[x[k]]||[]).push(x),a),{});}
 
-<!-- Hide Admin button until verified -->
-<script>
-  (function(){
-    var ok = localStorage.getItem('ad-ok') === '1';
-    var btn = document.getElementById('admin-btn'); // change if your button uses a different id
-    if (btn) btn.style.display = ok ? '' : 'none';
-  })();
+/* ===== CHECKOUT ===== */
+function openCheckout(product_id, product_name){
+  const f = document.getElementById('coForm');
+  f.product_id.value = product_id;
+  f.product_name.value = decodeURIComponent(product_name);
+  document.getElementById('coTitle').innerText = `Checkout • ${decodeURIComponent(product_name)}`;
+  document.getElementById('coMsg').innerText='';
+  if(currentUser){ f.buyer_name.value=currentUser.name||''; f.buyer_email.value=currentUser.email||''; }
+  document.getElementById('coOverlay').style.display='flex';
+}
+function closeCheckout(){ document.getElementById('coOverlay').style.display='none'; }
+document.getElementById('coForm').addEventListener('submit', async (e)=>{
+  const btn = document.getElementById('coSubmit'); btn.disabled=true;
+  const f = e.target;
+  try{
+    if (f.account_type.value.toLowerCase()==='invite'){
+      const gm = (f.invite_gmail.value||'').trim().toLowerCase();
+      if(!gm.endsWith('@gmail.com')) throw new Error('Invite requires a Gmail address.');
+    }
+    const payload = {
+      buyer_name:  f.buyer_name.value.trim(),
+      buyer_email: f.buyer_email.value.trim(),
+      product_id:  f.product_id.value,
+      product_name:f.product_name.value,
+      account_type:f.account_type.value,
+      duration_key:f.duration_key.value,
+      price:       Number(f.price.value||0),
+      invite_gmail:(f.invite_gmail?.value||null)
+    };
+    const order = await db_createOrder(payload); // writes to DB, adjusts counters
+    document.getElementById('coMsg').innerText = '✅ Order placed. ID: '+order.id;
+    setTimeout(()=>{ closeCheckout(); f.reset(); }, 800);
+  }catch(err){
+    alert('Checkout failed: '+(err.message||err));
+  }finally{ btn.disabled=false; }
+});
+
+/* ===== RULES / FEEDBACK / ACCOUNT ===== */
+async function renderRules(){
+  const box = document.getElementById('rules-wrap');
+  try{
+    const rows = await db_listRules();
+    const by = groupBy(rows,'product');
+    box.innerHTML = Object.keys(by).sort().map(prod=>{
+      const title = prod==='general'?'General Rules & Regulations':`${prod} Rules`;
+      return `<div class="card"><h4>${title}</h4>${by[prod].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
+    }).join('');
+  }catch(e){
+    const rules = JSON.parse(localStorage.getItem('rules')||'[]');
+    const by = groupBy(rules,'product');
+    box.innerHTML = Object.keys(by).map(prod=>{
+      const title = prod==='general'?'General Rules & Regulations':`${prod} Rules`;
+      return `<div class="card"><h4>${title}</h4>${by[prod].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
+    }).join('') || '<div class="note">No rules.</div>';
+  }
+}
+function renderAccountTab(){
+  const box = document.getElementById('accounts-content');
+  if(!currentUser){ box.innerHTML = `<h3>My Account</h3><div class="note">Login to view your orders.</div>`; return; }
+  const orders = JSON.parse(localStorage.getItem('aiaxcart_orders')||'[]').filter(o=>o.user?.email===currentUser.email);
+  box.innerHTML = `
+    <h3>My Account</h3>
+    <div class="card"><b>Name:</b> ${currentUser.name}<br><b>Email:</b> ${currentUser.email}</div>
+    <div class="card"><h4>Order History</h4>
+      ${orders.length? orders.map(o=>`
+        <div style="border:1px solid #F9E6E4;border-radius:10px;padding:.6rem;margin:.4rem 0">
+          <div><b>${o.product?.productName||o.product_name}</b> • ₱${o.product?.price||o.price||0}</div>
+          <div class="note">${o.product?.accountType||o.account_type} • ${o.product?.duration||o.duration_key}</div>
+          <div class="pill">${o.processed?'Completed':'Pending'}</div>
+        </div>`).join('') : '<div class="note">No orders yet.</div>'}
+    </div>`;
+}
+
+/* reports/feedback */
+document.getElementById('rep-submit').onclick=async()=>{
+  if(!currentUser) return alert('Login first.');
+  const data = {
+    orderId:document.getElementById('rep-order').value,
+    product:document.getElementById('rep-product').value,
+    issue:document.getElementById('rep-issue').value,
+    buyer:`${currentUser.name} (${currentUser.email})`
+  };
+  try{ await db_addBuyerReport(data); alert('Report submitted.'); document.getElementById('rep-issue').value=''; }catch(e){ alert('Failed: '+e.message); }
+};
+document.getElementById('fb-submit').onclick=()=>{
+  const t=document.getElementById('fb-text').value.trim(); if(!t) return;
+  const arr=JSON.parse(localStorage.getItem('fb')||'[]'); arr.unshift({u:currentUser?.name||'User',t,ts:Date.now()});
+  localStorage.setItem('fb',JSON.stringify(arr)); document.getElementById('fb-text').value=''; renderFeedback();
+};
+function renderFeedback(){
+  const list = JSON.parse(localStorage.getItem('fb')||'[]');
+  document.getElementById('fb-list').innerHTML = list.map(x=>`<div style="border-bottom:1px solid #F9E6E4;padding:.6rem 0"><b>${x.u}</b><div class="note">${new Date(x.ts).toLocaleString()}</div><div>${x.t}</div></div>`).join('');
+}
+
+/* ===== AUTH (local) ===== */
+function refreshAuthUI(){
+  const authBtns=document.getElementById('auth-buttons'); const uibox=document.getElementById('user-info');
+  if(currentUser){ authBtns.style.display='none'; uibox.style.display='flex'; document.getElementById('user-name').innerText=currentUser.name; document.getElementById('user-avatar').innerText=(currentUser.name||'?').charAt(0).toUpperCase(); document.getElementById('fb-gate').style.display='none'; document.getElementById('fb-form').style.display='block'; document.getElementById('report-gate').style.display='none'; document.getElementById('report-form').style.display='block'; }
+  else{ authBtns.style.display='block'; uibox.style.display='none'; document.getElementById('fb-gate').style.display='block'; document.getElementById('fb-form').style.display='none'; document.getElementById('report-gate').style.display='block'; document.getElementById('report-form').style.display='none';}
+}
+function getSavedUser(){ const s=localStorage.getItem('aiaxcart_current_user'); return s?JSON.parse(s):null; }
+function saveUser(u){ currentUser=u; if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u)); else localStorage.removeItem('aiaxcart_current_user'); }
+function openAuth(){ document.getElementById('authOverlay').style.display='flex'; }
+function closeAuth(){ document.getElementById('authOverlay').style.display='none'; document.getElementById('authMsg').innerText=''; }
+document.getElementById('tabLogin').onclick=()=>{document.getElementById('formLogin').style.display='block';document.getElementById('formSignup').style.display='none';};
+document.getElementById('tabSignup').onclick=()=>{document.getElementById('formLogin').style.display='none';document.getElementById('formSignup').style.display='block';};
+document.getElementById('btnLoginGo').onclick=()=>{ const email=liEmail.value.trim(), pass=liPass.value; const users=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]'); const u=users.find(x=>x.email===email&&x.password===pass); if(!u){authMsg.innerText='Invalid credentials';return;} saveUser(u); refreshAuthUI(); closeAuth(); };
+document.getElementById('btnSignupGo').onclick=()=>{ const name=suName.value.trim(), email=suEmail.value.trim(), pass=suPass.value, p2=suPass2.value; if(!name||!email||!pass||pass!==p2){authMsg.innerText='Fill all fields correctly.';return;} const users=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]'); if(users.some(x=>x.email===email)){authMsg.innerText='Email already exists.';return;} const u={id:Date.now(),name,email,password:pass,joinDate:new Date().toISOString()}; users.push(u); localStorage.setItem('aiaxcart_users',JSON.stringify(users)); saveUser(u); refreshAuthUI(); closeAuth(); };
+
+/* ===== REALTIME ===== */
+db_subscribeStockAndOrders(()=>{ renderProducts(); });
+
+/* ===== START ===== */
+refreshAuthUI(); renderProducts(); renderFeedback(); renderRules(); renderAccountTab();
+(function(){var ok=localStorage.getItem('ad-ok')==='1';var btn=document.getElementById('admin-btn'); if(btn) btn.style.display=ok?'':'none';})();
 </script>
-<!-- ==== /OWNER VERIFY ==== -->
 </body>
 </html>
