@@ -19,10 +19,7 @@
   .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
   .tab.active{background:#FFD3D6}
   .products-grid{display:flex;flex-direction:column;gap:2rem;margin:1.5rem 0}
-  .products-category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
   .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-  .p-title{font-weight:700}
-  .p-stock{margin:.25rem 0}
   .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
   .btn-primary{background:#FFB0B5;color:#fff}
   .btn-primary:disabled{background:#ddd;color:#777;cursor:not-allowed}
@@ -78,7 +75,7 @@
   </div>
 
   <!-- Products Section -->
-  <section style="margin-top:1.5rem;">
+  <section id="products-section" style="margin-top:1.5rem;">
     <h2>Products</h2>
     <div id="products-wrap" class="products-grid"></div>
   </section>
@@ -194,7 +191,7 @@
   </div>
 </div>
 
-<!-- ===== Public Config (replace with real keys) ===== -->
+<!-- ===== Public Config (real keys) ===== -->
 <script>
   window.CONFIG_PUBLIC = {
     DATABASE:{
@@ -210,11 +207,10 @@
 <script src="assets/js/aiaxcart/supabase.js?v=4"></script>
 
 <script>
-/* ===== App Boot (hybrid) ===== */
-const SB = createDbClient();       // from supabase.js v4
+// ===== App Boot =====
+const SB = createDbClient();
 let currentUser = getSavedUser();
 
-/* ----- Local Auth (UX only; orders still go to DB) ----- */
 function getSavedUser(){ const s=localStorage.getItem('aiaxcart_current_user'); return s?JSON.parse(s):null; }
 function saveUser(u){ currentUser=u; if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u)); else localStorage.removeItem('aiaxcart_current_user'); }
 function openAuth(){ authOverlay.style.display='flex'; }
@@ -223,14 +219,10 @@ function refreshAuthUI(){
   const ab=document.getElementById('auth-buttons');
   const ui=document.getElementById('user-info');
   if(currentUser){
-    ab.style.display='none';
-    ui.style.display='flex';
+    ab.style.display='none'; ui.style.display='flex';
     document.getElementById('user-name').textContent=currentUser.name;
     document.getElementById('user-avatar').textContent=currentUser.name.charAt(0).toUpperCase();
-  }else{
-    ab.style.display='block';
-    ui.style.display='none';
-  }
+  }else{ ab.style.display='block'; ui.style.display='none'; }
 }
 document.getElementById('login-btn').onclick=openAuth;
 document.getElementById('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); };
@@ -243,7 +235,7 @@ btnSignupGo.onclick=()=>{
   if(!n || !e || !p || p!==p2){ authMsg.textContent='Check inputs.'; return; }
   let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
   if(arr.some(x=>x.email===e)){ authMsg.textContent='Email exists.'; return; }
-  const u={id:Date.now(),name:n,email:e,password:p};
+  const u={id:Date.now(),name:n,email:e,password:p,joinDate:new Date().toISOString()};
   arr.push(u); localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
   saveUser(u); refreshAuthUI(); closeAuth();
 };
@@ -255,25 +247,26 @@ btnLoginGo.onclick=()=>{
   saveUser(u); refreshAuthUI(); closeAuth();
 };
 
-/* ----- Tabs ----- */
+// Tabs
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
-    document.getElementById('products-wrap').parentElement.style.display='block';
+    document.getElementById('products-section').style.display='block';
     tab.classList.add('active');
     const key=tab.dataset.tab;
-    if(key==='products'){
-      // already visible
-    }else{
-      document.getElementById('products-wrap').parentElement.style.display='none';
+    if(key!=='products'){
+      document.getElementById('products-section').style.display='none';
       document.getElementById(`${key}-content`).style.display='block';
       if(key==='reports') loadUserReports();
+      if(key==='feedback') loadFeedback();
+      if(key==='rules') loadRules();
+      if(key==='accounts') updateAccountTab();
     }
   });
 });
 
-/* ----- Search ----- */
+// Search
 document.getElementById('product-search').addEventListener('input', (e)=>{
   const q=e.target.value.toLowerCase();
   document.querySelectorAll('#products-wrap .p-card').forEach(card=>{
@@ -282,7 +275,7 @@ document.getElementById('product-search').addEventListener('input', (e)=>{
   });
 });
 
-/* ----- Products (DB) ----- */
+// Products
 async function renderProducts(){
   const wrap=document.getElementById('products-wrap');
   wrap.textContent='Loading…';
@@ -291,9 +284,9 @@ async function renderProducts(){
     wrap.innerHTML = data.map(p=>{
       const oos=(p.stock_count||0)<=0;
       return `<div class="p-card" data-name="${(p.name||'').toLowerCase()}">
-        <div class="p-title">${p.icon||'🛒'} ${p.name}</div>
+        <div style="font-weight:700">${p.icon||'🛒'} ${p.name}</div>
         <div class="note">${p.category||''}</div>
-        <div class="p-stock" style="${oos?'color:#b22':''}">${oos?'Out of stock':`In stock: ${p.stock_count}`}</div>
+        <div style="${oos?'color:#b22':''}">${oos?'Out of stock':`In stock: ${p.stock_count}`}</div>
         <button class="btn btn-primary" ${oos?'disabled':''}
           onclick="openCheckout('${p.product_id}','${p.name||''}')">${oos?'Unavailable':'Buy'}</button>
       </div>`;
@@ -323,7 +316,7 @@ document.getElementById('coForm').addEventListener('submit', async (e)=>{
       const gm=(f.invite_gmail.value||'').trim();
       if(!/^[^@]+@gmail\.com$/i.test(gm)) throw new Error('Invite requires a valid Gmail address.');
     }
-    await db_createOrder({
+    const order = await db_createOrder({
       buyer_name:  f.buyer_name.value.trim(),
       buyer_email: f.buyer_email.value.trim(),
       product_id:  f.product_id.value,
@@ -333,10 +326,10 @@ document.getElementById('coForm').addEventListener('submit', async (e)=>{
       price:       parseFloat(f.price.value||0),
       invite_gmail:f.invite_gmail ? f.invite_gmail.value.trim() : null
     });
-    document.getElementById('coMsg').textContent='✅ Order placed! Please wait for admin confirmation.';
-    setTimeout(()=>{ document.getElementById('coMsg').textContent=''; closeCheckout(); }, 900);
-    renderProducts(); // refresh stock
-    if(currentUser) updateAccountTab(); // show in history after admin processes
+    document.getElementById('coMsg').textContent='✅ Order placed! ID: '+order.id+' — wait for admin confirmation.';
+    setTimeout(()=>{ document.getElementById('coMsg').textContent=''; closeCheckout(); }, 1000);
+    renderProducts();
+    if(currentUser) updateAccountTab();
   }catch(err){
     alert('Checkout failed: '+err.message);
   }finally{
@@ -344,14 +337,12 @@ document.getElementById('coForm').addEventListener('submit', async (e)=>{
   }
 });
 
-/* ----- Rules (DB) ----- */
+// Rules
 async function loadRules(){
   const wrap=document.getElementById('rules-wrap'); wrap.textContent='Loading…';
   try{
     const rules=await db_fetchRules();
-    // Group by product
-    const byProd={};
-    rules.forEach(r=>{ const k=r.product||'general'; (byProd[k]=byProd[k]||[]).push(r); });
+    const byProd={}; rules.forEach(r=>{ const k=r.product||'general'; (byProd[k]=byProd[k]||[]).push(r); });
     let html='';
     if(byProd['general']){
       html+=`<div class="card"><h4>General Rules & Regulations</h4>${byProd['general'].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
@@ -360,9 +351,7 @@ async function loadRules(){
       html+=`<div class="card"><h4>${k} Rules</h4>${byProd[k].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
     });
     wrap.innerHTML=html||'<div class="note">No rules yet.</div>';
-  }catch(e){
-    console.error(e); wrap.innerHTML='<div class="note">Failed to load rules.</div>';
-  }
+  }catch(e){ wrap.innerHTML='<div class="note">Failed to load rules.</div>'; }
 }
 document.getElementById('rules-search').addEventListener('input', (e)=>{
   const q=e.target.value.toLowerCase();
@@ -371,7 +360,7 @@ document.getElementById('rules-search').addEventListener('input', (e)=>{
   });
 });
 
-/* ----- Reports (DB+local view) ----- */
+// Reports
 function gateReportUI(){
   const on=!!currentUser;
   document.getElementById('report-gate').style.display=on?'none':'block';
@@ -404,7 +393,7 @@ async function loadUserReports(){
     : '<div class="note">No reports yet.</div>';
 }
 
-/* ----- Feedback (DB) ----- */
+// Feedback
 function gateFeedbackUI(){
   const on=!!currentUser;
   document.getElementById('fb-gate').style.display=on?'none':'block';
@@ -426,20 +415,31 @@ async function loadFeedback(){
     : '<div class="note">No feedback yet.</div>';
 }
 
-/* ----- Admin button guard (hide if not verified) ----- */
+// Admin button guard
 (function guardAdminBtn(){
   const ok = localStorage.getItem('ad-ok')==='1';
   const btn = document.getElementById('admin-btn');
   if(btn) btn.style.display = ok ? '' : 'none';
 })();
 
-/* ----- Page init ----- */
+// My Account
+function updateAccountTab(){
+  if(!currentUser){ document.getElementById('accounts-content').innerHTML=''; return; }
+  document.getElementById('accounts-content').innerHTML = `
+    <h2>My Account</h2>
+    <div class="card">
+      <h3>Profile Information</h3>
+      <p><strong>Name:</strong> ${currentUser.name}</p>
+      <p><strong>Email:</strong> ${currentUser.email}</p>
+      <p><strong>Member since:</strong> ${new Date(currentUser.joinDate||Date.now()).toLocaleDateString()}</p>
+    </div>
+    <div class="card"><h3>Order History</h3><div class="note">Orders appear after admin confirmation.</div></div>`;
+}
+
+// Init
 document.addEventListener('DOMContentLoaded', async ()=>{
-  refreshAuthUI();
-  gateReportUI(); gateFeedbackUI();
-  await renderProducts();
-  await loadRules();
-  await loadFeedback();
+  refreshAuthUI(); gateReportUI(); gateFeedbackUI();
+  await renderProducts(); await loadRules(); await loadFeedback();
 });
 </script>
 </body>
