@@ -30,6 +30,7 @@
 </head>
 <body>
 
+<!-- SESSION GUARD -->
 <script>
 const OWNER_UID="2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36",SESSION_MIN=60,SESSION_VER="2025-11-12";
 function clearSession(){['ad-ok','ad-ok-ts','ad-owner-uid','ad-session-ver'].forEach(k=>localStorage.removeItem(k));}
@@ -162,18 +163,17 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
   </div>
 </div>
 
-<!-- ===== CONFIG (inline fallback) ===== -->
+<!-- ===== CONFIG (real keys) ===== -->
 <script>
-  window.CONFIG_PRIVATE = window.CONFIG_PRIVATE || undefined;
-  window.CONFIG_PUBLIC  = window.CONFIG_PUBLIC  || {
-    DATABASE:{ SUPABASE_URL:"YOUR_SUPABASE_URL_HERE", SUPABASE_ANON_KEY:"YOUR_SUPABASE_ANON_KEY_HERE" },
+  window.CONFIG_PUBLIC  = {
+    DATABASE:{ 
+      SUPABASE_URL:"https://oujvsjnbxmgpdoftzpxl.supabase.co",
+      SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo" 
+    },
     ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
   };
-  window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
+  window.CONFIG = window.CONFIG_PUBLIC;
 </script>
-<script src="config.private.js"></script>
-<script src="config.js"></script>
-<script> window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC || window.CONFIG; </script>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=4"></script>
@@ -189,8 +189,8 @@ async function verifyOwnerUID(){
   function ok(){ setSession(uid); msg.style.color='#2a7'; msg.textContent='Verified. Entering…'; document.getElementById('ownerVeriOverlay').style.display='none'; showAdmin(); }
   try{
     const yes = await db_isUidAdmin(uid);
-    if(yes || uid===CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Invalid UID.'; clearSession(); }
-  }catch(e){ if(uid===CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Verification failed.'; } }
+    if(yes || uid===window.CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Invalid UID.'; clearSession(); }
+  }catch(e){ if(uid===window.CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Verification failed.'; } }
 }
 (function(){ if(!isVerified()) document.getElementById('ownerVeriOverlay').style.display='flex'; else showAdmin(); })();
 
@@ -250,7 +250,7 @@ function fillSelect(id,arr){ const el=document.getElementById(id); if(!el) retur
 
 /* Renders */
 async function refreshAll(){
-  const stats = await db_adminStats(); // {products,available,pending,revenue}
+  const stats = await db_adminStats();
   document.getElementById('stat-products').innerText=stats.products;
   document.getElementById('stat-stock').innerText=stats.available;
   document.getElementById('stat-pending').innerText=stats.pending;
