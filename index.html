@@ -4,13 +4,13 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium Shop</title>
-<link rel="stylesheet" href="assets/css/extras.css"/>
+
 <style>
-  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0}
   header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
   .container{max-width:1200px;margin:0 auto;padding:0 20px}
   .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
-  nav ul{display:flex;list-style:none;gap:1rem}
+  nav ul{display:flex;gap:1rem;margin:0;padding:0;list-style:none}
   nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
   nav a.active,nav a:hover{background:#FFC6CA}
   .user-info{display:none;align-items:center;gap:.7rem}
@@ -40,9 +40,10 @@
   footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
   @media(max-width:768px){nav ul{flex-wrap:wrap}}
 </style>
+<link rel="stylesheet" href="assets/css/extras.css"/>
 </head>
-<body>
 
+<body>
 <header>
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium</div>
@@ -72,7 +73,9 @@
 </header>
 
 <main class="container">
-  <div class="search-wrap"><span>🔍</span><input id="product-search" placeholder="Search products…"/></div>
+  <div class="search-wrap">
+    <span>🔍</span><input id="product-search" placeholder="Search products…"/>
+  </div>
 
   <!-- Products Section -->
   <section style="margin-top:1.5rem;">
@@ -80,9 +83,10 @@
     <div id="products-wrap" class="products-grid"></div>
   </section>
 
-  <!-- Other tabs -->
+  <!-- Accounts -->
   <section id="accounts-content" class="card" style="display:none"></section>
 
+  <!-- Reports -->
   <section id="reports-content" class="card" style="display:none">
     <h3>Report an Issue</h3>
     <div id="report-gate" class="note">Please login to report an issue.</div>
@@ -95,17 +99,21 @@
     <div id="my-reports" style="margin-top:1rem"></div>
   </section>
 
+  <!-- Payments -->
   <section id="payments-content" class="card" style="display:none">
     <h3>Payment Methods</h3>
-    <p>GCash: <b>0962 554 4105</b></p><p>Maya: <b>0929 984 3629</b></p>
+    <p>GCash: <b>0962 554 4105</b></p>
+    <p>Maya: <b>0929 984 3629</b></p>
   </section>
 
+  <!-- Rules -->
   <section id="rules-content" class="card" style="display:none">
     <h3>Store Rules</h3>
     <div class="row"><input id="rules-search" placeholder="Search rules…"></div>
     <div id="rules-wrap"></div>
   </section>
 
+  <!-- Feedback -->
   <section id="feedback-content" class="card" style="display:none">
     <h3>Customer Feedback</h3>
     <div id="fb-gate" class="note">Please login to leave feedback.</div>
@@ -116,6 +124,7 @@
     <div id="fb-list" style="margin-top:1rem"></div>
   </section>
 
+  <!-- About -->
   <section id="about-content" class="card" style="display:none">
     <p>Aiaxcart Premium — Your trusted source for premium digital accounts.</p>
   </section>
@@ -123,7 +132,7 @@
 
 <footer><div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div></footer>
 
-<!-- CHECKOUT MODAL -->
+<!-- ===== Checkout Modal ===== -->
 <div id="coOverlay" class="overlay">
   <div class="modal">
     <h3 id="coTitle">Checkout</h3>
@@ -132,8 +141,7 @@
       <input type="hidden" name="product_name"/>
       <div class="row"><label>Buyer Name</label><input required name="buyer_name"></div>
       <div class="row"><label>Email</label><input required type="email" name="buyer_email"></div>
-      <div class="row">
-        <label>Account Type</label>
+      <div class="row"><label>Account Type</label>
         <select name="account_type" required id="co_accType">
           <option>Solo Profile</option><option>Shared Profile</option>
           <option>Solo Account</option><option>Shared Account</option>
@@ -145,8 +153,7 @@
         <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
         <small class="note">Must be a Gmail address (separate from login email).</small>
       </div>
-      <div class="row">
-        <label>Duration</label>
+      <div class="row"><label>Duration</label>
         <select name="duration_key" required>
           <option>7d</option><option>14d</option><option>1m</option><option>2m</option>
           <option>3m</option><option>4m</option><option>6m</option><option>8m</option>
@@ -163,11 +170,11 @@
   </div>
 </div>
 
-<!-- AUTH MODAL (simple) -->
+<!-- ===== Auth Modal ===== -->
 <div id="authOverlay" class="overlay">
   <div class="modal">
     <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
-      <button id="tabLogin"  class="btn"        >Login</button>
+      <button id="tabLogin" class="btn">Login</button>
       <button id="tabSignup" class="btn btn-primary">Sign up</button>
       <button style="margin-left:auto" class="btn" onclick="closeAuth()">×</button>
     </div>
@@ -187,214 +194,253 @@
   </div>
 </div>
 
-<!-- ===== CONFIG (inline fallback; also reads config.private.js/config.js if present) ===== -->
+<!-- ===== Public Config (replace with real keys) ===== -->
 <script>
-  window.CONFIG_PRIVATE = window.CONFIG_PRIVATE || undefined;
-  window.CONFIG_PUBLIC  = window.CONFIG_PUBLIC  || {
-    DATABASE:{ SUPABASE_URL:"YOUR_SUPABASE_URL_HERE", SUPABASE_ANON_KEY:"YOUR_SUPABASE_ANON_KEY_HERE" },
+  window.CONFIG_PUBLIC = {
+    DATABASE:{
+      SUPABASE_URL:"https://oujvsjnbxmgpdoftzpxl.supabase.co",
+      SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo"
+    },
     ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
   };
-  window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
-<script src="config.private.js"></script>
-<script src="config.js"></script>
-<script> window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC || window.CONFIG; </script>
 
-<!-- Supabase + helpers -->
+<!-- Supabase + helper file (v4) -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=4"></script>
 
 <script>
-/* ===== BOOT ===== */
-const SB = createDbClient();                // from supabase.js (hybrid helpers)
+/* ===== App Boot (hybrid) ===== */
+const SB = createDbClient();       // from supabase.js v4
 let currentUser = getSavedUser();
 
-document.querySelectorAll('.tab').forEach(t=>{
-  t.onclick=()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    const name=t.dataset.tab;
-    document.querySelectorAll('main section.card').forEach(s=>s.style.display='none');
-    document.getElementById('products-wrap').parentElement.style.display=(name==='products')?'block':'none';
-    ['accounts','reports','payments','rules','feedback','about'].forEach(n=>{
-      const el=document.getElementById(`${n}-content`);
-      if(el) el.style.display=(name===n)?'block':'none';
-    });
-    if(name==='accounts') renderAccountTab();
-    if(name==='rules')    renderRules();
-  };
-});
-
-document.getElementById('login-btn').onclick=openAuth;
-document.getElementById('logout-btn').onclick=()=>{saveUser(null);refreshAuthUI();};
-document.getElementById('product-search').addEventListener('input', e=>{
-  const q = e.target.value.trim().toLowerCase();
-  document.querySelectorAll('.p-card').forEach(card=>{
-    const name = card.getAttribute('data-name')||'';
-    card.style.display = name.includes(q)?'block':'none';
-  });
-});
-document.getElementById('co_accType').addEventListener('change', e=>{
-  document.getElementById('inviteGmailRow').style.display = (e.target.value.toLowerCase()==='invite')?'block':'none';
-});
-
-/* ===== PRODUCTS (DB-first; local fallback) ===== */
-async function renderProducts(){
-  const wrap = document.getElementById('products-wrap');
-  wrap.innerHTML = 'Loading…';
-  try{
-    const prods = await db_listProductsWithStock(); // [{product_id,name,icon,category,stock_count,sold_count}]
-    const grouped = groupBy(prods, 'category');
-    wrap.innerHTML = Object.entries(grouped).map(([cat,arr])=>{
-      return `
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin:.2rem 0 .6rem">
-            <h3>${prettyCat(cat)}</h3>
-            <span class="note">${arr.length} items</span>
-          </div>
-          <div class="products-category-grid">
-            ${arr.map(p=>pCard(p)).join('')}
-          </div>
-        </div>`;
-    }).join('');
-  }catch(e){
-    const local = JSON.parse(localStorage.getItem('products')||'[]');
-    wrap.innerHTML = (local.length? local.map(p=>pCard({
-      product_id:p.id,name:p.name,icon:p.icon,category:p.category,stock_count:p.stock||0,sold_count:p.sold||0
-    })).join(''): '<div class="note">No products.</div>');
+/* ----- Local Auth (UX only; orders still go to DB) ----- */
+function getSavedUser(){ const s=localStorage.getItem('aiaxcart_current_user'); return s?JSON.parse(s):null; }
+function saveUser(u){ currentUser=u; if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u)); else localStorage.removeItem('aiaxcart_current_user'); }
+function openAuth(){ authOverlay.style.display='flex'; }
+function closeAuth(){ authOverlay.style.display='none'; authMsg.textContent=''; }
+function refreshAuthUI(){
+  const ab=document.getElementById('auth-buttons');
+  const ui=document.getElementById('user-info');
+  if(currentUser){
+    ab.style.display='none';
+    ui.style.display='flex';
+    document.getElementById('user-name').textContent=currentUser.name;
+    document.getElementById('user-avatar').textContent=currentUser.name.charAt(0).toUpperCase();
+  }else{
+    ab.style.display='block';
+    ui.style.display='none';
   }
 }
-function pCard(p){
-  const oos = (p.stock_count||0)<=0;
-  return `
-  <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
-    <div class="p-title">${p.icon||'🛒'} ${p.name}</div>
-    <div class="note">${p.category||''}</div>
-    <div class="p-stock" style="${oos?'color:#b22':''}">
-      ${oos? 'Out of stock' : `In stock: ${p.stock_count}`} &nbsp;<span class="pill">${p.sold_count||0} sold</span>
-    </div>
-    <button class="btn btn-primary" ${oos?'disabled':''}
-      onclick="openCheckout('${p.product_id}','${encodeURIComponent(p.name)}')">${oos?'Unavailable':'Buy'}</button>
-  </div>`;
-}
-function prettyCat(c){const map={entertainment:'🎬 Entertainment',streaming:'🎵 Music & Streaming',educational:'📚 Educational',editing:'🎨 Editing Tools',ai:'🤖 AI Tools'};return map[c]||c;}
-function groupBy(arr,k){return arr.reduce((a,x)=>((a[x[k]]=a[x[k]]||[]).push(x),a),{});}
+document.getElementById('login-btn').onclick=openAuth;
+document.getElementById('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); };
 
-/* ===== CHECKOUT ===== */
+tabLogin.onclick=()=>{ formLogin.style.display='block'; formSignup.style.display='none'; };
+tabSignup.onclick=()=>{ formLogin.style.display='none'; formSignup.style.display='block'; };
+
+btnSignupGo.onclick=()=>{
+  const n=suName.value.trim(), e=suEmail.value.trim(), p=suPass.value, p2=suPass2.value;
+  if(!n || !e || !p || p!==p2){ authMsg.textContent='Check inputs.'; return; }
+  let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
+  if(arr.some(x=>x.email===e)){ authMsg.textContent='Email exists.'; return; }
+  const u={id:Date.now(),name:n,email:e,password:p};
+  arr.push(u); localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
+  saveUser(u); refreshAuthUI(); closeAuth();
+};
+btnLoginGo.onclick=()=>{
+  const e=liEmail.value.trim(), p=liPass.value;
+  const arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
+  const u=arr.find(x=>x.email===e && x.password===p);
+  if(!u){ authMsg.textContent='Invalid credentials.'; return; }
+  saveUser(u); refreshAuthUI(); closeAuth();
+};
+
+/* ----- Tabs ----- */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
+    document.getElementById('products-wrap').parentElement.style.display='block';
+    tab.classList.add('active');
+    const key=tab.dataset.tab;
+    if(key==='products'){
+      // already visible
+    }else{
+      document.getElementById('products-wrap').parentElement.style.display='none';
+      document.getElementById(`${key}-content`).style.display='block';
+      if(key==='reports') loadUserReports();
+    }
+  });
+});
+
+/* ----- Search ----- */
+document.getElementById('product-search').addEventListener('input', (e)=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('#products-wrap .p-card').forEach(card=>{
+    const match=(card.dataset.name||'').includes(q);
+    card.style.display = match ? '' : 'none';
+  });
+});
+
+/* ----- Products (DB) ----- */
+async function renderProducts(){
+  const wrap=document.getElementById('products-wrap');
+  wrap.textContent='Loading…';
+  try{
+    const data=await db_listProductsWithStock();
+    wrap.innerHTML = data.map(p=>{
+      const oos=(p.stock_count||0)<=0;
+      return `<div class="p-card" data-name="${(p.name||'').toLowerCase()}">
+        <div class="p-title">${p.icon||'🛒'} ${p.name}</div>
+        <div class="note">${p.category||''}</div>
+        <div class="p-stock" style="${oos?'color:#b22':''}">${oos?'Out of stock':`In stock: ${p.stock_count}`}</div>
+        <button class="btn btn-primary" ${oos?'disabled':''}
+          onclick="openCheckout('${p.product_id}','${p.name||''}')">${oos?'Unavailable':'Buy'}</button>
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error(e);
+    wrap.innerHTML='<div class="note">Failed to load products.</div>';
+  }
+}
 function openCheckout(product_id, product_name){
-  const f = document.getElementById('coForm');
-  f.product_id.value = product_id;
-  f.product_name.value = decodeURIComponent(product_name);
-  document.getElementById('coTitle').innerText = `Checkout • ${decodeURIComponent(product_name)}`;
-  document.getElementById('coMsg').innerText='';
-  if(currentUser){ f.buyer_name.value=currentUser.name||''; f.buyer_email.value=currentUser.email||''; }
+  const f=document.getElementById('coForm');
+  f.product_id.value=product_id; f.product_name.value=product_name;
+  document.getElementById('coTitle').textContent='Checkout • '+product_name;
+  if(currentUser){ f.buyer_name.value=currentUser.name; f.buyer_email.value=currentUser.email; }
+  document.getElementById('inviteGmailRow').style.display = (document.getElementById('co_accType').value.toLowerCase()==='invite')?'block':'none';
   document.getElementById('coOverlay').style.display='flex';
 }
 function closeCheckout(){ document.getElementById('coOverlay').style.display='none'; }
+document.getElementById('co_accType').onchange=(e)=>{
+  document.getElementById('inviteGmailRow').style.display = (e.target.value.toLowerCase()==='invite')?'block':'none';
+};
 document.getElementById('coForm').addEventListener('submit', async (e)=>{
-  const btn = document.getElementById('coSubmit'); btn.disabled=true;
-  const f = e.target;
+  e.preventDefault();
+  const f=e.target; const btn=document.getElementById('coSubmit'); btn.disabled=true;
   try{
-    if (f.account_type.value.toLowerCase()==='invite'){
-      const gm = (f.invite_gmail.value||'').trim().toLowerCase();
-      if(!gm.endsWith('@gmail.com')) throw new Error('Invite requires a Gmail address.');
+    if(f.account_type.value.toLowerCase()==='invite'){
+      const gm=(f.invite_gmail.value||'').trim();
+      if(!/^[^@]+@gmail\.com$/i.test(gm)) throw new Error('Invite requires a valid Gmail address.');
     }
-    const payload = {
+    await db_createOrder({
       buyer_name:  f.buyer_name.value.trim(),
       buyer_email: f.buyer_email.value.trim(),
       product_id:  f.product_id.value,
       product_name:f.product_name.value,
       account_type:f.account_type.value,
       duration_key:f.duration_key.value,
-      price:       Number(f.price.value||0),
-      invite_gmail:(f.invite_gmail?.value||null)
-    };
-    const order = await db_createOrder(payload); // writes to DB, adjusts counters
-    document.getElementById('coMsg').innerText = '✅ Order placed. ID: '+order.id;
-    setTimeout(()=>{ closeCheckout(); f.reset(); }, 800);
+      price:       parseFloat(f.price.value||0),
+      invite_gmail:f.invite_gmail ? f.invite_gmail.value.trim() : null
+    });
+    document.getElementById('coMsg').textContent='✅ Order placed! Please wait for admin confirmation.';
+    setTimeout(()=>{ document.getElementById('coMsg').textContent=''; closeCheckout(); }, 900);
+    renderProducts(); // refresh stock
+    if(currentUser) updateAccountTab(); // show in history after admin processes
   }catch(err){
-    alert('Checkout failed: '+(err.message||err));
-  }finally{ btn.disabled=false; }
+    alert('Checkout failed: '+err.message);
+  }finally{
+    btn.disabled=false;
+  }
 });
 
-/* ===== RULES / FEEDBACK / ACCOUNT ===== */
-async function renderRules(){
-  const box = document.getElementById('rules-wrap');
+/* ----- Rules (DB) ----- */
+async function loadRules(){
+  const wrap=document.getElementById('rules-wrap'); wrap.textContent='Loading…';
   try{
-    const rows = await db_listRules();
-    const by = groupBy(rows,'product');
-    box.innerHTML = Object.keys(by).sort().map(prod=>{
-      const title = prod==='general'?'General Rules & Regulations':`${prod} Rules`;
-      return `<div class="card"><h4>${title}</h4>${by[prod].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
-    }).join('');
+    const rules=await db_fetchRules();
+    // Group by product
+    const byProd={};
+    rules.forEach(r=>{ const k=r.product||'general'; (byProd[k]=byProd[k]||[]).push(r); });
+    let html='';
+    if(byProd['general']){
+      html+=`<div class="card"><h4>General Rules & Regulations</h4>${byProd['general'].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
+    }
+    Object.keys(byProd).filter(k=>k!=='general').forEach(k=>{
+      html+=`<div class="card"><h4>${k} Rules</h4>${byProd[k].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
+    });
+    wrap.innerHTML=html||'<div class="note">No rules yet.</div>';
   }catch(e){
-    const rules = JSON.parse(localStorage.getItem('rules')||'[]');
-    const by = groupBy(rules,'product');
-    box.innerHTML = Object.keys(by).map(prod=>{
-      const title = prod==='general'?'General Rules & Regulations':`${prod} Rules`;
-      return `<div class="card"><h4>${title}</h4>${by[prod].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
-    }).join('') || '<div class="note">No rules.</div>';
+    console.error(e); wrap.innerHTML='<div class="note">Failed to load rules.</div>';
   }
 }
-function renderAccountTab(){
-  const box = document.getElementById('accounts-content');
-  if(!currentUser){ box.innerHTML = `<h3>My Account</h3><div class="note">Login to view your orders.</div>`; return; }
-  const orders = JSON.parse(localStorage.getItem('aiaxcart_orders')||'[]').filter(o=>o.user?.email===currentUser.email);
-  box.innerHTML = `
-    <h3>My Account</h3>
-    <div class="card"><b>Name:</b> ${currentUser.name}<br><b>Email:</b> ${currentUser.email}</div>
-    <div class="card"><h4>Order History</h4>
-      ${orders.length? orders.map(o=>`
-        <div style="border:1px solid #F9E6E4;border-radius:10px;padding:.6rem;margin:.4rem 0">
-          <div><b>${o.product?.productName||o.product_name}</b> • ₱${o.product?.price||o.price||0}</div>
-          <div class="note">${o.product?.accountType||o.account_type} • ${o.product?.duration||o.duration_key}</div>
-          <div class="pill">${o.processed?'Completed':'Pending'}</div>
-        </div>`).join('') : '<div class="note">No orders yet.</div>'}
-    </div>`;
+document.getElementById('rules-search').addEventListener('input', (e)=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('#rules-wrap .note').forEach(n=>{
+    n.style.display = n.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+/* ----- Reports (DB+local view) ----- */
+function gateReportUI(){
+  const on=!!currentUser;
+  document.getElementById('report-gate').style.display=on?'none':'block';
+  document.getElementById('report-form').style.display=on?'block':'none';
+}
+async function submitReport(){
+  if(!currentUser) return;
+  const orderId=document.getElementById('rep-order').value.trim();
+  const product=document.getElementById('rep-product').value.trim();
+  const issue=document.getElementById('rep-issue').value.trim();
+  if(!issue){ alert('Please describe the issue.'); return; }
+  await db_addBuyerReport({
+    order_id:orderId||null, product:product||null, issue,
+    buyer: currentUser.name, email: currentUser.email
+  });
+  document.getElementById('rep-order').value='';
+  document.getElementById('rep-product').value='';
+  document.getElementById('rep-issue').value='';
+  loadUserReports();
+  alert('Report submitted. We will get back to you soon.');
+}
+document.getElementById('rep-submit').onclick=submitReport;
+
+async function loadUserReports(){
+  if(!currentUser){ document.getElementById('my-reports').innerHTML=''; return; }
+  const list=await db_fetchBuyerReports(currentUser.email);
+  const box=document.getElementById('my-reports');
+  box.innerHTML = (list&&list.length)
+    ? list.map(r=>`<div class="card"><div><b>Report ID:</b> ${r.id}</div><div><b>Order ID:</b> ${r.order_id||'N/A'}</div><div><b>Product:</b> ${r.product||'N/A'}</div><div><b>Issue:</b> ${r.issue}</div><div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status||'pending'}</span></div><div class="note">${new Date(r.created_at).toLocaleString()}</div></div>`).join('')
+    : '<div class="note">No reports yet.</div>';
 }
 
-/* reports/feedback */
-document.getElementById('rep-submit').onclick=async()=>{
-  if(!currentUser) return alert('Login first.');
-  const data = {
-    orderId:document.getElementById('rep-order').value,
-    product:document.getElementById('rep-product').value,
-    issue:document.getElementById('rep-issue').value,
-    buyer:`${currentUser.name} (${currentUser.email})`
-  };
-  try{ await db_addBuyerReport(data); alert('Report submitted.'); document.getElementById('rep-issue').value=''; }catch(e){ alert('Failed: '+e.message); }
+/* ----- Feedback (DB) ----- */
+function gateFeedbackUI(){
+  const on=!!currentUser;
+  document.getElementById('fb-gate').style.display=on?'none':'block';
+  document.getElementById('fb-form').style.display=on?'block':'none';
+}
+document.getElementById('fb-submit').onclick=async ()=>{
+  const txt=document.getElementById('fb-text').value.trim();
+  if(!currentUser){ alert('Please login.'); return; }
+  if(!txt){ alert('Write some feedback.'); return; }
+  await db_addFeedback({user:currentUser.name,text:txt});
+  document.getElementById('fb-text').value='';
+  loadFeedback();
 };
-document.getElementById('fb-submit').onclick=()=>{
-  const t=document.getElementById('fb-text').value.trim(); if(!t) return;
-  const arr=JSON.parse(localStorage.getItem('fb')||'[]'); arr.unshift({u:currentUser?.name||'User',t,ts:Date.now()});
-  localStorage.setItem('fb',JSON.stringify(arr)); document.getElementById('fb-text').value=''; renderFeedback();
-};
-function renderFeedback(){
-  const list = JSON.parse(localStorage.getItem('fb')||'[]');
-  document.getElementById('fb-list').innerHTML = list.map(x=>`<div style="border-bottom:1px solid #F9E6E4;padding:.6rem 0"><b>${x.u}</b><div class="note">${new Date(x.ts).toLocaleString()}</div><div>${x.t}</div></div>`).join('');
+async function loadFeedback(){
+  const list=await db_fetchFeedback();
+  const box=document.getElementById('fb-list');
+  box.innerHTML = (list&&list.length)
+    ? list.map(f=>`<div class="card"><div style="display:flex;align-items:center;gap:.6rem"><div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${(f.user||'?')[0]?.toUpperCase?.()||'U'}</div><div><b>${f.user||'User'}</b><div class="note">${new Date(f.created_at||Date.now()).toLocaleString()}</div></div></div><div style="margin-top:.6rem">${f.text||''}</div></div>`).join('')
+    : '<div class="note">No feedback yet.</div>';
 }
 
-/* ===== AUTH (local) ===== */
-function refreshAuthUI(){
-  const authBtns=document.getElementById('auth-buttons'); const uibox=document.getElementById('user-info');
-  if(currentUser){ authBtns.style.display='none'; uibox.style.display='flex'; document.getElementById('user-name').innerText=currentUser.name; document.getElementById('user-avatar').innerText=(currentUser.name||'?').charAt(0).toUpperCase(); document.getElementById('fb-gate').style.display='none'; document.getElementById('fb-form').style.display='block'; document.getElementById('report-gate').style.display='none'; document.getElementById('report-form').style.display='block'; }
-  else{ authBtns.style.display='block'; uibox.style.display='none'; document.getElementById('fb-gate').style.display='block'; document.getElementById('fb-form').style.display='none'; document.getElementById('report-gate').style.display='block'; document.getElementById('report-form').style.display='none';}
-}
-function getSavedUser(){ const s=localStorage.getItem('aiaxcart_current_user'); return s?JSON.parse(s):null; }
-function saveUser(u){ currentUser=u; if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u)); else localStorage.removeItem('aiaxcart_current_user'); }
-function openAuth(){ document.getElementById('authOverlay').style.display='flex'; }
-function closeAuth(){ document.getElementById('authOverlay').style.display='none'; document.getElementById('authMsg').innerText=''; }
-document.getElementById('tabLogin').onclick=()=>{document.getElementById('formLogin').style.display='block';document.getElementById('formSignup').style.display='none';};
-document.getElementById('tabSignup').onclick=()=>{document.getElementById('formLogin').style.display='none';document.getElementById('formSignup').style.display='block';};
-document.getElementById('btnLoginGo').onclick=()=>{ const email=liEmail.value.trim(), pass=liPass.value; const users=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]'); const u=users.find(x=>x.email===email&&x.password===pass); if(!u){authMsg.innerText='Invalid credentials';return;} saveUser(u); refreshAuthUI(); closeAuth(); };
-document.getElementById('btnSignupGo').onclick=()=>{ const name=suName.value.trim(), email=suEmail.value.trim(), pass=suPass.value, p2=suPass2.value; if(!name||!email||!pass||pass!==p2){authMsg.innerText='Fill all fields correctly.';return;} const users=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]'); if(users.some(x=>x.email===email)){authMsg.innerText='Email already exists.';return;} const u={id:Date.now(),name,email,password:pass,joinDate:new Date().toISOString()}; users.push(u); localStorage.setItem('aiaxcart_users',JSON.stringify(users)); saveUser(u); refreshAuthUI(); closeAuth(); };
+/* ----- Admin button guard (hide if not verified) ----- */
+(function guardAdminBtn(){
+  const ok = localStorage.getItem('ad-ok')==='1';
+  const btn = document.getElementById('admin-btn');
+  if(btn) btn.style.display = ok ? '' : 'none';
+})();
 
-/* ===== REALTIME ===== */
-db_subscribeStockAndOrders(()=>{ renderProducts(); });
-
-/* ===== START ===== */
-refreshAuthUI(); renderProducts(); renderFeedback(); renderRules(); renderAccountTab();
-(function(){var ok=localStorage.getItem('ad-ok')==='1';var btn=document.getElementById('admin-btn'); if(btn) btn.style.display=ok?'':'none';})();
+/* ----- Page init ----- */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  refreshAuthUI();
+  gateReportUI(); gateFeedbackUI();
+  await renderProducts();
+  await loadRules();
+  await loadFeedback();
+});
 </script>
 </body>
 </html>
