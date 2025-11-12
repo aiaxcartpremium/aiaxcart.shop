@@ -42,9 +42,22 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
 <header>
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium</div>
-    <nav><a href="index.html">Home</a><a class="active" href="admin.html">Admin</a></nav>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="active" href="admin.html">Admin</a>
+      <button id="ad-logout" class="btn" style="margin-left:1rem">Logout</button>
+    </nav>
   </div>
 </header>
+<script>
+document.getElementById('ad-logout').onclick=()=>{
+  localStorage.removeItem('ad-ok');
+  localStorage.removeItem('ad-ok-ts');
+  localStorage.removeItem('ad-owner-uid');
+  localStorage.removeItem('ad-session-ver');
+  location.href='index.html';
+};
+</script>
 
 <!-- Verify Modal -->
 <div id="ownerVeriOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.37);display:none;align-items:center;justify-content:center;z-index:9999;">
@@ -78,82 +91,25 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
   </div>
 
   <!-- Add Stock -->
-<div id="p-add" class="panel active">
-  <div class="card">
-    <h3>Add Stock</h3>
-    <form id="fAdd">
-      <div class="row">
-        <label>Product</label>
-        <select id="as-product"></select>
-      </div>
-
-      <div class="row">
-        <label>Account Type</label>
-        <select id="as-type"></select>
-      </div>
-
-      <div class="row">
-        <label>Duration</label>
-        <select id="as-dur"></select>
-      </div>
-
-      <div class="row">
-        <label>Quantity</label>
-        <input id="as-qty" type="number" min="1" value="1">
-      </div>
-
-      <div class="row">
-        <label>Premium?</label>
-        <select id="as-premium">
-          <option value="false">No</option>
-          <option value="true">Yes</option>
-        </select>
-      </div>
-
-      <div class="row">
-        <label>Expiry Date (optional)</label>
-        <input id="as-expiry" type="date">
-      </div>
-
-      <div class="row">
-        <label>Email</label>
-        <input id="as-email">
-      </div>
-
-      <div class="row">
-        <label>Password</label>
-        <input id="as-pass">
-      </div>
-
-      <div class="row">
-        <label>Profile</label>
-        <input id="as-prof">
-      </div>
-
-      <div class="row">
-        <label>PIN</label>
-        <input id="as-pin">
-      </div>
-
-      <div class="row">
-        <button class="btn btn-p" type="submit">Add</button>
-      </div>
-    </form>
-    <div id="msgAdd" style="color:#0a0;margin-top:.6rem"></div>
-  </div>
-</div>
-
-<!-- Archived (add date when archiving) -->
-<div id="p-arch" class="panel">
-  <div class="card">
-    <h3>Archived</h3>
-    <div class="row">
-      <label>Archive Date (applies when you click Archive)</label>
-      <input id="arch-date" type="date">
+  <div id="p-add" class="panel active">
+    <div class="card">
+      <h3>Add Stock</h3>
+      <form id="fAdd">
+        <div class="row"><label>Product</label><select id="as-product"></select></div>
+        <div class="row"><label>Account Type</label><select id="as-type"></select></div>
+        <div class="row"><label>Duration</label><select id="as-dur"></select></div>
+        <div class="row"><label>Quantity</label><input id="as-qty" type="number" min="1" value="1"></div>
+        <div class="row"><label>Expiry Date (optional)</label><input id="as-expiry" type="date"></div>
+        <div class="row"><label>Email</label><input id="as-email"></div>
+        <div class="row"><label>Password</label><input id="as-pass"></div>
+        <div class="row"><label>Profile</label><input id="as-prof"></div>
+        <div class="row"><label>PIN</label><input id="as-pin"></div>
+        <div class="row"><button class="btn btn-p" type="submit">Add</button></div>
+      </form>
+      <div id="msgAdd" style="color:#0a0;margin-top:.6rem"></div>
     </div>
-    <div id="archList" class="grid"></div>
   </div>
-</div>
+
   <!-- Manage -->
   <div id="p-manage" class="panel">
     <div class="card"><h3>Manage Stocks</h3><div id="manageList" class="grid"></div></div>
@@ -171,7 +127,10 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
 
   <!-- Archived -->
   <div id="p-arch" class="panel">
-    <div class="card"><h3>Archived</h3><div id="archList" class="grid"></div></div>
+    <div class="card"><h3>Archived</h3>
+      <div class="row"><label>Archive Date (applies when you click Archive)</label><input id="arch-date" type="date"></div>
+      <div id="archList" class="grid"></div>
+    </div>
   </div>
 
   <!-- Products -->
@@ -197,64 +156,35 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
   </div>
 
   <!-- Rules -->
-<div id="p-rules" class="panel">
-  <div class="card">
-    <h3>Add Rule</h3>
-    <form id="fRule">
-      <div class="row">
-        <label>Product</label>
-        <select id="ru-prod"><option value="general">general</option></select>
-      </div>
-      <div class="row">
-        <label>Rule Text</label>
-        <textarea id="ru-text" rows="3"></textarea>
-      </div>
-      <button class="btn btn-p" type="submit">Add Rule</button>
-    </form>
-  </div>
-  <div class="card"><h3>Rules</h3><div id="rulesList" class="grid"></div></div>
-</div>
-
-<!-- Records (manual) -->
-<div id="p-records" class="panel">
-  <div class="card">
-    <h3>Manual Record</h3>
-    <form id="fManualRec">
-      <div class="row">
-        <label>Date</label>
-        <input id="mr-date" type="date" required>
-      </div>
-      <div class="row">
-        <label>Source</label>
-        <select id="mr-source">
-          <option>web</option>
-          <option>social</option>
-          <option>walk-in</option>
-          <option>other</option>
-        </select>
-      </div>
-      <div class="row">
-        <label>Amount (₱)</label>
-        <input id="mr-amount" type="number" step="0.01" min="0" required>
-      </div>
-      <div class="row">
-        <label>Notes</label>
-        <input id="mr-notes" placeholder="e.g. manual top-up / fee">
-      </div>
-      <button class="btn btn-p" type="submit">Add Manual Record</button>
-    </form>
+  <div id="p-rules" class="panel">
+    <div class="card">
+      <h3>Add Rule</h3>
+      <form id="fRule">
+        <div class="row"><label>Product</label><select id="ru-prod"><option value="general">general</option></select></div>
+        <div class="row"><label>Rule Text</label><textarea id="ru-text" rows="3"></textarea></div>
+        <button class="btn btn-p" type="submit">Add Rule</button>
+      </form>
+    </div>
+    <div class="card"><h3>Rules</h3><div id="rulesList" class="grid"></div></div>
   </div>
 
-  <div class="card">
-    <h3>Records (summary)</h3>
-    <div id="recInfo">Loading…</div>
+  <!-- Records -->
+  <div id="p-records" class="panel">
+    <div class="card">
+      <h3>Manual Record</h3>
+      <form id="fManualRec">
+        <div class="row"><label>Date</label><input id="mr-date" type="date" required></div>
+        <div class="row"><label>Source</label>
+          <select id="mr-source"><option>web</option><option>social</option><option>walk-in</option><option>other</option></select>
+        </div>
+        <div class="row"><label>Amount (₱)</label><input id="mr-amount" type="number" step="0.01" min="0" required></div>
+        <div class="row"><label>Notes</label><input id="mr-notes" placeholder="e.g. manual top-up / fee"></div>
+        <button class="btn btn-p" type="submit">Add Manual Record</button>
+      </form>
+    </div>
+    <div class="card"><h3>Records (summary)</h3><div id="recInfo">Loading…</div></div>
+    <div class="card"><h3>Manual Records</h3><div id="manualList" class="grid"></div></div>
   </div>
-
-  <div class="card">
-    <h3>Manual Records</h3>
-    <div id="manualList" class="grid"></div>
-  </div>
-</div>
 
   <!-- Reports -->
   <div id="p-reports" class="panel">
@@ -263,12 +193,12 @@ function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=pars
   </div>
 </div>
 
-<!-- ===== CONFIG (real keys) ===== -->
+<!-- CONFIG -->
 <script>
   window.CONFIG_PUBLIC  = {
-    DATABASE:{ 
+    DATABASE:{
       SUPABASE_URL:"https://oujvsjnbxmgpdoftzpxl.supabase.co",
-      SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo" 
+      SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo"
     },
     ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
   };
@@ -301,7 +231,6 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   t.classList.add('active');
   document.getElementById('p-'+t.dataset.tab).classList.add('active');
 });
-
 
 /* Admin boot */
 function showAdmin(){ document.getElementById('admin-dashboard').style.display='block'; bootAdmin(); }
@@ -344,26 +273,21 @@ async function bootAdmin(){
     document.getElementById('ru-text').value=''; await refreshAll();
   };
 
+  document.getElementById('fManualRec').onsubmit = async (e)=>{
+    e.preventDefault();
+    await db_addManualRecord({
+      date: document.getElementById('mr-date').value,
+      source: document.getElementById('mr-source').value,
+      amount: Number(document.getElementById('mr-amount').value || 0),
+      notes: document.getElementById('mr-notes').value.trim()
+    });
+    document.getElementById('mr-amount').value='';
+    document.getElementById('mr-notes').value='';
+    await refreshAll();
+  };
+
   db_subscribeStockAndOrders(refreshAll);
 }
-document.getElementById('fManualRec').onsubmit = async (e)=>{
-  e.preventDefault();
-  await db_addManualRecord({
-    date: document.getElementById('mr-date').value,
-    source: document.getElementById('mr-source').value,
-    amount: Number(document.getElementById('mr-amount').value || 0),
-    notes: document.getElementById('mr-notes').value.trim()
-  });
-  document.getElementById('mr-amount').value='';
-  document.getElementById('mr-notes').value='';
-  await refreshAll();
-};
-
-async function archiveWithDate(stockId){
-  const d = document.getElementById('arch-date').value || null;
-  await db_archiveStock(stockId, d);
-  await refreshAll();
-
 function fillSelect(id,arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML = arr.map(x=>`<option>${x}</option>`).join(''); }
 
 /* Renders */
@@ -457,7 +381,11 @@ async function refreshAll(){
 
   document.getElementById('salesInfo').innerHTML = `<div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
 }
-
+async function archiveWithDate(stockId){
+  const d = document.getElementById('arch-date').value || null;
+  await db_archiveStock(stockId, d);
+  await refreshAll();
+}
 async function promptEditProduct(id){
   const name = prompt('New name? (leave blank to keep)');
   const cat  = prompt('New category? (entertainment/streaming/educational/editing/ai)');
