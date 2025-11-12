@@ -277,23 +277,28 @@ document.getElementById('product-search').addEventListener('input', (e)=>{
 
 // Products
 async function renderProducts(){
-  const wrap=document.getElementById('products-wrap');
-  wrap.textContent='Loading…';
+  const wrap = document.getElementById('products-wrap');
+  wrap.textContent = 'Loading…';
+
+  // one-time seed (uses your big catalog list if empty)
+  if (window.AIAX_CATALOG) {
+    try { await db_seedCatalogIfEmpty(window.AIAX_CATALOG); } catch(_){}
+  }
+
   try{
-    const data=await db_listProductsWithStock();
-    wrap.innerHTML = data.map(p=>{
-      const oos=(p.stock_count||0)<=0;
+    const rows = await db_listCatalogWithCounts();
+    wrap.innerHTML = rows.map(p=>{
+      const hasStock = (p.available||0) > 0;
       return `<div class="p-card" data-name="${(p.name||'').toLowerCase()}">
         <div style="font-weight:700">${p.icon||'🛒'} ${p.name}</div>
-        <div class="note">${p.category||''}</div>
-        <div style="${oos?'color:#b22':''}">${oos?'Out of stock':`In stock: ${p.stock_count}`}</div>
-        <button class="btn btn-primary" ${oos?'disabled':''}
-          onclick="openCheckout('${p.product_id}','${p.name||''}')">${oos?'Unavailable':'Buy'}</button>
+        <div class="note">${p.category}</div>
+        <div>${hasStock ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>` : `<span class="pill">Out of stock</span>`}</div>
+        <button class="btn btn-primary" ${hasStock?'':'disabled'} onclick="openCheckout('${p.id}','${p.name}')">${hasStock?'Buy':'Unavailable'}</button>
       </div>`;
     }).join('');
   }catch(e){
     console.error(e);
-    wrap.innerHTML='<div class="note">Failed to load products.</div>';
+    wrap.innerHTML = '<div class="note">Failed to load products.</div>';
   }
 }
 function openCheckout(product_id, product_name){
