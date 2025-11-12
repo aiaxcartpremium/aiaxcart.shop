@@ -74,7 +74,7 @@
     <span>🔍</span><input id="product-search" placeholder="Search products…"/>
   </div>
 
-  <!-- Products Section -->
+  <!-- Products -->
   <section id="products-section" style="margin-top:1.5rem;">
     <h2>Products</h2>
     <div id="products-wrap" class="products-grid"></div>
@@ -88,9 +88,13 @@
     <h3>Report an Issue</h3>
     <div id="report-gate" class="note">Please login to report an issue.</div>
     <div id="report-form" style="display:none">
-      <div class="row"><label>Order ID (optional)</label><input id="rep-order"/></div>
-      <div class="row"><label>Product</label><input id="rep-product"/></div>
+      <div class="row">
+        <label>Order</label>
+        <select id="rep-order"></select>
+        <small class="note">Only your orders appear here.</small>
+      </div>
       <div class="row"><label>Issue</label><textarea id="rep-issue" rows="3"></textarea></div>
+      <div class="row"><label>Attach image (optional)</label><input id="rep-img" type="file" accept="image/*"></div>
       <button class="btn btn-primary" id="rep-submit">Submit Report</button>
     </div>
     <div id="my-reports" style="margin-top:1rem"></div>
@@ -98,9 +102,10 @@
 
   <!-- Payments -->
   <section id="payments-content" class="card" style="display:none">
-    <h3>Payment Methods</h3>
-    <p>GCash: <b>0962 554 4105</b></p>
-    <p>Maya: <b>0929 984 3629</b></p>
+    <h3>Mode of Payment</h3>
+    <p><b>GCASH</b></p>
+    <p><b>MAYA</b></p>
+    <p><b>MARIBANK(SEABANK)</b></p>
   </section>
 
   <!-- Rules -->
@@ -116,6 +121,7 @@
     <div id="fb-gate" class="note">Please login to leave feedback.</div>
     <div id="fb-form" style="display:none">
       <div class="row"><label>Your feedback</label><textarea id="fb-text" rows="3"></textarea></div>
+      <div class="row"><label>Attach image (optional)</label><input id="fb-img" type="file" accept="image/*"></div>
       <button class="btn btn-primary" id="fb-submit">Submit</button>
     </div>
     <div id="fb-list" style="margin-top:1rem"></div>
@@ -202,7 +208,7 @@
   };
 </script>
 
-<!-- Supabase + helper file (v4) -->
+<!-- Supabase + helper file -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=4"></script>
 
@@ -279,11 +285,6 @@ document.getElementById('product-search').addEventListener('input', (e)=>{
 async function renderProducts(){
   const wrap = document.getElementById('products-wrap');
   wrap.textContent = 'Loading…';
-
-  // one-time seed (uses your big catalog list if empty)
-  if (window.AIAX_CATALOG) {
-    try { await db_seedCatalogIfEmpty(window.AIAX_CATALOG); } catch(_){}
-  }
 
   try{
     const rows = await db_listCatalogWithCounts();
@@ -365,71 +366,117 @@ document.getElementById('rules-search').addEventListener('input', (e)=>{
   });
 });
 
-// Reports
+// Reports + Feedback gates
 function gateReportUI(){
   const on=!!currentUser;
   document.getElementById('report-gate').style.display=on?'none':'block';
   document.getElementById('report-form').style.display=on?'block':'none';
 }
-async function submitReport(){
-  if(!currentUser) return;
-  const orderId=document.getElementById('rep-order').value.trim();
-  const product=document.getElementById('rep-product').value.trim();
-  const issue=document.getElementById('rep-issue').value.trim();
-  if(!issue){ alert('Please describe the issue.'); return; }
-  await db_addBuyerReport({
-    order_id:orderId||null, product:product||null, issue,
-    buyer: currentUser.name, email: currentUser.email
-  });
-  document.getElementById('rep-order').value='';
-  document.getElementById('rep-product').value='';
-  document.getElementById('rep-issue').value='';
-  loadUserReports();
-  alert('Report submitted. We will get back to you soon.');
-}
-document.getElementById('rep-submit').onclick=submitReport;
-
-async function loadUserReports(){
-  if(!currentUser){ document.getElementById('my-reports').innerHTML=''; return; }
-  const list=await db_fetchBuyerReports(currentUser.email);
-  const box=document.getElementById('my-reports');
-  box.innerHTML = (list&&list.length)
-    ? list.map(r=>`<div class="card"><div><b>Report ID:</b> ${r.id}</div><div><b>Order ID:</b> ${r.order_id||'N/A'}</div><div><b>Product:</b> ${r.product||'N/A'}</div><div><b>Issue:</b> ${r.issue}</div><div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status||'pending'}</span></div><div class="note">${new Date(r.created_at).toLocaleString()}</div></div>`).join('')
-    : '<div class="note">No reports yet.</div>';
-}
-
-// Feedback
 function gateFeedbackUI(){
   const on=!!currentUser;
   document.getElementById('fb-gate').style.display=on?'none':'block';
   document.getElementById('fb-form').style.display=on?'block':'none';
 }
+
+// Reports (with image upload)
+async function loadUserReports(){
+  if(!currentUser){ document.getElementById('my-reports').innerHTML=''; gateReportUI(); return; }
+  gateReportUI();
+
+  // order picker
+  const orders = await db_listOrdersByEmail(currentUser.email);
+  const repOrder = document.getElementById('rep-order');
+  repOrder.innerHTML = orders.length
+    ? orders.map(o=>`<option value="${o.id}">${o.id} • ${o.product_name} • ${o.account_type} • ${o.duration_key}</option>`).join('')
+    : `<option value="">No orders yet</option>`;
+
+  // list
+  const list = await db_fetchBuyerReports(currentUser.email);
+  const box = document.getElementById('my-reports');
+  box.innerHTML = (list&&list.length)
+    ? await Promise.all(list.map(async r=>{
+        let img=''; if(r.image_path){ const url=await getPublicURL(r.image_path); img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:100%;border-radius:8px"></div>`; }
+        return `<div class="card">
+          <div><b>Report ID:</b> ${r.id}</div>
+          <div><b>Order ID:</b> ${r.order_id||'N/A'}</div>
+          <div><b>Issue:</b> ${r.issue}</div>
+          <div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status||'pending'}</span></div>
+          <div class="note">${new Date(r.created_at).toLocaleString()}</div>
+          ${img}
+        </div>`;
+      })).then(a=>a.join(''))
+    : '<div class="note">No reports yet.</div>';
+}
+document.getElementById('rep-submit').onclick=async ()=>{
+  if(!currentUser){ return; }
+  const sel=document.getElementById('rep-order');
+  const orderId=(sel.value||'').trim();
+  const issue=document.getElementById('rep-issue').value.trim();
+  const fileEl=document.getElementById('rep-img');
+  if(!issue){ alert('Please describe the issue.'); return; }
+  await db_addBuyerReport({
+    order_id: orderId || null,
+    product: null,
+    issue,
+    buyer: currentUser.name,
+    email: currentUser.email,
+    file: fileEl.files && fileEl.files[0] ? fileEl.files[0] : null
+  });
+  document.getElementById('rep-issue').value='';
+  document.getElementById('rep-img').value='';
+  loadUserReports();
+  alert('Report submitted.');
+};
+
+// Feedback (with image upload)
 document.getElementById('fb-submit').onclick=async ()=>{
   const txt=document.getElementById('fb-text').value.trim();
+  const fileEl=document.getElementById('fb-img');
   if(!currentUser){ alert('Please login.'); return; }
   if(!txt){ alert('Write some feedback.'); return; }
-  await db_addFeedback({user:currentUser.name,text:txt});
+  await db_addFeedback({user:currentUser.name,text:txt,file:fileEl.files&&fileEl.files[0]?fileEl.files[0]:null});
   document.getElementById('fb-text').value='';
+  document.getElementById('fb-img').value='';
   loadFeedback();
 };
 async function loadFeedback(){
   const list=await db_fetchFeedback();
   const box=document.getElementById('fb-list');
   box.innerHTML = (list&&list.length)
-    ? list.map(f=>`<div class="card"><div style="display:flex;align-items:center;gap:.6rem"><div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${(f.user||'?')[0]?.toUpperCase?.()||'U'}</div><div><b>${f.user||'User'}</b><div class="note">${new Date(f.created_at||Date.now()).toLocaleString()}</div></div></div><div style="margin-top:.6rem">${f.text||''}</div></div>`).join('')
+    ? await Promise.all(list.map(async f=>{
+        let img=''; if(f.image_path){ const url=await getPublicURL(f.image_path); img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:100%;border-radius:8px"></div>`; }
+        return `<div class="card">
+          <div style="display:flex;align-items:center;gap:.6rem">
+            <div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${(f.user||'?')[0]?.toUpperCase?.()||'U'}</div>
+            <div><b>${f.user||'User'}</b><div class="note">${new Date(f.created_at||Date.now()).toLocaleString()}</div></div>
+          </div>
+          <div style="margin-top:.6rem">${f.text||''}</div>
+          ${img}
+        </div>`;
+      })).then(a=>a.join(''))
     : '<div class="note">No feedback yet.</div>';
 }
 
-// Admin button guard
+// Admin button guard (visible but gated in admin.html)
 (function(){
   const btn = document.getElementById('admin-btn');
   if (!btn) return;
   const ok = localStorage.getItem('ad-ok')==='1';
   btn.textContent = ok ? 'Admin' : 'Admin';
 })();
-// My Account
-function updateAccountTab(){
+
+// My Account (orders list)
+async function updateAccountTab(){
   if(!currentUser){ document.getElementById('accounts-content').innerHTML=''; return; }
+  const orders = await db_listOrdersByEmail(currentUser.email);
+  const rows = orders.map(o=>`
+    <div class="card">
+      <div><b>${o.product_name}</b></div>
+      <div class="note">Order ID: ${o.id}</div>
+      <div class="note">Placed: ${new Date(o.created_at).toLocaleString()}</div>
+      <div class="note">Status: <span class="pill" style="background:${o.status==='confirmed'?'#d4edda':'#fff3cd'};color:${o.status==='confirmed'?'#155724':'#856404'}">${o.status}</span></div>
+    </div>`).join('') || '<div class="note">No orders yet.</div>';
+
   document.getElementById('accounts-content').innerHTML = `
     <h2>My Account</h2>
     <div class="card">
@@ -438,7 +485,7 @@ function updateAccountTab(){
       <p><strong>Email:</strong> ${currentUser.email}</p>
       <p><strong>Member since:</strong> ${new Date(currentUser.joinDate||Date.now()).toLocaleDateString()}</p>
     </div>
-    <div class="card"><h3>Order History</h3><div class="note">Orders appear after admin confirmation.</div></div>`;
+    <div class="card"><h3>Orders</h3>${rows}</div>`;
 }
 
 // Init
