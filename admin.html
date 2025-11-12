@@ -395,7 +395,7 @@ async function refreshAll(){
       <div class="note">Email: ${s.email||'—'} | Profile: ${s.profile||'—'}</div>
       <div style="margin-top:.4rem">
         <button class="btn btn-s" onclick="db_markSold('${s.id}',199).then(refreshAll)">Mark Sold</button>
-        <button class="btn btn-w" onclick="db_archiveStock('${s.id}').then(refreshAll)">Archive</button>
+        <button class="btn btn-w" onclick="archiveWithDate('${s.id}')">Archive</button>
         <button class="btn btn-d" onclick="db_deleteStock('${s.id}').then(refreshAll)">Delete</button>
       </div>
     </div>`).join('') : '<div class="note">No available stocks.</div>';
