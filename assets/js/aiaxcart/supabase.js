@@ -29,14 +29,10 @@ async function getPublicURL(path){
 
 /* ========== Catalog / Prices / Stocks ========== */
 async function db_seedCatalogIfEmpty(catalog){
-  const { data } = await sb.from('products').select('id', { count: 'exact', head: true });
-  if (data === null) return; // not needed
-  const { count: existing } = await sb.from('products').select('*', { count: 'exact', head: true });
-  if ((existing ?? 0) > 0) return;
-  // insert products
+  const { count } = await sb.from('products').select('*', { count: 'exact', head: true });
+  if ((count ?? 0) > 0) return;
   const prows = catalog.map(p=>({ id:p.id, name:p.name, category:p.category, icon:p.icon || null }));
   await sb.from('products').insert(prows);
-  // insert prices
   const priceRows = [];
   catalog.forEach(p=>{
     Object.entries(p.pricing||{}).forEach(([atype, matrix])=>{
@@ -49,7 +45,6 @@ async function db_seedCatalogIfEmpty(catalog){
 }
 
 async function db_listCatalogWithCounts(){
-  // products, counts, and expose min price for display
   const [{ data: prods, error: e1 }, { data: summary, error: e2 }, { data: prices, error: e3 }] = await Promise.all([
     sb.from('products').select('*').eq('is_active', true).order('name'),
     sb.from('product_stock_summary').select('*'),
@@ -57,7 +52,7 @@ async function db_listCatalogWithCounts(){
   ]);
   if(e1||e2||e3) throw (e1||e2||e3);
 
-  const byId = Object.fromEntries(prods.map(p=>[p.id, { ...p, available:0, archived:0, prices:[] }]));
+  const byId = Object.fromEntries((prods||[]).map(p=>[p.id, { ...p, available:0, archived:0, prices:[] }]));
   (summary||[]).forEach(r=>{
     if(byId[r.product_id]){ byId[r.product_id].available = r.available||0; byId[r.product_id].archived = r.archived||0; }
   });
@@ -95,14 +90,13 @@ async function db_createOrder(payload){
   if(error) throw error;
   return { id, ...row };
 }
-
 async function db_listOrdersByEmail(email){
   const { data, error } = await sb.from('orders')
     .select('*')
     .eq('buyer_email', email)
     .order('created_at', { ascending:false });
   if(error) throw error;
-  return data;
+  return data||[];
 }
 
 /* ========== Admin Ops (panel) ========== */
@@ -157,11 +151,9 @@ async function db_archiveStock(id, archived_at){
   const { error } = await sb.from('stocks').update({ is_archived:true, archived_at }).eq('id', id);
   if(error) throw error;
 }
-
 async function db_deleteStock(id){ const { error } = await sb.from('stocks').delete().eq('id', id); if(error) throw error; }
 
 async function db_markSold(stock_id, price_php){
-  // just record a sale and archive that stock
   const { data: s, error: e1 } = await sb.from('stocks').select('product_id, account_type, duration_key, products(name)').eq('id', stock_id).maybeSingle();
   if(e1) throw e1;
   if(!s) throw new Error('Stock not found');
@@ -200,7 +192,6 @@ async function db_listArchived(){ const { data } = await sb.from('stocks').selec
 async function db_listRecordsSummary(){
   const { data } = await sb.from('sold_records').select('price_php');
   const revenue = (data||[]).reduce((a,b)=>a+Number(b.price_php||0),0);
-  // simple split (placeholder)
   return { total: (data||[]).length, revenue, web: (data||[]).length, social: 0 };
 }
 
@@ -213,7 +204,6 @@ async function db_addBuyerReport({ order_id, product, issue, buyer, email, file 
   const { error } = await sb.from('buyer_reports').insert({ order_id, product, issue, buyer, email, image_path });
   if(error) throw error;
 }
-
 async function db_fetchBuyerReports(email){
   const { data, error } = await sb.from('buyer_reports').select('*').eq('email', email).order('created_at',{ascending:false});
   if(error) throw error;
@@ -234,7 +224,7 @@ async function db_fetchFeedback(){
   return (data||[]).map(x=>({ ...x, user: x.user_name }));
 }
 
-/* ========== Live updates (optional) ========== */
+/* ========== Live updates ========== */
 function db_subscribeStockAndOrders(onChange){
   try{
     sb.channel('aiax-live')
@@ -244,7 +234,7 @@ function db_subscribeStockAndOrders(onChange){
   }catch(_){}
 }
 
-/* expose to window (used by your pages) */
+/* expose to window */
 window.createDbClient = createDbClient;
 window.db_seedCatalogIfEmpty = db_seedCatalogIfEmpty;
 window.db_listCatalogWithCounts = db_listCatalogWithCounts;
