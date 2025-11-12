@@ -416,12 +416,12 @@ async function loadFeedback(){
 }
 
 // Admin button guard
-(function guardAdminBtn(){
-  const ok = localStorage.getItem('ad-ok')==='1';
+(function(){
   const btn = document.getElementById('admin-btn');
-  if(btn) btn.style.display = ok ? '' : 'none';
+  if (!btn) return;
+  const ok = localStorage.getItem('ad-ok')==='1';
+  btn.textContent = ok ? 'Admin' : 'Admin 🔒';
 })();
-
 // My Account
 function updateAccountTab(){
   if(!currentUser){ document.getElementById('accounts-content').innerHTML=''; return; }
