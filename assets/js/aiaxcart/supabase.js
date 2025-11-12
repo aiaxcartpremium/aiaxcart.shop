@@ -1,11 +1,11 @@
-
+// v6 — PURE JS (no <script> tags). Safe for <script src=".../supabase.js?v=6">
 function createDbClient(){
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.CONFIG_PUBLIC.DATABASE;
   return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
-const sb = (typeof SB==='undefined') ? createDbClient() : SB;
+const sb = (typeof SB === 'undefined') ? createDbClient() : SB;
 
-/* ========== small utils ========== */
+/* ===== utils ===== */
 function uid(){ return crypto.getRandomValues(new Uint32Array(1))[0].toString(36); }
 function genOrderId(){
   const d=new Date(), p=n=>String(n).padStart(2,'0');
@@ -18,23 +18,21 @@ async function uploadPublic(bucket, file){
   return `${bucket}/${data.path}`;
 }
 async function getPublicURL(path){
-  const [bucket, ...rest] = path.split('/'); const key = rest.join('/');
+  const [bucket, ...rest] = path.split('/');
+  const key = rest.join('/');
   const { data } = sb.storage.from(bucket).getPublicUrl(key);
   return data.publicUrl;
 }
 
-/* ========== Catalog / Prices / Stock summary ========== */
-/* Works even if walang view; gagawa tayo ng summary by code */
+/* ===== Catalog / Prices / Counts ===== */
 async function db_seedCatalogIfEmpty(catalog){
   const { count } = await sb.from('products').select('*', { count:'exact', head:true });
   if((count||0)>0) return;
   if(!Array.isArray(catalog)||!catalog.length) return;
 
-  // products
   const prows = catalog.map(p=>({ id:p.id, name:p.name, category:p.category, icon:p.icon||null, is_active:true }));
   await sb.from('products').insert(prows);
 
-  // prices
   const priceRows=[];
   catalog.forEach(p=>{
     Object.entries(p.pricing||{}).forEach(([atype, matrix])=>{
@@ -46,10 +44,9 @@ async function db_seedCatalogIfEmpty(catalog){
   if(priceRows.length) await sb.from('product_prices').insert(priceRows);
 }
 
-async function db_listProductsRaw(){ // no joins to avoid undefined
+async function db_listProductsRaw(){
   const { data, error } = await sb.from('products').select('*').order('name');
-  if(error) throw error;
-  return data||[];
+  if(error) throw error; return data||[];
 }
 async function db_pricesByProduct(product_id){
   const { data, error } = await sb.from('product_prices')
@@ -58,7 +55,6 @@ async function db_pricesByProduct(product_id){
   if(error) throw error; return data||[];
 }
 async function db_stockCounts(){
-  // available/archived per product
   const [{ data:avail }, { data:arch }] = await Promise.all([
     sb.from('stocks').select('product_id', { count:'exact', head:false }).eq('is_archived',false),
     sb.from('stocks').select('product_id', { count:'exact', head:false }).eq('is_archived',true)
@@ -68,7 +64,6 @@ async function db_stockCounts(){
   (arch||[]).forEach(r=>{ cR[r.product_id]=(cR[r.product_id]||0)+1; });
   return { avail:cA, arch:cR };
 }
-/* Used by homepage: always list all products + counts + prices */
 async function db_listCatalogWithCounts(){
   const [prods, counts] = await Promise.all([db_listProductsRaw(), db_stockCounts()]);
   const prices = await sb.from('product_prices').select('product_id,account_type,duration_key,price_php');
@@ -79,7 +74,7 @@ async function db_listCatalogWithCounts(){
   return Object.values(byId);
 }
 
-/* ========== Orders ========== */
+/* ===== Orders & Buyers ===== */
 async function db_createOrder(payload){
   const id = genOrderId();
   const row = {
@@ -95,22 +90,22 @@ async function db_createOrder(payload){
     status:'pending'
   };
   const { error } = await sb.from('orders').insert(row);
-  if(error) throw error;
-  return { id, ...row };
+  if(error) throw error; return { id, ...row };
 }
 async function db_listOrdersByEmail(email){
   const { data, error } = await sb.from('orders')
     .select('*').eq('buyer_email', email).order('created_at',{ascending:false});
   if(error) throw error; return data||[];
 }
-
-/* Optional: record buyers (so may DB record pag sign-up) */
 async function db_upsertBuyer(u){
   if(!u?.email) return;
-  await sb.from('buyers').upsert({ email:u.email, name:u.name||'User', joined_at:u.joinDate||new Date().toISOString() }, { onConflict:'email' });
+  await sb.from('buyers').upsert(
+    { email:u.email, name:u.name||'User', joined_at:u.joinDate||new Date().toISOString() },
+    { onConflict:'email' }
+  );
 }
 
-/* ========== Admin Ops ========== */
+/* ===== Admin ===== */
 async function db_isUidAdmin(uid){
   const { data, error } = await sb.from('admin_uids').select('uid').eq('uid', uid).maybeSingle();
   if(error) return false; return !!data;
@@ -123,7 +118,6 @@ async function db_addRule(row){ const { error } = await sb.from('rules').insert(
 async function db_listRules(){ const { data } = await sb.from('rules').select('*').order('created_at',{ascending:false}); return data||[]; }
 async function db_deleteRule(id){ const { error } = await sb.from('rules').delete().eq('id',id); if(error) throw error; }
 
-/* Add stock (supports premium date + auto-drop days) */
 async function db_addStock(payload){
   const qty = Math.max(1, Number(payload.quantity||1));
   const rows = Array.from({length:qty}).map(()=>({
@@ -142,11 +136,8 @@ async function db_addStock(payload){
   const { error } = await sb.from('stocks').insert(rows);
   if(error) throw error;
 }
-
-/* Light auto-drop: archive where created_at + auto_drop_days < now */
 async function db_autodropStale(){
   const now = new Date().toISOString();
-  // Do it in 2 steps (select then update by id) para safe sa RLS
   const { data } = await sb.from('stocks')
     .select('id,created_at,auto_drop_days,is_archived')
     .eq('is_archived',false).gt('auto_drop_days',0);
@@ -158,17 +149,15 @@ async function db_autodropStale(){
     await sb.from('stocks').update({ is_archived:true, archived_at:new Date().toISOString() }).in('id', toArchive);
   }
 }
-
 async function db_listAvailableStocks(){
   const { data, error } = await sb.from('stocks')
     .select('id,product_id,account_type,duration_key,email,profile,created_at')
     .eq('is_archived',false).order('created_at',{ascending:false});
   if(error) throw error;
-  // resolve names without FK join
-  const ids = [...new Set((data||[]).map(x=>x.product_id))];
+  const ids=[...new Set((data||[]).map(x=>x.product_id))];
   let names={};
   if(ids.length){
-    const { data:prods } = await sb.from('products').select('id,name').in('id', ids);
+    const { data:prods } = await sb.from('products').select('id,name').in('id',ids);
     names = Object.fromEntries((prods||[]).map(p=>[p.id,p.name]));
   }
   return (data||[]).map(x=>({ ...x, product_name:names[x.product_id]||x.product_id }));
@@ -185,7 +174,6 @@ async function db_markSold(stock_id, price_php){
   });
   await db_archiveStock(stock_id, new Date().toISOString());
 }
-
 async function db_adminStats(){
   const [{ count:pc }] = await Promise.all([ sb.from('products').select('*',{count:'exact',head:true}) ]);
   const { count:avail } = await sb.from('stocks').select('*',{count:'exact',head:true}).eq('is_archived',false);
@@ -199,7 +187,8 @@ async function db_listPendingOrders(){ const { data }=await sb.from('orders').se
 async function db_confirmOrder(id){ await sb.from('orders').update({ status:'confirmed', confirmed_at:new Date().toISOString()}).eq('id',id); }
 async function db_cancelOrder(id){ await sb.from('orders').update({ status:'canceled', canceled_at:new Date().toISOString()}).eq('id',id); }
 async function db_listSold(){ const { data }=await sb.from('sold_records').select('*').order('sold_at',{ascending:false}); return data||[]; }
-async function db_listArchived(){ const { data }=await sb.from('stocks').select('*').eq('is_archived',true).order('archived_at',{ascending:false}); 
+async function db_listArchived(){
+  const { data }=await sb.from('stocks').select('*').eq('is_archived',true).order('archived_at',{ascending:false});
   const ids=[...new Set((data||[]).map(x=>x.product_id))]; let names={};
   if(ids.length){ const { data:prods }=await sb.from('products').select('id,name').in('id',ids); names=Object.fromEntries((prods||[]).map(p=>[p.id,p.name])); }
   return (data||[]).map(a=>({ ...a, product_name:names[a.product_id]||a.product_id }));
@@ -210,7 +199,7 @@ async function db_listRecordsSummary(){
   return { total:(data||[]).length, revenue, web:(data||[]).length, social:0 };
 }
 
-/* ========== Rules / Reports / Feedback (with image) ========== */
+/* ===== Reports & Feedback ===== */
 async function db_fetchRules(){ const { data }=await sb.from('rules').select('*').order('created_at',{ascending:false}); return data||[]; }
 async function db_addBuyerReport({ order_id, product, issue, buyer, email, file }){
   let image_path=null; if(file) image_path=await uploadPublic('reports', file);
@@ -224,6 +213,7 @@ async function db_fetchBuyerReports(email){
 async function db_listBuyerReports(){ const { data }=await sb.from('buyer_reports').select('*').order('created_at',{ascending:false}); return data||[]; }
 async function db_markReportResolved(id){ await sb.from('buyer_reports').update({ status:'resolved' }).eq('id',id); }
 async function db_deleteReport(id){ await sb.from('buyer_reports').delete().eq('id',id); }
+
 async function db_addFeedback({ user, text, file }){
   let image_path=null; if(file) image_path=await uploadPublic('feedback', file);
   const { error }=await sb.from('feedback').insert({ user_name:user, text, image_path });
@@ -232,7 +222,7 @@ async function db_addFeedback({ user, text, file }){
 async function db_fetchFeedback(){ const { data }=await sb.from('feedback').select('*').order('created_at',{ascending:false}); 
   return (data||[]).map(x=>({ ...x, user:x.user_name })); }
 
-/* ========== Live realtime ========== */
+/* ===== Realtime ===== */
 function db_subscribeStockAndOrders(onChange){
   try{
     sb.channel('aiax-live')
@@ -242,7 +232,7 @@ function db_subscribeStockAndOrders(onChange){
   }catch(_){}
 }
 
-/* expose */
+/* ===== expose to window ===== */
 window.createDbClient = createDbClient;
 window.db_seedCatalogIfEmpty = db_seedCatalogIfEmpty;
 window.db_listCatalogWithCounts = db_listCatalogWithCounts;
