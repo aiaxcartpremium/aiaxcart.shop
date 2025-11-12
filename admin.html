@@ -1,904 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>Aiaxcart Premium | Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <style>
-    body { background:#fefaf7; color:#382f2c; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .container { max-width:1100px; margin:0 auto; padding:0 20px; }
-    .logo { font-size:2rem; font-weight:700; display:flex; align-items:center; }
-    header { background:#FFD3D6; padding:1.3rem 0 1.1rem 0; box-shadow:0 6px 22px rgba(0,0,0,0.08); }
-    .header-content { display:flex; justify-content:space-between; align-items:center; }
-    nav ul { display:flex; list-style:none; }
-    nav ul li { margin-left:2.2rem; }
-    nav ul li a { color:#382f2c; text-decoration:none; font-weight:500; padding:0.6rem 1.4rem; border-radius:10px; }
-    nav ul li a.active, nav ul li a:hover { background:#FFC6CA; }
-
-    .tabs { display:flex; gap:0.95rem; margin:2rem 0 1.5rem 0; flex-wrap:wrap; }
-    .tab { padding:0.85rem 1.55rem; border:none; background:#fff; border-radius:14px; font-size:1rem;
-           font-weight:500; box-shadow:0 1px 4px rgba(0,0,0,0.03); cursor:pointer; transition:background 0.2s; }
-    .tab.active { background:#FFD3D6; }
-    .panel { display:none; }
-    .panel.active { display:block; }
-
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.3rem; margin-bottom:2rem; }
-    .stat-card { background:#fff; padding:2rem 0 1.25rem 0; border-radius:13px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
-    .stat-card h3 { font-size:2.1rem; margin-bottom:0.55rem; color:#FFB0B5; }
-
-    .card { background:#fff; border-radius:13px; box-shadow:0 2px 8px rgba(0,0,0,0.07); padding:2.2rem 1.5rem; margin-bottom:2rem; }
-    label { margin:1rem 0 0.45rem 0; display:block; }
-    select, input[type="text"], input[type="number"], input[type="email"], input[type="date"], textarea {
-      padding:0.65rem 0.9rem; border-radius:8px; border:1px solid #E8E8E8; font-size:1rem; width:100%; font-family:inherit;
-    }
-
-    .btn { padding:0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size:1rem; cursor:pointer; transition:all .3s; }
-    .btn-primary { background:#FFB0B5; color:#fff; } .btn-primary:hover { background:#FF8A90; }
-    .btn-danger  { background:#FF6B6B; color:#fff; } .btn-danger:hover  { background:#FF5252; }
-    .btn-warning { background:#FFA726; color:#fff; } .btn-warning:hover { background:#FF9800; }
-    .btn-success { background:#66BB6A; color:#fff; } .btn-success:hover { background:#4CAF50; }
-    .btn-info    { background:#42A5F5; color:#fff; } .btn-info:hover    { background:#2196F3; }
-    .btn-small { padding:0.3rem 0.8rem; font-size:0.95rem; margin-top:0.25rem; }
-
-    .stock-list { display:flex; flex-direction:column; gap:1.2rem; }
-    .stock-card { background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04); }
-    .stock-actions { margin-top:0.5rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
-
-    .badge { display:inline-block; padding:0.18rem 0.9rem; border-radius:12px; font-size:0.90rem; font-weight:500; }
-    .badge-pending  { background:#fff3cd; color:#856404; }
-    .badge-resolved { background:#d1ecf1; color:#0c5460; }
-
-    /* Owner modal */
-    .owner-veri-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.37); display:none; align-items:center; justify-content:center; z-index:9999; }
-    .modal-card { position:relative; background:#fff; padding:2.7rem 2.5rem 1.5rem; border-radius:16px; min-width:325px; }
-    .close-btn { position:absolute; top:0.6rem; right:0.7rem; background:none; border:none; font-size:1.55rem; color:#ff7a7a; line-height:1; cursor:pointer; }
-
-    /* Records table */
-    .records-table { width:100%; border-collapse:collapse; margin-top:1rem; }
-    .records-table th, .records-table td { padding:0.75rem; text-align:left; border-bottom:1px solid #E8E8E8; }
-    .records-table th { background:#FFD3D6; font-weight:600; }
-    .records-table tr:hover { background:#f9f9f9; }
-
-    .report-card { background:#fff; border-left:4px solid #FFB0B5; padding:1rem; margin-bottom:1rem; border-radius:8px; }
-    .report-actions { margin-top:0.5rem; }
-
-    .category-filter { margin-bottom:1rem; }
-    .category-filter select { width:auto; display:inline-block; margin-right:1rem; }
-
-    @media(max-width:1000px){ .stats-grid{grid-template-columns:1fr 1fr;} }
-    @media(max-width:700px){ .stats-grid{grid-template-columns:1fr;} .tabs{gap:0.45rem;} }
-  </style>
-  <link rel="stylesheet" href="assets/css/extras.css"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aiaxcart Premium | Admin</title>
+<link rel="stylesheet" href="assets/css/extras.css"/>
+<style>
+  body{background:#fefaf7;color:#382f2c;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+  header{background:#FFD3D6;box-shadow:0 6px 22px rgba(0,0,0,.08)}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+  nav a{color:#382f2c;text-decoration:none;padding:.5rem 1rem;border-radius:10px}
+  nav a.active,nav a:hover{background:#FFC6CA}
+  .tabs{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+  .tab{padding:.6rem 1rem;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer}
+  .tab.active{background:#FFD3D6}
+  .panel{display:none}.panel.active{display:block}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  .stat{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;text-align:center}
+  .stat h3{color:#FFB0B5;margin:.3rem 0}
+  .card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;margin:1rem 0}
+  .row{margin:.5rem 0}
+  .row label{display:block;margin:.25rem 0}
+  .row input,.row select,.row textarea{width:100%;padding:.6rem;border:1px solid #E8E8E8;border-radius:8px}
+  .btn{padding:.55rem 1rem;border:none;border-radius:9px;cursor:pointer}
+  .btn-p{background:#FFB0B5;color:#fff}.btn-w{background:#FFA726;color:#fff}.btn-s{background:#66BB6A;color:#fff}.btn-d{background:#FF6B6B;color:#fff}
+  .grid{display:flex;flex-direction:column;gap:.7rem}
+</style>
 </head>
 <body>
 
-<!-- ===== Admin Gate (strict) ===== -->
 <script>
-  // CHANGE ONLY IF YOU REPLACE YOUR OWNER UID
-  const OWNER_UID   = '2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36';
-  const SESSION_MIN = 30;               // auto-logout after 30 mins idle
-  const SESSION_VER = '2025-11-12';     // bump to force-invalidate all sessions
-
-  function clearSession(){
-    localStorage.removeItem('ad-ok');
-    localStorage.removeItem('ad-ok-ts');
-    localStorage.removeItem('ownerVerified');
-    localStorage.removeItem('ad-owner-uid');
-    localStorage.removeItem('ad-session-ver');
-  }
-  function setSession(uid){
-    localStorage.setItem('ad-ok','1');
-    localStorage.setItem('ownerVerified','yes');
-    localStorage.setItem('ad-ok-ts', Date.now().toString());
-    localStorage.setItem('ad-owner-uid', uid);
-    localStorage.setItem('ad-session-ver', SESSION_VER);
-  }
-  function isVerified(){
-    const ok    = localStorage.getItem('ad-ok') === '1' && localStorage.getItem('ownerVerified') === 'yes';
-    const uidOk = localStorage.getItem('ad-owner-uid') === OWNER_UID;
-    const verOk = localStorage.getItem('ad-session-ver') === SESSION_VER;
-    const ts    = parseInt(localStorage.getItem('ad-ok-ts') || '0', 10);
-    const fresh = (Date.now() - ts) < (SESSION_MIN*60*1000);
-    return ok && uidOk && verOk && fresh;
-  }
-
-  // Early boot: sanitize any stale flags
-  (function(){
-    try{
-      // remove any "?pass=1" trick by simply not reading query at all
-      if (!isVerified()){
-        clearSession();
-      } else {
-        // keep-alive timestamp refresh
-        localStorage.setItem('ad-ok-ts', Date.now().toString());
-      }
-      console.log('[admin-gate] verified?', isVerified());
-    }catch(e){ console.error('[admin-gate] error', e); clearSession(); }
-  })();
+const OWNER_UID="2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36",SESSION_MIN=60,SESSION_VER="2025-11-12";
+function clearSession(){['ad-ok','ad-ok-ts','ad-owner-uid','ad-session-ver'].forEach(k=>localStorage.removeItem(k));}
+function setSession(uid){localStorage.setItem('ad-ok','1');localStorage.setItem('ad-ok-ts',Date.now());localStorage.setItem('ad-owner-uid',uid);localStorage.setItem('ad-session-ver',SESSION_VER);}
+function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=parseInt(localStorage.getItem('ad-ok-ts')||'0',10);const fresh=(Date.now()-ts)<(SESSION_MIN*60*1000);const uidOk=localStorage.getItem('ad-owner-uid')===OWNER_UID;const verOk=localStorage.getItem('ad-session-ver')===SESSION_VER;return ok&&fresh&&uidOk&&verOk;}
+(function(){try{ if(!isVerified()) clearSession(); else localStorage.setItem('ad-ok-ts',Date.now()); }catch(e){clearSession();}})();
 </script>
 
 <header>
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a class="active" href="admin.html">Admin</a></li>
-      </ul>
-    </nav>
+    <nav><a href="index.html">Home</a><a class="active" href="admin.html">Admin</a></nav>
   </div>
 </header>
 
-<!-- Owner Verification Modal -->
-<div class="owner-veri-overlay" id="ownerVeriOverlay">
-  <div class="modal-card">
-    <button class="close-btn" onclick="closeOwnerModal()">×</button>
-    <h2>🔐 Owner Verification</h2>
-    <input id="ownerUidInput" type="text" placeholder="Enter Owner UID" style="width:100%;margin-bottom:1.3rem;"/>
-    <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;padding:0.65rem 1.5rem;width:100%;border:none;border-radius:8px;">Verify Access</button>
-    <div id="ownerVeriMsg" style="color:red;margin-top:0.8rem;font-size:1.1em;"></div>
+<!-- Verify Modal -->
+<div id="ownerVeriOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.37);display:none;align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:#fff;padding:1.6rem 1.4rem;border-radius:16px;min-width:320px">
+    <h3>🔐 Owner Verification</h3>
+    <input id="ownerUidInput" placeholder="Enter Owner UID" style="width:100%;padding:.7rem;border:1px solid #eee;border-radius:10px;margin:.7rem 0">
+    <button class="btn btn-p" onclick="verifyOwnerUID()">Verify</button>
+    <div id="ownerVeriMsg" style="color:#c33;margin-top:.6rem"></div>
   </div>
 </div>
 
-<!-- Dashboard -->
-<div class="container" id="admin-dashboard" style="display:none;">
-  <h1 style="margin-top:2rem;">Admin Console</h1>
-
-  <div class="stats-grid">
-    <div class="stat-card"><h3 id="stat-products">0</h3><div>Products</div></div>
-    <div class="stat-card"><h3 id="stat-stock">0</h3><div>Available Stock</div></div>
-    <div class="stat-card"><h3 id="stat-pending">0</h3><div>Pending Orders</div></div>
-    <div class="stat-card"><h3 id="stat-revenue">₱0</h3><div>Total Revenue</div></div>
+<div class="container" id="admin-dashboard" style="display:none">
+  <h1 style="margin:1rem 0">Admin Console</h1>
+  <div class="stats">
+    <div class="stat"><div>Total Products</div><h3 id="stat-products">0</h3></div>
+    <div class="stat"><div>Available Stock</div><h3 id="stat-stock">0</h3></div>
+    <div class="stat"><div>Pending Orders</div><h3 id="stat-pending">0</h3></div>
+    <div class="stat"><div>Total Revenue</div><h3 id="stat-revenue">₱0</h3></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="add-stock">Add Stock</button>
-    <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
-    <button class="tab" data-tab="pending-orders">Pending Orders</button>
-    <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
-    <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
-    <button class="tab" data-tab="products">Products</button>
-    <button class="tab" data-tab="store-rules">Store Rules</button>
-    <button class="tab" data-tab="records">Records</button>
-    <button class="tab" data-tab="reports">Reports</button>
+    <div class="tab active" data-tab="add">Add Stock</div>
+    <div class="tab" data-tab="manage">Manage Stocks</div>
+    <div class="tab" data-tab="pending">Pending Orders</div>
+    <div class="tab" data-tab="sold">Sold Accounts</div>
+    <div class="tab" data-tab="arch">Archived Stocks</div>
+    <div class="tab" data-tab="products">Products</div>
+    <div class="tab" data-tab="rules">Store Rules</div>
+    <div class="tab" data-tab="records">Records</div>
+    <div class="tab" data-tab="reports">Reports</div>
   </div>
 
-  <!-- ========== PANELS ========== -->
-  <div class="panel active" id="panel-add-stock">
+  <!-- Add Stock -->
+  <div id="p-add" class="panel active">
     <div class="card">
-      <h2 id="stock-form-title">Add Stock</h2>
-      <form id="addStockForm">
-        <input id="stock-edit-id" type="hidden" value=""/>
-        <label>Product <select id="stock-product"></select></label>
-        <label>Account Type <select id="stock-type"></select></label>
-        <label>Duration <select id="stock-duration"></select></label>
-        <label>Quantity <input id="stock-qty" type="number" min="1" value="1"/></label>
-        <label>Email <input id="stock-email" type="text"/></label>
-        <label>Password <input id="stock-password" type="text"/></label>
-        <label>Profile <input id="stock-profile" type="text"/></label>
-        <label>PIN <input id="stock-pin" type="text"/></label>
-        <label>Auto-Archive (Days): <input id="stock-arch" type="number" value="0"/></label>
-        <label>Premium At (date, optional): <input id="stock-premdate" type="date"/></label>
-        <button id="stock-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Stock</button>
-        <button id="stock-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditStock()" style="margin-top:1rem;display:none;">Cancel Edit</button>
+      <h3>Add Stock</h3>
+      <form id="fAdd">
+        <div class="row"><label>Product</label><select id="as-product"></select></div>
+        <div class="row"><label>Account Type</label><select id="as-type"></select></div>
+        <div class="row"><label>Duration</label><select id="as-dur"></select></div>
+        <div class="row"><label>Quantity</label><input id="as-qty" type="number" min="1" value="1"></div>
+        <div class="row"><label>Email</label><input id="as-email"></div>
+        <div class="row"><label>Password</label><input id="as-pass"></div>
+        <div class="row"><label>Profile</label><input id="as-prof"></div>
+        <div class="row"><label>PIN</label><input id="as-pin"></div>
+        <div class="row"><button class="btn btn-p" type="submit">Add</button></div>
       </form>
-      <div id="add-stock-msg"></div>
+      <div id="msgAdd" style="color:#0a0;margin-top:.6rem"></div>
     </div>
   </div>
 
-  <div class="panel" id="panel-manage-stocks">
-    <div class="card"><h2>Manage Stocks</h2><div id="manage-stocks-list"></div></div>
+  <!-- Manage -->
+  <div id="p-manage" class="panel">
+    <div class="card"><h3>Manage Stocks</h3><div id="manageList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-pending-orders">
-    <div class="card"><h2>Pending Orders</h2><div id="pending-orders-list"></div></div>
+  <!-- Pending -->
+  <div id="p-pending" class="panel">
+    <div class="card"><h3>Pending Orders</h3><div id="pendingList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-sold-accounts">
-    <div class="card"><h2>Sold Accounts</h2><div id="sold-list"></div></div>
+  <!-- Sold -->
+  <div id="p-sold" class="panel">
+    <div class="card"><h3>Sold Accounts</h3><div id="soldList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-archived-stocks">
-    <div class="card"><h2>Archived Stocks</h2><div id="archived-list"></div></div>
+  <!-- Archived -->
+  <div id="p-arch" class="panel">
+    <div class="card"><h3>Archived</h3><div id="archList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-products">
+  <!-- Products -->
+  <div id="p-products" class="panel">
     <div class="card">
-      <h2>Add Product</h2>
-      <form id="addProductForm">
-        <input id="product-edit-id" type="hidden" value=""/>
-        <label>Product Name <input id="product-name" type="text" placeholder="Enter product name" required/></label>
-        <label>Category
-          <select id="product-category" required>
-            <option value="">Select Category</option>
-            <option value="entertainment">🎬 Entertainment</option>
-            <option value="streaming">🎵 Music & Streaming</option>
-            <option value="educational">📚 Educational</option>
-            <option value="editing">🎨 Editing Tools</option>
-            <option value="ai">🤖 AI Tools</option>
+      <h3>Add Product</h3>
+      <form id="fProd">
+        <div class="row"><label>Name</label><input id="pr-name"></div>
+        <div class="row"><label>Category</label>
+          <select id="pr-cat">
+            <option value="entertainment">entertainment</option>
+            <option value="streaming">streaming</option>
+            <option value="educational">educational</option>
+            <option value="editing">editing</option>
+            <option value="ai">ai</option>
           </select>
-        </label>
-        <label>Icon <input id="product-icon" type="text" placeholder="e.g., 📺, 🎵, 🎨" required/></label>
-        <button id="product-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Product</button>
-        <button id="product-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditProduct()" style="margin-top:1rem;display:none;">Cancel Edit</button>
+        </div>
+        <div class="row"><label>Icon</label><input id="pr-icon" placeholder="e.g. 📺"></div>
+        <button class="btn btn-p" type="submit">Add Product</button>
       </form>
-      <div id="add-product-msg"></div>
     </div>
-    <div class="card">
-      <h2>Products Management</h2>
-      <div class="category-filter">
-        <label>Filter by Category:
-          <select id="product-category-filter" onchange="filterProductsByCategory()">
-            <option value="all">All Categories</option>
-            <option value="entertainment">🎬 Entertainment</option>
-            <option value="streaming">🎵 Music & Streaming</option>
-            <option value="educational">📚 Educational</option>
-            <option value="editing">🎨 Editing Tools</option>
-            <option value="ai">🤖 AI Tools</option>
-          </select>
-        </label>
-      </div>
-      <div id="products-list"></div>
-    </div>
+    <div class="card"><h3>Products</h3><div id="prodList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-store-rules">
+  <!-- Rules -->
+  <div id="p-rules" class="panel">
     <div class="card">
-      <h2>Add Store Rule</h2>
-      <form id="addRuleForm">
-        <input id="rule-edit-id" type="hidden" value=""/>
-        <label>Product
-          <select id="rule-product">
-            <option value="general">General (All Products)</option>
-          </select>
-        </label>
-        <label>Rule Text <textarea id="rule-text" rows="3" placeholder="Enter rule description"></textarea></label>
-        <button id="rule-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Rule</button>
-        <button id="rule-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRule()" style="margin-top:1rem;display:none;">Cancel Edit</button>
+      <h3>Add Rule</h3>
+      <form id="fRule">
+        <div class="row"><label>Product</label><select id="ru-prod"><option value="general">general</option></select></div>
+        <div class="row"><label>Rule Text</label><textarea id="ru-text" rows="3"></textarea></div>
+        <button class="btn btn-p" type="submit">Add Rule</button>
       </form>
-      <div id="add-rule-msg"></div>
     </div>
-    <div class="card"><h2>Store Rules</h2><div id="rules-list"></div></div>
+    <div class="card"><h3>Rules</h3><div id="rulesList" class="grid"></div></div>
   </div>
 
-  <div class="panel" id="panel-records">
-    <div class="card">
-      <h2>Add Record</h2>
-      <form id="addRecordForm">
-        <input id="record-edit-id" type="hidden" value=""/>
-        <label>Order ID (Auto-generated for website orders) <input id="record-orderid" type="text" placeholder="Leave empty for auto-generation"/></label>
-        <label>Buyer Information <input id="record-buyer" type="text" placeholder="Buyer name or email" required/></label>
-        <label>Source
-          <select id="record-source" required>
-            <option value="">Select Source</option>
-            <option value="website">Website</option>
-            <option value="facebook">Facebook</option>
-            <option value="instagram">Instagram</option>
-            <option value="telegram">Telegram</option>
-            <option value="tiktok">TikTok</option>
-          </select>
-        </label>
-        <label>Product <select id="record-product" required></select></label>
-        <label>Account Type <select id="record-type" required></select></label>
-        <label>Duration <select id="record-duration" required></select></label>
-        <label>Purchase Date <input id="record-purchasedate" type="date" required/></label>
-        <label>Additional Days <input id="record-adddays" type="number" min="0" value="0"/></label>
-        <label>Account Details - Email <input id="record-email" type="text"/></label>
-        <label>Account Details - Password <input id="record-password" type="text"/></label>
-        <label>Account Details - Profile <input id="record-profile" type="text"/></label>
-        <label>Account Details - PIN <input id="record-pin" type="text"/></label>
-        <label>Price <input id="record-price" type="number" step="0.01" required/></label>
-        <button id="record-submit-btn" class="btn btn-primary" type="submit" style="margin-top:1rem;">Add Record</button>
-        <button id="record-cancel-btn" class="btn btn-warning" type="button" onclick="cancelEditRecord()" style="margin-top:1rem;display:none;">Cancel Edit</button>
-      </form>
-      <div id="add-record-msg"></div>
-    </div>
-
-    <div class="card">
-      <h2>Records List</h2>
-      <table class="records-table">
-        <thead>
-          <tr>
-            <th>Order ID</th><th>Buyer/Email</th><th>Source</th><th>Product</th>
-            <th>Account Type</th><th>Duration</th><th>Purchase Date</th>
-            <th>Expiration Date</th><th>Additional Days</th><th>Updated Expiration</th>
-            <th>Account Details</th><th>Price</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="records-table-body"></tbody>
-      </table>
-    </div>
+  <!-- Records -->
+  <div id="p-records" class="panel">
+    <div class="card"><h3>Records (summary)</h3><div id="recInfo">Loading…</div></div>
   </div>
 
-  <div class="panel" id="panel-reports">
-    <div class="card"><h2>Buyer Reports</h2><div id="buyer-reports-list"></div></div>
-    <div class="card"><h2>Sales Report</h2><div id="sales-report"></div></div>
+  <!-- Reports -->
+  <div id="p-reports" class="panel">
+    <div class="card"><h3>Buyer Reports</h3><div id="brList" class="grid"></div></div>
+    <div class="card"><h3>Sales Report</h3><div id="salesInfo"></div></div>
   </div>
 </div>
 
-<!-- ===== Data/Logic (LocalStorage) ===== -->
+<!-- ===== CONFIG (inline fallback) ===== -->
 <script>
-  /* ----- Constants & Defaults ----- */
-  const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
-  const DURATIONS = ["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
-
-  const DEFAULT_PRODUCTS = [
-    { id:'netflix', name:'Netflix Premium', category:'entertainment', icon:'📺', stock:0, sold:0 },
-    { id:'viu', name:'Viu Premium', category:'entertainment', icon:'🎬', stock:0, sold:0 },
-    { id:'viva-max', name:'VIVAMAX VIVAONE', category:'entertainment', icon:'🎭', stock:0, sold:0 },
-    { id:'wetv', name:'WeTV', category:'entertainment', icon:'📱', stock:0, sold:0 },
-    { id:'iwant-tfc', name:'IWANT TFC', category:'entertainment', icon:'📺', stock:0, sold:0 },
-    { id:'crunchyroll', name:'Crunchyroll', category:'entertainment', icon:'🎮', stock:0, sold:0 },
-    { id:'disney-plus', name:'Disney+', category:'entertainment', icon:'🦁', stock:0, sold:0 },
-    { id:'bilibili', name:'Bilibili', category:'entertainment', icon:'📺', stock:0, sold:0 },
-    { id:'loklok', name:'Loklok', category:'entertainment', icon:'📱', stock:0, sold:0 },
-    { id:'iqiyi', name:'iQiyi', category:'entertainment', icon:'📺', stock:0, sold:0 },
-    { id:'hbo-max', name:'HBO Max', category:'entertainment', icon:'📹', stock:0, sold:0 },
-    { id:'amazon-prime', name:'Amazon Prime', category:'entertainment', icon:'🛒', stock:0, sold:0 },
-    { id:'youku', name:'Youku', category:'entertainment', icon:'📺', stock:0, sold:0 },
-    { id:'nba-league-pass', name:'NBA League Pass Premium', category:'entertainment', icon:'🏀', stock:0, sold:0 },
-    { id:'youtube', name:'YouTube Premium', category:'streaming', icon:'📹', stock:0, sold:0 },
-    { id:'spotify', name:'Spotify Premium', category:'streaming', icon:'🎵', stock:0, sold:0 },
-    { id:'apple-music', name:'Apple Music', category:'streaming', icon:'🎧', stock:0, sold:0 },
-    { id:'chatgpt', name:'ChatGPT Plus', category:'ai', icon:'🧠', stock:0, sold:0 },
-    { id:'blackbox-ai', name:'Blackbox AI', category:'ai', icon:'🤖', stock:0, sold:0 },
-    { id:'perplexity', name:'Perplexity AI', category:'ai', icon:'🔍', stock:0, sold:0 },
-    { id:'google-one', name:'Google One + Gemini AI', category:'ai', icon:'☁️', stock:0, sold:0 },
-    { id:'quizlet', name:'Quizlet+', category:'educational', icon:'📚', stock:0, sold:0 },
-    { id:'scribd', name:'Scribd Premium', category:'educational', icon:'📖', stock:0, sold:0 },
-    { id:'studocu', name:'Studocu Premium', category:'educational', icon:'🎓', stock:0, sold:0 },
-    { id:'duolingo', name:'Duolingo Super', category:'educational', icon:'🧑‍🎓', stock:0, sold:0 },
-    { id:'turnitin-student', name:'Turnitin Student', category:'educational', icon:'📝', stock:0, sold:0 },
-    { id:'turnitin-instructor', name:'Turnitin Instructor', category:'educational', icon:'👨‍🏫', stock:0, sold:0 },
-    { id:'canva', name:'Canva Pro', category:'editing', icon:'🎨', stock:0, sold:0 },
-    { id:'picsart', name:'Picsart Gold', category:'editing', icon:'👏', stock:0, sold:0 },
-    { id:'capcut', name:'CapCut Pro', category:'editing', icon:'📝', stock:0, sold:0 },
-    { id:'alight-motion', name:'Alight Motion Pro', category:'editing', icon:'📱', stock:0, sold:0 },
-    { id:'remini', name:'Remini Web', category:'editing', icon:'✨', stock:0, sold:0 },
-    { id:'grammarly', name:'Grammarly Premium', category:'educational', icon:'✍️', stock:0, sold:0 },
-    { id:'quillbot', name:'Quillbot Premium', category:'educational', icon:'📝', stock:0, sold:0 },
-    { id:'ms-365', name:'Microsoft 365', category:'educational', icon:'🤬', stock:0, sold:0 },
-    { id:'cams-canner', name:'CamScanner Pro', category:'editing', icon:'📁', stock:0, sold:0 },
-    { id:'small-pdf', name:'Small PDF Pro', category:'editing', icon:'📁', stock:0, sold:0 },
-    { id:'zoom', name:'Zoom Pro', category:'educational', icon:'📽️', stock:0, sold:0 }
-  ];
-
-  /* ----- LocalStorage State ----- */
-  let stocks       = JSON.parse(localStorage.getItem("stocks") || "[]");
-  let products     = JSON.parse(localStorage.getItem("products") || "[]");
-  let rules        = JSON.parse(localStorage.getItem("rules") || "[]");
-  let records      = JSON.parse(localStorage.getItem("records") || "[]");
-  let archived     = JSON.parse(localStorage.getItem("archived") || "[]");
-  let sold         = JSON.parse(localStorage.getItem("sold") || "[]");
-  let pending      = JSON.parse(localStorage.getItem("pending") || "[]");
-  let buyerReports = JSON.parse(localStorage.getItem("buyerReports") || "[]");
-
-  if (products.length === 0) {
-    products = DEFAULT_PRODUCTS;
-    localStorage.setItem("products", JSON.stringify(products));
-  }
-  if (rules.length === 0) {
-    rules = [
-      { id:genId(), product:"general",          text:"All accounts are premium quality" },
-      { id:genId(), product:"general",          text:"No refunds after delivery" },
-      { id:genId(), product:"general",          text:"Replacement guaranteed within 24 hours for any issues" },
-      { id:genId(), product:"Netflix Premium",  text:"No password changing allowed" },
-      { id:genId(), product:"Netflix Premium",  text:"Use only on one device at a time" }
-    ];
-    localStorage.setItem("rules", JSON.stringify(rules));
-  }
-
-  /* ----- Utils ----- */
-  function saveAll(){
-    localStorage.setItem("stocks", JSON.stringify(stocks));
-    localStorage.setItem("products", JSON.stringify(products));
-    localStorage.setItem("rules", JSON.stringify(rules));
-    localStorage.setItem("records", JSON.stringify(records));
-    localStorage.setItem("archived", JSON.stringify(archived));
-    localStorage.setItem("sold", JSON.stringify(sold));
-    localStorage.setItem("pending", JSON.stringify(pending));
-    localStorage.setItem("buyerReports", JSON.stringify(buyerReports));
-  }
-  function genId(){ return Date.now() + '-' + Math.random().toString(36).substr(2,9); }
-  function genOrderId(){ return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2,9).toUpperCase(); }
-  function calcExp(purchaseDate, duration, additionalDays=0){
-    const d = new Date(purchaseDate);
-    let add = additionalDays;
-    if (typeof duration === 'string'){
-      if (duration.endsWith('d')) add += parseInt(duration);
-      else if (duration.endsWith('m')) add += parseInt(duration) * 30;
-      else if (duration.endsWith('W')) add += parseInt(duration) * 7;
-    }
-    d.setDate(d.getDate() + add);
-    return d.toISOString().split('T')[0];
-  }
-  function fmtDetails(r){
-    const a=[]; if(r.email) a.push(`Email: ${r.email}`);
-    if(r.password) a.push(`Password: ${r.password}`);
-    if(r.profile) a.push(`Profile: ${r.profile}`);
-    if(r.pin) a.push(`PIN: ${r.pin}`);
-    return a.join('<br>');
-  }
-
-  /* ----- Owner Modal + Verify ----- */
-  function openOwnerModal(){
-    document.getElementById('ownerUidInput').value='';
-    document.getElementById('ownerVeriMsg').textContent='';
-    document.getElementById('ownerVeriOverlay').style.display='flex';
-  }
-  function closeOwnerModal(){
-    document.getElementById('ownerVeriOverlay').style.display='none';
-  }
-  function verifyOwnerUID(){
-    const uid = document.getElementById('ownerUidInput').value.trim();
-    if (uid === OWNER_UID){
-      setSession(uid);               // secure session set
-      closeOwnerModal();
-      showAdminPanel();
-      initializeAdmin();
-    } else {
-      document.getElementById('ownerVeriMsg').innerText = '❌ Invalid UID.';
-    }
-  }
-  window.verifyOwnerUID = verifyOwnerUID;   // expose for button
-  window.openOwnerModal = openOwnerModal;   // expose for modal close btn
-  window.closeOwnerModal = closeOwnerModal;
-
-  /* ----- Renders ----- */
-  function updateStats(){
-    document.getElementById("stat-products").innerText = products.length;
-    document.getElementById("stat-stock").innerText    = stocks.filter(s=>s.status==='available').length;
-    document.getElementById("stat-pending").innerText  = pending.length;
-    const rev = sold.reduce((a,b)=>a+(+b.price||0),0) + records.reduce((a,b)=>a+(+b.price||0),0);
-    document.getElementById("stat-revenue").innerText  = "₱" + rev;
-  }
-  function showStocks(){
-    const el   = document.getElementById("manage-stocks-list");
-    const avail= stocks.filter(s=>s.status==='available');
-    el.innerHTML = avail.length
-      ? avail.map(st=>`
-          <div class="stock-card">
-            <div><b>${st.product}</b> ${st.type} (${st.duration})</div>
-            <div>Email: ${st.email||'N/A'} | Profile: ${st.profile||'N/A'}</div>
-            <div class="stock-actions">
-              <button class="btn btn-info btn-small"    onclick="editStock('${st.id}')">Edit</button>
-              <button class="btn btn-success btn-small" onclick="markSold('${st.id}')">Mark Sold</button>
-              <button class="btn btn-warning btn-small" onclick="archiveStock('${st.id}')">Archive</button>
-              <button class="btn btn-danger btn-small"  onclick="delStock('${st.id}')">Delete</button>
-            </div>
-          </div>`).join('')
-      : "No available stocks.";
-  }
-  function showProducts(){
-    const f = document.getElementById("product-category-filter").value;
-    const arr = (f==='all') ? products : products.filter(p=>p.category===f);
-    document.getElementById("products-list").innerHTML = arr.length
-      ? arr.map(p=>`
-          <div class="stock-card">
-            <div><b>${p.icon} ${p.name}</b></div>
-            <div>Category: ${p.category} | Stock: ${p.stock} | Sold: ${p.sold}</div>
-            <div class="stock-actions">
-              <button class="btn btn-info btn-small"   onclick="editProduct('${p.id}')">Edit</button>
-              <button class="btn btn-danger btn-small" onclick="delProduct('${p.id}')">Delete</button>
-            </div>
-          </div>`).join('')
-      : "No products found for this category.";
-  }
-  function filterProductsByCategory(){ showProducts(); }
-
-  function showRecords(){
-    const tb = document.getElementById("records-table-body");
-    tb.innerHTML = records.length
-      ? records.map(r=>`
-          <tr>
-            <td>${r.orderId}</td><td>${r.buyer}</td><td>${r.source}</td>
-            <td>${r.product}</td><td>${r.accountType}</td><td>${r.duration}</td>
-            <td>${r.purchaseDate}</td><td>${r.expirationDate}</td>
-            <td>${r.additionalDays}</td><td>${r.updatedExpiration}</td>
-            <td>${fmtDetails(r)}</td><td>₱${r.price}</td>
-            <td>
-              <button class="btn btn-info btn-small"   onclick="editRecord('${r.id}')">Edit</button>
-              <button class="btn btn-danger btn-small" onclick="removeRecord('${r.id}')">Remove</button>
-            </td>
-          </tr>`).join('')
-      : '<tr><td colspan="13" style="text-align:center;">No records found.</td></tr>';
-  }
-
-  function showRules(){
-    const el = document.getElementById("rules-list");
-    el.innerHTML = rules.length
-      ? rules.map(rule=>`
-        <div class="stock-card">
-          <div><b>Product:</b> ${rule.product==='general' ? 'All Products' : rule.product}</div>
-          <div><b>Rule:</b> ${rule.text}</div>
-          <div class="stock-actions">
-            <button class="btn btn-info btn-small"   onclick="editRule('${rule.id}')">Edit</button>
-            <button class="btn btn-danger btn-small" onclick="delRule('${rule.id}')">Remove</button>
-          </div>
-        </div>`).join('')
-      : "No rules defined.";
-  }
-
-  function showReports(){
-    const list = document.getElementById("buyer-reports-list");
-    list.innerHTML = buyerReports.length
-      ? buyerReports.map(r=>`
-        <div class="report-card">
-          <div><b>Report ID:</b> ${r.id}</div>
-          <div><b>Order ID:</b> ${r.orderId || 'N/A'}</div>
-          <div><b>Buyer:</b> ${r.buyer}</div>
-          <div><b>Product:</b> ${r.product}</div>
-          <div><b>Issue:</b> ${r.issue}</div>
-          <div><b>Status:</b> <span class="badge ${r.status==='resolved'?'badge-resolved':'badge-pending'}">${r.status}</span></div>
-          <div><b>Date Reported:</b> ${r.date}</div>
-          <div class="report-actions">
-            ${r.status!=='resolved' ? `<button class="btn btn-success btn-small" onclick="resolveReport('${r.id}')">Mark Resolved</button>` : ''}
-            <button class="btn btn-danger btn-small" onclick="deleteReport('${r.id}')">Delete</button>
-          </div>
-        </div>`).join('')
-      : '<p>No buyer reports yet.</p>';
-
-    const total = records.reduce((a,b)=>a+(+b.price||0),0);
-    const web   = records.filter(r=>r.source==='website').length;
-    const soc   = records.filter(r=>r.source!=='website').length;
-    document.getElementById("sales-report").innerHTML =
-      `<p><b>Total Records:</b> ${records.length}</p>
-       <p><b>Total Revenue:</b> ₱${total}</p>
-       <p><b>Website Orders:</b> ${web}</p>
-       <p><b>Social Media Orders:</b> ${soc}</p>
-       <p><b>Pending Buyer Reports:</b> ${buyerReports.filter(r=>r.status==='pending').length}</p>`;
-  }
-
-  function showArchived(){ document.getElementById("archived-list").innerHTML =
-    archived.length ? archived.map(a=>`<div>${a.product}, ${a.type}, archived at: ${a.archivedAt}</div>`).join('') : "No archived stocks"; }
-  function showPending(){ document.getElementById("pending-orders-list").innerHTML =
-    pending.length ? pending.map(p=>`<div>${p.product}, order: ${p.orderId}</div>`).join('') : "No pending orders."; }
-  function showSold(){ document.getElementById("sold-list").innerHTML =
-    sold.length ? sold.map(x=>`<div>${x.product}, buyer, price ₱${x.price||0}</div>`).join('') : "No sold accounts yet"; }
-
-  /* ----- Actions ----- */
-  function editStock(id){const s=stocks.find(x=>x.id===id); if(!s) return;
-    document.getElementById("stock-edit-id").value=s.id;
-    document.getElementById("stock-product").value=s.product;
-    document.getElementById("stock-type").value=s.type;
-    document.getElementById("stock-duration").value=s.duration;
-    document.getElementById("stock-email").value=s.email||'';
-    document.getElementById("stock-password").value=s.password||'';
-    document.getElementById("stock-profile").value=s.profile||'';
-    document.getElementById("stock-pin").value=s.pin||'';
-    document.getElementById("stock-arch").value=s.archiveAfter||0;
-    document.getElementById("stock-premdate").value=s.premiumAt||'';
-    document.getElementById("stock-form-title").textContent="Edit Stock";
-    document.getElementById("stock-submit-btn").textContent="Update Stock";
-    document.getElementById("stock-cancel-btn").style.display="inline-block";
-    document.getElementById("stock-qty").style.display="none";
-    const qtyLbl=[...document.querySelectorAll('#addStockForm label')].find(l=>l.textContent.trim().startsWith('Quantity'));
-    if(qtyLbl) qtyLbl.style.display='none';
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    document.querySelector('.tab[data-tab="add-stock"]').classList.add("active");
-    document.getElementById("panel-add-stock").classList.add("active");
-  }
-  function cancelEditStock(){
-    document.getElementById("stock-edit-id").value="";
-    document.getElementById("addStockForm").reset();
-    document.getElementById("stock-form-title").textContent="Add Stock";
-    document.getElementById("stock-submit-btn").textContent="Add Stock";
-    document.getElementById("stock-cancel-btn").style.display="none";
-    document.getElementById("stock-qty").style.display="block";
-    const l=[...document.querySelectorAll('#addStockForm label')].find(x=>x.textContent.trim().startsWith('Quantity'));
-    if(l) l.style.display='block';
-  }
-  function delStock(id){ if(!confirm('Delete this stock?')) return;
-    stocks = stocks.filter(s=>s.id!==id); saveAll(); showStocks(); updateStats();
-  }
-  function archiveStock(id){
-    const i = stocks.findIndex(s=>s.id==id);
-    if(i>-1){ archived.push({...stocks[i], archivedAt:(new Date()).toLocaleDateString()});
-      stocks.splice(i,1); saveAll(); showStocks(); showArchived(); }
-  }
-  function markSold(id){
-    const s = stocks.find(x=>x.id==id); if(!s) return;
-    const now = new Date();
-    const rec = {
-      id:genId(), orderId:genOrderId(), buyer:'Website Customer', source:'website',
-      product:s.product, accountType:s.type, duration:s.duration,
-      purchaseDate:now.toISOString().split('T')[0],
-      expirationDate:calcExp(now, s.duration), additionalDays:0,
-      updatedExpiration:calcExp(now, s.duration, 0),
-      email:s.email, password:s.password, profile:s.profile, pin:s.pin,
-      price:199, status:'sold', createdAt:now.toISOString()
-    };
-    records.push(rec);
-    sold.push({...s, price:199, soldDate: now.toLocaleDateString()});
-    stocks = stocks.filter(x=>x.id!==id);
-    saveAll(); updateStats(); showStocks(); showSold(); showRecords();
-  }
-
-  function editProduct(id){ const p=products.find(x=>x.id===id); if(!p) return;
-    document.getElementById("product-edit-id").value=p.id;
-    document.getElementById("product-name").value=p.name;
-    document.getElementById("product-category").value=p.category;
-    document.getElementById("product-icon").value=p.icon;
-    document.getElementById("product-submit-btn").textContent="Update Product";
-    document.getElementById("product-cancel-btn").style.display="inline-block";
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(pn=>pn.classList.remove("active"));
-    document.querySelector('.tab[data-tab="products"]').classList.add("active");
-    document.getElementById("panel-products").classList.add("active");
-  }
-  function cancelEditProduct(){
-    document.getElementById("product-edit-id").value="";
-    document.getElementById("addProductForm").reset();
-    document.getElementById("product-submit-btn").textContent="Add Product";
-    document.getElementById("product-cancel-btn").style.display="none";
-  }
-  function delProduct(id){
-    if(!confirm('Delete this product?')) return;
-    products = products.filter(p=>p.id!==id);
-    saveAll(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts(); updateStats();
-  }
-
-  function editRecord(id){ const r=records.find(x=>x.id===id); if(!r) return;
-    document.getElementById("record-edit-id").value=r.id;
-    document.getElementById("record-orderid").value=r.orderId;
-    document.getElementById("record-buyer").value=r.buyer;
-    document.getElementById("record-source").value=r.source;
-    document.getElementById("record-product").value=r.product;
-    document.getElementById("record-type").value=r.accountType;
-    document.getElementById("record-duration").value=r.duration;
-    document.getElementById("record-purchasedate").value=r.purchaseDate;
-    document.getElementById("record-adddays").value=r.additionalDays;
-    document.getElementById("record-email").value=r.email||'';
-    document.getElementById("record-password").value=r.password||'';
-    document.getElementById("record-profile").value=r.profile||'';
-    document.getElementById("record-pin").value=r.pin||'';
-    document.getElementById("record-price").value=r.price;
-    document.getElementById("record-submit-btn").textContent="Update Record";
-    document.getElementById("record-cancel-btn").style.display="inline-block";
-    document.getElementById("addRecordForm").scrollIntoView();
-    document.getElementById("add-record-msg").textContent="Editing record. Update then click 'Update Record'.";
-  }
-  function cancelEditRecord(){
-    document.getElementById("record-edit-id").value="";
-    document.getElementById("addRecordForm").reset();
-    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
-    document.getElementById("record-submit-btn").textContent="Add Record";
-    document.getElementById("record-cancel-btn").style.display="none";
-    document.getElementById("add-record-msg").textContent="";
-  }
-
-  function delRule(id){ if(!confirm('Remove this rule?')) return;
-    rules = rules.filter(r=>r.id!==id); saveAll(); showRules();
-  }
-  function removeRecord(id){ if(!confirm('Remove this record?')) return;
-    records = records.filter(r=>r.id!==id); saveAll(); showRecords(); updateStats();
-  }
-  function resolveReport(id){ const i=buyerReports.findIndex(r=>r.id===id);
-    if(i>-1){ buyerReports[i].status='resolved'; saveAll(); showReports(); }
-  }
-  function deleteReport(id){ if(!confirm('Delete this report?')) return;
-    buyerReports = buyerReports.filter(r=>r.id!==id); saveAll(); showReports();
-  }
-  function addBuyerReport(report){
-    buyerReports.push({ id:genId(), ...report, status:'pending', date:new Date().toLocaleDateString() });
-    saveAll(); showReports();
-  }
-  function processWebsiteOrder(orderData){
-    pending.push({ id:genId(), ...orderData, timestamp:new Date().toISOString(), status:'pending' });
-    const p = products.find(x=>x.name===orderData.productName);
-    if (p){ p.stock = Math.max(0, p.stock-1); p.sold += 1; }
-    saveAll(); updateStats(); showPending(); showProducts();
-    return { success:true, orderId:orderData.orderId, message:'Order processed successfully' };
-  }
-
-  /* ----- Form wiring ----- */
-  function updateProductDropdowns(){
-    const a = products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
-    const s1 = document.getElementById("stock-product");
-    const s2 = document.getElementById("record-product");
-    if (s1) s1.innerHTML = a;
-    if (s2) s2.innerHTML = a;
-  }
-  function updateRuleProductDropdown(){
-    const sel = document.getElementById("rule-product");
-    if (!sel) return;
-    sel.innerHTML = '<option value="general">General (All Products)</option>' +
-      products.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
-  }
-  function setupFormSubmissions(){
-    // Add/Update Stock
-    document.getElementById("addStockForm").onsubmit = function(e){
-      e.preventDefault();
-      const editId = document.getElementById("stock-edit-id").value;
-      if (editId){
-        const i = stocks.findIndex(s=>s.id===editId);
-        if (i>-1){
-          stocks[i] = {
-            ...stocks[i],
-            product:  document.getElementById("stock-product").value,
-            type:     document.getElementById("stock-type").value,
-            duration: document.getElementById("stock-duration").value,
-            email:    document.getElementById("stock-email").value,
-            password: document.getElementById("stock-password").value,
-            profile:  document.getElementById("stock-profile").value,
-            pin:      document.getElementById("stock-pin").value,
-            archiveAfter: Number(document.getElementById("stock-arch").value)||0,
-            premiumAt:    document.getElementById("stock-premdate").value||""
-          };
-          saveAll(); showStocks();
-          document.getElementById("add-stock-msg").textContent = "✔ Stock Updated!";
-          cancelEditStock();
-        }
-      } else {
-        const qty = Number(document.getElementById("stock-qty").value)||1;
-        for(let i=0;i<qty;i++){
-          stocks.push({
-            id:genId(),
-            product:  document.getElementById("stock-product").value,
-            type:     document.getElementById("stock-type").value,
-            duration: document.getElementById("stock-duration").value,
-            email:    document.getElementById("stock-email").value,
-            password: document.getElementById("stock-password").value,
-            profile:  document.getElementById("stock-profile").value,
-            pin:      document.getElementById("stock-pin").value,
-            archiveAfter:Number(document.getElementById("stock-arch").value)||0,
-            premiumAt:document.getElementById("stock-premdate").value||"",
-            status:'available'
-          });
-        }
-        saveAll(); this.reset(); updateStats(); showStocks();
-        document.getElementById("add-stock-msg").textContent = "✔ Stock Added!";
-      }
-      setTimeout(()=>document.getElementById("add-stock-msg").textContent='',1500);
-    };
-
-    // Add/Update Product
-    document.getElementById("addProductForm").onsubmit = function(e){
-      e.preventDefault();
-      const editId  = document.getElementById("product-edit-id").value;
-      const name    = document.getElementById("product-name").value;
-      const category= document.getElementById("product-category").value;
-      const icon    = document.getElementById("product-icon").value;
-      if (editId){
-        const i = products.findIndex(p=>p.id===editId);
-        if (i>-1){
-          products[i] = { ...products[i], name, category, icon };
-          saveAll(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts();
-          document.getElementById("add-product-msg").textContent = "✔ Product Updated!";
-          cancelEditProduct();
-        }
-      } else {
-        products.push({ id:genId(), name, category, icon, stock:0, sold:0 });
-        saveAll(); this.reset(); updateProductDropdowns(); updateRuleProductDropdown(); showProducts();
-        document.getElementById("add-product-msg").textContent = "✔ Product Added!";
-      }
-      setTimeout(()=>document.getElementById("add-product-msg").textContent='',1500);
-    };
-
-    // Add/Update Record
-    document.getElementById("addRecordForm").onsubmit = function(e){
-      e.preventDefault();
-      const editId = document.getElementById("record-edit-id").value;
-      const pd     = document.getElementById("record-purchasedate").value;
-      const dur    = document.getElementById("record-duration").value;
-      const add    = Number(document.getElementById("record-adddays").value)||0;
-
-      if (editId){
-        const i = records.findIndex(r=>r.id===editId);
-        if (i>-1){
-          records[i] = {
-            ...records[i],
-            orderId: document.getElementById("record-orderid").value,
-            buyer:   document.getElementById("record-buyer").value,
-            source:  document.getElementById("record-source").value,
-            product: document.getElementById("record-product").value,
-            accountType: document.getElementById("record-type").value,
-            duration: dur,
-            purchaseDate: pd,
-            expirationDate:   calcExp(pd, dur),
-            additionalDays:   add,
-            updatedExpiration:calcExp(pd, dur, add),
-            email:    document.getElementById("record-email").value,
-            password: document.getElementById("record-password").value,
-            profile:  document.getElementById("record-profile").value,
-            pin:      document.getElementById("record-pin").value,
-            price:    Number(document.getElementById("record-price").value)||0
-          };
-          saveAll(); showRecords();
-          document.getElementById("add-record-msg").textContent = "✔ Record Updated!";
-          cancelEditRecord();
-        }
-      } else {
-        records.push({
-          id:genId(),
-          orderId: document.getElementById("record-orderid").value || genOrderId(),
-          buyer:   document.getElementById("record-buyer").value,
-          source:  document.getElementById("record-source").value,
-          product: document.getElementById("record-product").value,
-          accountType: document.getElementById("record-type").value,
-          duration: dur,
-          purchaseDate: pd,
-          expirationDate:   calcExp(pd, dur),
-          additionalDays:   add,
-          updatedExpiration:calcExp(pd, dur, add),
-          email:    document.getElementById("record-email").value,
-          password: document.getElementById("record-password").value,
-          profile:  document.getElementById("record-profile").value,
-          pin:      document.getElementById("record-pin").value,
-          price:    Number(document.getElementById("record-price").value)||0,
-          status:'active',
-          createdAt: new Date().toISOString()
-        });
-        saveAll(); this.reset();
-        document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
-        showRecords(); updateStats();
-        document.getElementById("add-record-msg").textContent = "✔ Record Added!";
-      }
-      setTimeout(()=>document.getElementById("add-record-msg").textContent='',1500);
-    };
-  }
-
-  /* ----- Init / Tabs / Gate ----- */
-  function showAdminPanel(){
-    document.getElementById('admin-dashboard').style.display='block';
-    updateStats(); showStocks(); showArchived(); showProducts(); showRules();
-    showRecords(); showReports(); showPending(); showSold();
-  }
-  function initializeAdmin(){
-    const tabs   = document.querySelectorAll(".tab");
-    const panels = document.querySelectorAll(".panel");
-    tabs.forEach(tab=>{
-      tab.onclick = function(){
-        tabs.forEach(tb=>tb.classList.remove("active"));
-        panels.forEach(pl=>pl.classList.remove("active"));
-        tab.classList.add("active");
-        document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
-      };
-    });
-    const fill = (id, opts)=>{ const el=document.getElementById(id); if(el) el.innerHTML = opts.map(x=>`<option value="${x}">${x}</option>`).join(''); };
-    fill("stock-type", ACC_TYPES); fill("stock-duration", DURATIONS);
-    fill("record-type", ACC_TYPES); fill("record-duration", DURATIONS);
-    updateProductDropdowns(); updateRuleProductDropdown();
-    document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
-    setupFormSubmissions();
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    if (isVerified()){
-      showAdminPanel(); initializeAdmin();
-    } else {
-      clearSession();
-      openOwnerModal();
-    }
-  });
-
-  // Idle/visibility check → auto-logout when stale
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible'){
-      if (!isVerified()){
-        clearSession();
-        openOwnerModal();
-      } else {
-        localStorage.setItem('ad-ok-ts', Date.now().toString());
-      }
-    }
-  });
-
-  // Expose some handlers globally for buttons
-  window.editStock=editStock; window.cancelEditStock=cancelEditStock;
-  window.delStock=delStock; window.archiveStock=archiveStock; window.markSold=markSold;
-  window.editProduct=editProduct; window.cancelEditProduct=cancelEditProduct; window.delProduct=delProduct;
-  window.editRecord=editRecord; window.cancelEditRecord=cancelEditRecord; window.removeRecord=removeRecord;
-  window.filterProductsByCategory=filterProductsByCategory;
-  window.editRule=editRule; window.delRule=delRule;
-  window.resolveReport=resolveReport; window.deleteReport=deleteReport;
-  window.addBuyerReport=addBuyerReport; window.processWebsiteOrder=processWebsiteOrder;
+  window.CONFIG_PRIVATE = window.CONFIG_PRIVATE || undefined;
+  window.CONFIG_PUBLIC  = window.CONFIG_PUBLIC  || {
+    DATABASE:{ SUPABASE_URL:"YOUR_SUPABASE_URL_HERE", SUPABASE_ANON_KEY:"YOUR_SUPABASE_ANON_KEY_HERE" },
+    ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
+  };
+  window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC;
 </script>
+<script src="config.private.js"></script>
+<script src="config.js"></script>
+<script> window.CONFIG = window.CONFIG_PRIVATE || window.CONFIG_PUBLIC || window.CONFIG; </script>
 
-<!-- (Optional) Supabase client if you’ll wire this later -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="assets/js/aiaxcart/supabase.js"></script>
+<script src="assets/js/aiaxcart/supabase.js?v=4"></script>
+
+<script>
+const SB = createDbClient();
+
+/* Verify (RPC + fallback) */
+async function verifyOwnerUID(){
+  const uid = (document.getElementById('ownerUidInput').value||'').trim();
+  const msg = document.getElementById('ownerVeriMsg');
+  if(!uid){ msg.textContent='Enter UID.'; return; }
+  function ok(){ setSession(uid); msg.style.color='#2a7'; msg.textContent='Verified. Entering…'; document.getElementById('ownerVeriOverlay').style.display='none'; showAdmin(); }
+  try{
+    const yes = await db_isUidAdmin(uid);
+    if(yes || uid===CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Invalid UID.'; clearSession(); }
+  }catch(e){ if(uid===CONFIG.ADMIN.OWNER_UID){ ok(); } else { msg.textContent='Verification failed.'; } }
+}
+(function(){ if(!isVerified()) document.getElementById('ownerVeriOverlay').style.display='flex'; else showAdmin(); })();
+
+/* Tabs */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('p-'+t.dataset.tab).classList.add('active');
+});
+
+/* Admin boot */
+function showAdmin(){ document.getElementById('admin-dashboard').style.display='block'; bootAdmin(); }
+
+async function bootAdmin(){
+  const accTypes=["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
+  const durs=["7d","14d","1m","2m","3m","4m","5m","6m","8m","10m","12m","24m","NW","3m W","6m W","12m W"];
+  fillSelect('as-type',accTypes); fillSelect('as-dur',durs);
+
+  await refreshAll();
+
+  document.getElementById('fAdd').onsubmit=async(e)=>{
+    e.preventDefault();
+    const payload={
+      product_id:document.getElementById('as-product').value,
+      account_type:document.getElementById('as-type').value,
+      duration_key:document.getElementById('as-dur').value,
+      email:document.getElementById('as-email').value,
+      password:document.getElementById('as-pass').value,
+      profile:document.getElementById('as-prof').value,
+      pin:document.getElementById('as-pin').value,
+      quantity:Number(document.getElementById('as-qty').value||1)
+    };
+    await db_addStock(payload);
+    document.getElementById('msgAdd').innerText='✔ Stock added.';
+    setTimeout(()=>document.getElementById('msgAdd').innerText='',1200);
+    await refreshAll();
+  };
+
+  document.getElementById('fProd').onsubmit=async(e)=>{
+    e.preventDefault();
+    await db_addProduct({name:document.getElementById('pr-name').value,category:document.getElementById('pr-cat').value,icon:document.getElementById('pr-icon').value});
+    document.getElementById('pr-name').value=''; document.getElementById('pr-icon').value='';
+    await refreshAll();
+  };
+
+  document.getElementById('fRule').onsubmit=async(e)=>{
+    e.preventDefault();
+    await db_addRule({product:document.getElementById('ru-prod').value,text:document.getElementById('ru-text').value});
+    document.getElementById('ru-text').value=''; await refreshAll();
+  };
+
+  db_subscribeStockAndOrders(refreshAll);
+}
+
+function fillSelect(id,arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML = arr.map(x=>`<option>${x}</option>`).join(''); }
+
+/* Renders */
+async function refreshAll(){
+  const stats = await db_adminStats(); // {products,available,pending,revenue}
+  document.getElementById('stat-products').innerText=stats.products;
+  document.getElementById('stat-stock').innerText=stats.available;
+  document.getElementById('stat-pending').innerText=stats.pending;
+  document.getElementById('stat-revenue').innerText='₱'+stats.revenue;
+
+  const products = await db_listProducts();
+  document.getElementById('as-product').innerHTML = products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('ru-prod').innerHTML = `<option value="general">general</option>` + products.map(p=>`<option>${p.name}</option>`).join('');
+
+  document.getElementById('prodList').innerHTML = products.map(p=>`
+    <div class="card">
+      <div><b>${p.icon||'🛒'} ${p.name}</b></div>
+      <div>Category: ${p.category} | Stock: ${p.stock||0} | Sold: ${p.sold||0}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-w" onclick="promptEditProduct('${p.id}')">Edit</button>
+        <button class="btn btn-d" onclick="db_deleteProduct('${p.id}').then(refreshAll)">Delete</button>
+      </div>
+    </div>`).join('');
+
+  const stocks = await db_listAvailableStocks();
+  document.getElementById('manageList').innerHTML = stocks.length? stocks.map(s=>`
+    <div class="card">
+      <div><b>${s.product_name}</b> • ${s.account_type} • ${s.duration_key}</div>
+      <div class="note">Email: ${s.email||'—'} | Profile: ${s.profile||'—'}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-s" onclick="db_markSold('${s.id}',199).then(refreshAll)">Mark Sold</button>
+        <button class="btn btn-w" onclick="db_archiveStock('${s.id}').then(refreshAll)">Archive</button>
+        <button class="btn btn-d" onclick="db_deleteStock('${s.id}').then(refreshAll)">Delete</button>
+      </div>
+    </div>`).join('') : '<div class="note">No available stocks.</div>';
+
+  const pend = await db_listPendingOrders();
+  document.getElementById('pendingList').innerHTML = pend.length? pend.map(o=>`
+    <div class="card">
+      <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
+      <div class="note">Buyer: ${o.buyer_name} (${o.buyer_email}) | ID: ${o.id}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-s" onclick="db_confirmOrder('${o.id}').then(refreshAll)">Confirm</button>
+        <button class="btn btn-d" onclick="db_cancelOrder('${o.id}').then(refreshAll)">Cancel</button>
+      </div>
+    </div>`).join('') : '<div class="note">No pending orders.</div>';
+
+  const sold = await db_listSold();
+  document.getElementById('soldList').innerHTML = sold.map(x=>`
+    <div class="card">
+      <div><b>${x.product_name}</b> • ₱${x.price||0}</div>
+      <div class="note">Sold: ${new Date(x.sold_at).toLocaleString()}</div>
+    </div>`).join('');
+
+  const arch = await db_listArchived();
+  document.getElementById('archList').innerHTML = arch.map(a=>`
+    <div class="card">
+      <div><b>${a.product_name}</b> • ${a.account_type} • ${a.duration_key}</div>
+      <div class="note">Archived: ${new Date(a.archived_at).toLocaleString()}</div>
+    </div>`).join('');
+
+  const rules = await db_listRules();
+  document.getElementById('rulesList').innerHTML = rules.map(r=>`
+    <div class="card">
+      <div><b>${r.product==='general'?'All Products':r.product}</b></div>
+      <div>${r.text}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-d" onclick="db_deleteRule('${r.id}').then(refreshAll)">Remove</button>
+      </div>
+    </div>`).join('');
+
+  const rec = await db_listRecordsSummary();
+  document.getElementById('recInfo').innerHTML = `
+    <div>Total records: <b>${rec.total}</b></div>
+    <div>Total revenue: <b>₱${rec.revenue}</b></div>
+    <div>Website orders: <b>${rec.web}</b> | Social: <b>${rec.social}</b></div>`;
+
+  const br = await db_listBuyerReports();
+  document.getElementById('brList').innerHTML = br.length? br.map(r=>`
+    <div class="card">
+      <div><b>Report ID:</b> ${r.id}</div>
+      <div><b>Order ID:</b> ${r.order_id||'—'}</div>
+      <div><b>Buyer:</b> ${r.buyer}</div>
+      <div><b>Product:</b> ${r.product||'—'}</div>
+      <div><b>Issue:</b> ${r.issue}</div>
+      <div style="margin-top:.4rem">
+        ${r.status!=='resolved'?`<button class="btn btn-s" onclick="db_markReportResolved('${r.id}').then(refreshAll)">Mark Resolved</button>`:''}
+        <button class="btn btn-d" onclick="db_deleteReport('${r.id}').then(refreshAll)">Delete</button>
+      </div>
+    </div>`).join(''):'<div class="note">No buyer reports.</div>';
+
+  document.getElementById('salesInfo').innerHTML = `<div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
+}
+
+async function promptEditProduct(id){
+  const name = prompt('New name? (leave blank to keep)');
+  const cat  = prompt('New category? (entertainment/streaming/educational/editing/ai)');
+  const icon = prompt('New icon? (e.g. 📺)');
+  await db_updateProduct({id,name,category:cat,icon});
+  refreshAll();
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    if(!isVerified()){ clearSession(); location.reload(); }
+    else localStorage.setItem('ad-ok-ts',Date.now());
+  }
+});
+</script>
 </body>
 </html>
