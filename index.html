@@ -420,7 +420,7 @@ async function loadFeedback(){
   const btn = document.getElementById('admin-btn');
   if (!btn) return;
   const ok = localStorage.getItem('ad-ok')==='1';
-  btn.textContent = ok ? 'Admin' : 'Admin 🔒';
+  btn.textContent = ok ? 'Admin' : 'Admin';
 })();
 // My Account
 function updateAccountTab(){
