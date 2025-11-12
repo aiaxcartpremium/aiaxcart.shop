@@ -1,372 +1,423 @@
-<script>
-// Aiaxcart Supabase v4 – hybrid-safe helpers + DB calls
-// Exposes globally: createDbClient, db_* functions
+/* assets/js/aiaxcart/supabase.js  — v4
+   Works with the index.html/admin.html provided by user.
+   Uses window.CONFIG_PUBLIC.DATABASE + ADMIN.OWNER_UID from the page.
+*/
 
-(function(){
-  const CFG = (window.CONFIG_PRIVATE || window.CONFIG_PUBLIC || window.CONFIG || {}).DATABASE || {};
-  const SB_URL = CFG.SUPABASE_URL;
-  const SB_KEY = CFG.SUPABASE_ANON_KEY;
+(function(global){
 
-  if (!window.supabase) {
-    console.error("[Aiaxcart] supabase-js not loaded");
+  // ---- CONFIG ----
+  const CFG = (global.CONFIG_PUBLIC || global.CONFIG || {}).DATABASE || {};
+  const ADMIN_CFG = (global.CONFIG_PUBLIC || global.CONFIG || {}).ADMIN || {};
+  if(!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY){
+    console.error('[aiaxcart v4] Missing Supabase config.');
   }
 
+  // ---- CLIENT ----
   function createDbClient(){
-    if(!SB_URL || !SB_KEY) throw new Error("Missing Supabase URL or ANON KEY");
-    if (!window.supabaseClient) {
-      window.supabaseClient = window.supabase.createClient(SB_URL, SB_KEY, {
-        auth: { persistSession: false }
-      });
-    }
-    return window.supabaseClient;
+    if(!global.supabase) { throw new Error('supabase-js not loaded'); }
+    return global.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+      auth: { persistSession: false },
+      db:   { schema:'public' },
+      realtime: { params: { eventsPerSecond: 5 } }
+    });
   }
 
-  // ---------- Utils ----------
-  function uuid(){
-    try { return crypto.randomUUID(); }
-    catch(e){
-      return 'xxxxxxxyxxxx4xxxyxxxxxx'.replace(/[xy]/g, c=>{
-        const r = Math.random()*16|0, v = c=='x'? r : (r&0x3|0x8);
-        return v.toString(16);
-      });
-    }
-  }
-  function nowIso(){ return new Date().toISOString(); }
-  function _throw(e){ throw e instanceof Error ? e : new Error(e?.message||String(e)); }
-  function table(name){ return createDbClient().from(name); }
+  const SB = createDbClient();
 
-  // safe select wrapper
-  async function _select(q){
+  // ---- ID HELPERS ----
+  function rnd(n){ return Math.floor(Math.random()*n).toString(36); }
+  function genId(prefix='id'){
+    // prefer crypto.randomUUID if available; else custom
+    if (typeof crypto!=='undefined' && crypto.randomUUID){
+      return `${prefix}_${crypto.randomUUID().replace(/-/g,'')}`;
+    }
+    const ts = Date.now().toString(36);
+    return `${prefix}_${ts}${rnd(1e8)}${rnd(1e8)}`;
+  }
+
+  // ---- SAFE SELECT helper ----
+  async function safeSelect(q){
     const { data, error } = await q;
-    if (error) _throw(error);
+    if(error){ console.warn('[aiaxcart] select error:', error.message); return []; }
     return data || [];
   }
-  async function _single(q){
-    const { data, error } = await q.single();
-    if (error) _throw(error);
+  async function safeSingle(q){
+    const { data, error } = await q;
+    if(error){ console.warn('[aiaxcart] single error:', error.message); return null; }
+    return data || null;
+  }
+  async function safeExec(q){
+    const { data, error } = await q;
+    if(error){ throw error; }
     return data;
   }
 
-  // ---------- Public DB API ----------
+  // ===== PUBLIC (Buyer) =====
 
-  // PRODUCTS
-  async function db_listProducts(){
-    const q = table('products').select('*').order('name', { ascending: true });
-    const list = await _select(q);
-    // try to compute stock/sold if columns don't exist
-    for (const p of list){
-      if (typeof p.stock === 'undefined'){
-        const available = await _select(
-          table('stock_onhand')
-            .select('id', { count: 'exact', head: true })
-            .eq('product_id', p.id).eq('status', 'available')
-        );
-        p.stock = available?.length || 0; // count head returns no rows; fallback
-      }
-      if (typeof p.sold === 'undefined'){
-        const sold = await _select(
-          table('stock_onhand')
-            .select('id', { count: 'exact', head: true })
-            .eq('product_id', p.id).eq('status', 'sold')
-        );
-        p.sold = sold?.length || 0;
-      }
-    }
-    return list;
-  }
-
+  // Products with available stock count
   async function db_listProductsWithStock(){
-    // returns: [{product_id, name, icon, category, stock_count}]
-    // Prefer a view if exists; else compose
-    try {
-      const q = table('v_products_with_stock').select('*').order('name',{ascending:true});
-      return await _select(q);
-    } catch(e){
-      const products = await db_listProducts();
-      return products.map(p=>({
-        product_id: p.id || p.product_id || p.key || p.name,
-        name: p.name,
-        icon: p.icon,
-        category: p.category,
-        stock_count: p.stock || 0
-      }));
+    // 1) fetch products
+    const products = await safeSelect(
+      SB.from('products').select('id,name,category,icon').order('name',{ascending:true})
+    );
+
+    if(!products.length){
+      // Return empty gracefully
+      return [];
     }
+
+    // 2) fetch counts per product from onhand_accounts (not archived, not sold)
+    const onhand = await safeSelect(
+      SB.from('onhand_accounts')
+        .select('product_id,is_archived,is_sold', { count:'exact', head:false })
+        .in('product_id', products.map(p=>p.id))
+    );
+
+    // build count map
+    const map = {};
+    onhand.forEach(x=>{
+      if(x.is_archived || x.is_sold) return;
+      map[x.product_id] = (map[x.product_id] || 0) + 1;
+    });
+
+    // 3) merge
+    return products.map(p=>({
+      product_id: p.id,
+      name: p.name,
+      category: p.category,
+      icon: p.icon,
+      stock_count: map[p.id] || 0
+    }));
   }
 
-  async function db_addProduct({name, category, icon}){
-    const payload = { id: uuid(), name, category, icon, created_at: nowIso() };
-    const { error } = await table('products').insert(payload);
-    if (error) _throw(error);
-    return payload;
+  // Create order (unique ID here)
+  async function db_createOrder(payload){
+    const id = genId('ord');
+    const row = {
+      id,
+      buyer_name:  payload.buyer_name || null,
+      buyer_email: payload.buyer_email || null,
+      product_id:  payload.product_id || null,
+      product_name:payload.product_name || null,
+      account_type:payload.account_type || null,
+      duration_key:payload.duration_key || null,
+      price:       payload.price ?? null,
+      invite_gmail:payload.invite_gmail || null,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    };
+    await safeExec(SB.from('orders').insert(row));
+    return { id, ...row };
+  }
+
+  // Rules (public view)
+  async function db_fetchRules(){
+    return await safeSelect(
+      SB.from('rules').select('id,product,text,created_at').order('created_at',{ascending:false})
+    );
+  }
+
+  // Feedback
+  async function db_addFeedback({user,text}){
+    const row = { id:genId('fb'), user, text, created_at:new Date().toISOString() };
+    await safeExec(SB.from('feedback').insert(row));
+    return row;
+  }
+  async function db_fetchFeedback(){
+    return await safeSelect(
+      SB.from('feedback').select('id,user,text,created_at').order('created_at',{ascending:false})
+    );
+  }
+
+  // Buyer Reports
+  async function db_addBuyerReport(row){
+    const rec = {
+      id: genId('rep'),
+      order_id: row.order_id || null,
+      product:  row.product  || null,
+      issue:    row.issue    || null,
+      buyer:    row.buyer    || null,
+      email:    row.email    || null,
+      status:   'pending',
+      created_at: new Date().toISOString()
+    };
+    await safeExec(SB.from('buyer_reports').insert(rec));
+    return rec;
+  }
+  async function db_fetchBuyerReports(email){
+    if(!email) return [];
+    return await safeSelect(
+      SB.from('buyer_reports')
+        .select('id,order_id,product,issue,status,created_at')
+        .eq('email',email)
+        .order('created_at',{ascending:false})
+    );
+  }
+
+  // ===== ADMIN =====
+
+  // Auth helper (DB-side check)
+  async function db_isUidAdmin(uid){
+    try{
+      const row = await safeSingle(
+        SB.from('admin_uids').select('uid').eq('uid', uid).maybeSingle()
+      );
+      return !!row;
+    }catch(_){ return false; }
+  }
+
+  // Products CRUD
+  async function db_listProducts(){
+    // optionally enrich with stock/sold counts
+    const prods = await safeSelect(SB.from('products').select('id,name,category,icon').order('name',{ascending:true}));
+    const onhand = await safeSelect(SB.from('onhand_accounts').select('id,product_id,is_sold,is_archived'));
+    const sold = await safeSelect(SB.from('onhand_accounts').select('id,product_id,is_sold').eq('is_sold',true));
+    const stockMap = {};
+    onhand.forEach(a=>{ if(!a.is_archived && !a.is_sold){ stockMap[a.product_id]=(stockMap[a.product_id]||0)+1; }});
+    const soldMap = {};
+    sold.forEach(a=>{ soldMap[a.product_id]=(soldMap[a.product_id]||0)+1; });
+    return prods.map(p=>({ ...p, stock: stockMap[p.id]||0, sold: soldMap[p.id]||0 }));
+  }
+  async function db_addProduct({name,category,icon}){
+    const row = { id: genId('prd'), name, category, icon };
+    await safeExec(SB.from('products').insert(row));
+    return row;
   }
   async function db_updateProduct({id,name,category,icon}){
     const patch = {};
-    if (name) patch.name = name;
-    if (category) patch.category = category;
-    if (icon) patch.icon = icon;
-    const { error } = await table('products').update(patch).eq('id', id);
-    if (error) _throw(error);
-    return true;
+    if(name) patch.name=name;
+    if(category) patch.category=category;
+    if(icon) patch.icon=icon;
+    if(!Object.keys(patch).length) return;
+    await safeExec(SB.from('products').update(patch).eq('id',id));
   }
   async function db_deleteProduct(id){
-    const { error } = await table('products').delete().eq('id', id);
-    if (error) _throw(error);
+    await safeExec(SB.from('products').delete().eq('id',id));
   }
 
-  // RULES
-  async function db_fetchRules(){
-    try{
-      return await _select(table('rules').select('*').order('created_at',{ascending:false}));
-    }catch(e){ return []; }
-  }
-  async function db_listRules(){ return db_fetchRules(); }
-  async function db_addRule({product, text}){
-    const payload = { id: uuid(), product: product||'general', text, created_at: nowIso() };
-    const { error } = await table('rules').insert(payload);
-    if (error) _throw(error);
-    return payload;
-  }
-  async function db_deleteRule(id){
-    const { error } = await table('rules').delete().eq('id', id);
-    if (error) _throw(error);
-  }
-
-  // STOCKS
-  async function db_addStock({product_id, account_type, duration_key, email, password, profile, pin, quantity=1}){
-    const items = [];
-    for(let i=0;i<Number(quantity||1);i++){
-      items.push({
-        id: uuid(),
-        product_id, account_type, duration_key,
-        email: email || null, password: password || null, profile: profile || null, pin: pin || null,
-        status: 'available',
-        created_at: nowIso()
-      });
+  // Stocks
+  async function db_addStock(payload){
+    const qty = Number(payload.quantity||1);
+    const base = {
+      product_id:  payload.product_id,
+      account_type:payload.account_type,
+      duration_key:payload.duration_key,
+      email:   payload.email   || null,
+      password:payload.password|| null,
+      profile: payload.profile || null,
+      pin:     payload.pin     || null,
+      is_archived:false,
+      is_sold:false
+    };
+    const rows = [];
+    for(let i=0;i<qty;i++){
+      rows.push({ ...base, id: genId('stk'), created_at:new Date().toISOString() });
     }
-    const { error } = await table('stock_onhand').insert(items);
-    if (error) _throw(error);
-    return true;
+    await safeExec(SB.from('onhand_accounts').insert(rows));
+    return rows;
   }
-
   async function db_listAvailableStocks(){
-    const q = table('stock_onhand')
-      .select('id,product_id,account_type,duration_key,email,profile,created_at,products(name,icon)')
-      .eq('status','available').order('created_at',{ascending:false});
-    const data = await _select(q);
-    return data.map(x=>({
-      id:x.id,
-      product_id:x.product_id,
-      product_name:x.products?.name || '',
-      account_type:x.account_type,
-      duration_key:x.duration_key,
-      email:x.email,
-      profile:x.profile,
-      created_at:x.created_at
-    }));
+    return await safeSelect(
+      SB.from('onhand_accounts')
+        .select('id,product_id,account_type,duration_key,email,profile,pin,created_at,products(name)')
+        .eq('is_archived', false).eq('is_sold', false)
+        .order('created_at',{ascending:false})
+    ).then(rows => rows.map(r=>({
+      id:r.id,
+      product_id:r.product_id,
+      product_name: (r.products && r.products.name) || '',
+      account_type:r.account_type,
+      duration_key:r.duration_key,
+      email:r.email,
+      profile:r.profile,
+      pin:r.pin
+    })));
   }
-
   async function db_markSold(stock_id, price){
-    const { error } = await table('stock_onhand')
-      .update({ status:'sold', sold_at: nowIso(), price: price||null })
-      .eq('id', stock_id).eq('status','available');
-    if (error) _throw(error);
-    return true;
+    // mark stock sold + write sold_at + (optional) price
+    await safeExec(
+      SB.from('onhand_accounts').update({ is_sold:true, sold_at:new Date().toISOString(), price: price||null })
+        .eq('id', stock_id)
+    );
   }
   async function db_archiveStock(stock_id){
-    const { error } = await table('stock_onhand')
-      .update({ status:'archived', archived_at: nowIso() })
-      .eq('id', stock_id).neq('status','archived');
-    if (error) _throw(error);
-    return true;
+    await safeExec(SB.from('onhand_accounts').update({ is_archived:true, archived_at:new Date().toISOString() }).eq('id',stock_id));
   }
   async function db_deleteStock(stock_id){
-    const { error } = await table('stock_onhand').delete().eq('id', stock_id);
-    if (error) _throw(error);
+    await safeExec(SB.from('onhand_accounts').delete().eq('id',stock_id));
   }
-
   async function db_listSold(){
-    const q = table('stock_onhand')
-      .select('id,product_id,price,sold_at,products(name,icon)')
-      .eq('status','sold').order('sold_at',{ascending:false});
-    const data = await _select(q);
-    return data.map(x=>({
-      id:x.id, product_id:x.product_id,
-      product_name:x.products?.name || '',
-      price:x.price||0, sold_at:x.sold_at
-    }));
+    return await safeSelect(
+      SB.from('onhand_accounts')
+        .select('id,product_id,price,sold_at,products(name)')
+        .eq('is_sold',true)
+        .order('sold_at',{ascending:false})
+    ).then(rows=>rows.map(r=>({
+      id:r.id,
+      product_id:r.product_id,
+      product_name:(r.products&&r.products.name)||'',
+      price:r.price||0,
+      sold_at:r.sold_at
+    })));
   }
   async function db_listArchived(){
-    const q = table('stock_onhand')
-      .select('id,product_id,archived_at,account_type,duration_key,products(name,icon)')
-      .eq('status','archived').order('archived_at',{ascending:false});
-    const data = await _select(q);
-    return data.map(x=>({
-      id:x.id, product_id:x.product_id,
-      product_name:x.products?.name || '',
-      account_type:x.account_type, duration_key:x.duration_key,
-      archived_at:x.archived_at
-    }));
+    return await safeSelect(
+      SB.from('onhand_accounts')
+        .select('id,product_id,account_type,duration_key,archived_at,products(name)')
+        .eq('is_archived',true)
+        .order('archived_at',{ascending:false})
+    ).then(rows=>rows.map(r=>({
+      id:r.id,
+      product_id:r.product_id,
+      product_name:(r.products&&r.products.name)||'',
+      account_type:r.account_type,
+      duration_key:r.duration_key,
+      archived_at:r.archived_at
+    })));
   }
 
-  // ORDERS
-  async function db_createOrder({
-    buyer_name, buyer_email, product_id, product_name, account_type, duration_key, price, invite_gmail
-  }){
-    const id = uuid(); // unique order id
-    const payload = {
-      id,
-      buyer_name, buyer_email,
-      product_id, product_name: product_name||null,
-      account_type, duration_key,
-      price: Number(price||0),
-      invite_gmail: invite_gmail || null,
-      status: 'pending',
-      created_at: nowIso()
-    };
-    const { error } = await table('orders').insert(payload);
-    if (error) _throw(error);
-    return payload;
-  }
+  // Orders workflow
   async function db_listPendingOrders(){
-    const q = table('orders').select('*').eq('status','pending').order('created_at',{ascending:false});
-    return await _select(q);
+    return await safeSelect(
+      SB.from('orders')
+        .select('id,buyer_name,buyer_email,product_id,product_name,account_type,duration_key,price,created_at')
+        .eq('status','pending')
+        .order('created_at',{ascending:true})
+    );
   }
   async function db_confirmOrder(order_id){
-    const { error } = await table('orders').update({ status:'confirmed', confirmed_at: nowIso() }).eq('id', order_id);
-    if (error) _throw(error);
-    return true;
+    // 1) find one available stock for the product
+    const order = await safeSingle(
+      SB.from('orders').select('id,product_id,price').eq('id',order_id).maybeSingle()
+    );
+    if(!order) throw new Error('Order not found');
+
+    const stock = await safeSingle(
+      SB.from('onhand_accounts')
+        .select('id').eq('product_id', order.product_id)
+        .eq('is_archived',false).eq('is_sold',false)
+        .order('created_at',{ascending:true}).limit(1).maybeSingle()
+    );
+    if(!stock) throw new Error('No available stock for this product');
+
+    // 2) mark stock sold
+    await db_markSold(stock.id, order.price||null);
+
+    // 3) set order status
+    await safeExec(SB.from('orders').update({ status:'confirmed', confirmed_at:new Date().toISOString(), stock_id:stock.id }).eq('id',order_id));
   }
   async function db_cancelOrder(order_id){
-    const { error } = await table('orders').update({ status:'canceled', canceled_at: nowIso() }).eq('id', order_id);
-    if (error) _throw(error);
-    return true;
+    await safeExec(SB.from('orders').update({ status:'cancelled', cancelled_at:new Date().toISOString() }).eq('id',order_id));
   }
 
-  // BUYER REPORTS
-  async function db_addBuyerReport({order_id, product, issue, buyer, email}){
-    const payload = { id: uuid(), order_id, product, issue, buyer, email, status:'pending', created_at: nowIso() };
-    const { error } = await table('buyer_reports').insert(payload);
-    if (error) _throw(error);
-    return payload;
+  // Rules admin
+  async function db_listRules(){
+    return await safeSelect(SB.from('rules').select('id,product,text,created_at').order('created_at',{ascending:false}));
   }
+  async function db_addRule({product,text}){
+    const row = { id:genId('rul'), product:product||'general', text, created_at:new Date().toISOString() };
+    await safeExec(SB.from('rules').insert(row));
+    return row;
+  }
+  async function db_deleteRule(id){
+    await safeExec(SB.from('rules').delete().eq('id',id));
+  }
+
+  // Buyer Reports (admin)
   async function db_listBuyerReports(){
-    return await _select(table('buyer_reports').select('*').order('created_at',{ascending:false}));
-  }
-  async function db_fetchBuyerReports(email){
-    return await _select(table('buyer_reports').select('*').eq('email',email).order('created_at',{ascending:false}));
+    return await safeSelect(
+      SB.from('buyer_reports').select('id,order_id,buyer,product,issue,status,created_at').order('created_at',{ascending:false})
+    );
   }
   async function db_markReportResolved(id){
-    const { error } = await table('buyer_reports').update({ status:'resolved', resolved_at: nowIso() }).eq('id', id);
-    if (error) _throw(error);
-    return true;
+    await safeExec(SB.from('buyer_reports').update({ status:'resolved', resolved_at:new Date().toISOString() }).eq('id',id));
   }
   async function db_deleteReport(id){
-    const { error } = await table('buyer_reports').delete().eq('id', id);
-    if (error) _throw(error);
+    await safeExec(SB.from('buyer_reports').delete().eq('id',id));
   }
 
-  // FEEDBACK
-  async function db_addFeedback({user,text}){
-    const payload = { id: uuid(), user, text, created_at: nowIso() };
-    const { error } = await table('feedback').insert(payload);
-    if (error) _throw(error);
-    return payload;
-  }
-  async function db_fetchFeedback(){
-    try { return await _select(table('feedback').select('*').order('created_at',{ascending:false})); }
-    catch(e){ return []; }
-  }
-
-  // ADMIN STATS (fallback compute)
-  async function db_adminStats(){
-    try {
-      const rpc = await _single(createDbClient().rpc('admin_stats'));
-      return rpc;
-    } catch(e){
-      const [prods, avail, pend, sold] = await Promise.all([
-        db_listProducts(),
-        _select(table('stock_onhand').select('id').eq('status','available')),
-        db_listPendingOrders(),
-        db_listSold()
-      ]);
-      const revenue = (sold||[]).reduce((a,b)=>a+Number(b.price||0),0);
-      return {
-        products: prods.length,
-        available: (avail||[]).length || (prods.reduce((s,p)=>s+(p.stock||0),0)),
-        pending: (pend||[]).length,
-        revenue
-      };
-    }
-  }
-
-  // REALTIME
-  function db_subscribeStockAndOrders(onChange){
-    const sb = createDbClient();
-    const ch = sb.channel('aiax-realtime');
-    try{
-      ch.on('postgres_changes', { event: '*', schema:'public', table:'orders' }, ()=> onChange && onChange());
-      ch.on('postgres_changes', { event: '*', schema:'public', table:'stock_onhand' }, ()=> onChange && onChange());
-      ch.subscribe(status=>{ if(status==='SUBSCRIBED'){ /* ok */ }});
-    }catch(e){ /* ignore */ }
-    return ()=>{ try{ sb.removeChannel(ch); }catch(e){} };
-  }
-
-  // ADMIN VERIFY (RPC or fallback)
-  async function db_isUidAdmin(uid){
-    try{
-      const { data, error } = await createDbClient().rpc('is_uid_admin', { p_uid: uid });
-      if (error) _throw(error);
-      return !!data;
-    }catch(e){ return false; }
-  }
-
-  // RECORDS SUMMARY (simple fallback)
+  // Records summary
   async function db_listRecordsSummary(){
-    const [sold, orders] = await Promise.all([ db_listSold(), _select(table('orders').select('id')) ]);
-    const revenue = (sold||[]).reduce((a,b)=>a+Number(b.price||0),0);
-    return { total: (sold?.length||0)+(orders?.length||0), revenue, web:(orders?.length||0), social: 0 };
+    // total orders + revenue (confirmed)
+    const conf = await safeSelect(
+      SB.from('orders').select('price,status').eq('status','confirmed')
+    );
+    const all  = await safeSelect(SB.from('orders').select('id'));
+    const revenue = conf.reduce((t,r)=> t + (Number(r.price)||0), 0);
+    // (Optional) if you track source, you can split; else mock 100% web
+    return { total: all.length, revenue, web: all.length, social: 0 };
   }
 
-  // expose
-  window.createDbClient = createDbClient;
+  // Admin stats
+  async function db_adminStats(){
+    const prods = await safeSelect(SB.from('products').select('id'));
+    const avail = await safeSelect(SB.from('onhand_accounts').select('id').eq('is_archived',false).eq('is_sold',false));
+    const pend  = await safeSelect(SB.from('orders').select('id').eq('status','pending'));
+    const conf  = await safeSelect(SB.from('orders').select('price').eq('status','confirmed'));
+    const revenue = conf.reduce((t,r)=> t + (Number(r.price)||0), 0);
+    return { products: prods.length, available: avail.length, pending: pend.length, revenue };
+  }
 
-  window.db_listProducts = db_listProducts;
-  window.db_listProductsWithStock = db_listProductsWithStock;
-  window.db_addProduct = db_addProduct;
-  window.db_updateProduct = db_updateProduct;
-  window.db_deleteProduct = db_deleteProduct;
+  // Realtime (lightweight)
+  function db_subscribeStockAndOrders(onChange){
+    try{
+      const ch1 = SB.channel('rt_orders').on('postgres_changes',
+        { event:'*', schema:'public', table:'orders' },
+        ()=> onChange && onChange()
+      ).subscribe();
+      const ch2 = SB.channel('rt_onhand').on('postgres_changes',
+        { event:'*', schema:'public', table:'onhand_accounts' },
+        ()=> onChange && onChange()
+      ).subscribe();
+      return ()=>{ SB.removeChannel(ch1); SB.removeChannel(ch2); };
+    }catch(e){ console.warn('realtime not available', e?.message); return ()=>{}; }
+  }
 
-  window.db_fetchRules = db_fetchRules;
-  window.db_listRules = db_listRules;
-  window.db_addRule = db_addRule;
-  window.db_deleteRule = db_deleteRule;
+  // ---- EXPORTS ----
+  global.createDbClient = createDbClient;
 
-  window.db_addStock = db_addStock;
-  window.db_listAvailableStocks = db_listAvailableStocks;
-  window.db_markSold = db_markSold;
-  window.db_archiveStock = db_archiveStock;
-  window.db_deleteStock = db_deleteStock;
-  window.db_listSold = db_listSold;
-  window.db_listArchived = db_listArchived;
+  global.db_listProductsWithStock = db_listProductsWithStock;
+  global.db_createOrder = db_createOrder;
 
-  window.db_createOrder = db_createOrder;
-  window.db_listPendingOrders = db_listPendingOrders;
-  window.db_confirmOrder = db_confirmOrder;
-  window.db_cancelOrder = db_cancelOrder;
+  global.db_fetchRules = db_fetchRules;
 
-  window.db_addBuyerReport = db_addBuyerReport;
-  window.db_listBuyerReports = db_listBuyerReports;
-  window.db_fetchBuyerReports = db_fetchBuyerReports;
-  window.db_markReportResolved = db_markReportResolved;
-  window.db_deleteReport = db_deleteReport;
+  global.db_addFeedback = db_addFeedback;
+  global.db_fetchFeedback = db_fetchFeedback;
 
-  window.db_addFeedback = db_addFeedback;
-  window.db_fetchFeedback = db_fetchFeedback;
+  global.db_addBuyerReport = db_addBuyerReport;
+  global.db_fetchBuyerReports = db_fetchBuyerReports;
 
-  window.db_adminStats = db_adminStats;
-  window.db_subscribeStockAndOrders = db_subscribeStockAndOrders;
-  window.db_isUidAdmin = db_isUidAdmin;
-  window.db_listRecordsSummary = db_listRecordsSummary;
+  // admin
+  global.db_isUidAdmin = db_isUidAdmin;
 
-})();
-</script>
+  global.db_listProducts = db_listProducts;
+  global.db_addProduct = db_addProduct;
+  global.db_updateProduct = db_updateProduct;
+  global.db_deleteProduct = db_deleteProduct;
+
+  global.db_addStock = db_addStock;
+  global.db_listAvailableStocks = db_listAvailableStocks;
+  global.db_markSold = db_markSold;
+  global.db_archiveStock = db_archiveStock;
+  global.db_deleteStock = db_deleteStock;
+  global.db_listSold = db_listSold;
+  global.db_listArchived = db_listArchived;
+
+  global.db_listPendingOrders = db_listPendingOrders;
+  global.db_confirmOrder = db_confirmOrder;
+  global.db_cancelOrder = db_cancelOrder;
+
+  global.db_listRules = db_listRules;
+  global.db_addRule = db_addRule;
+  global.db_deleteRule = db_deleteRule;
+
+  global.db_listBuyerReports = db_listBuyerReports;
+  global.db_markReportResolved = db_markReportResolved;
+  global.db_deleteReport = db_deleteReport;
+
+  global.db_listRecordsSummary = db_listRecordsSummary;
+  global.db_adminStats = db_adminStats;
+
+  global.db_subscribeStockAndOrders = db_subscribeStockAndOrders;
+
+})(window);
