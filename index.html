@@ -331,14 +331,14 @@ window.CONFIG_PUBLIC = {
 const SB = window.createDbClient ? window.createDbClient() : null;
 const $ = (id) => document.getElementById(id);
 
-// Demo products data
+// Demo products data (fallback if DB empty)
 const DEMO_PRODUCTS = [
-  { id:'netflix-premium', name:'Netflix Premium', category:'entertainment', icon:'🎬', available:5, price:149 },
-  { id:'spotify-premium', name:'Spotify Premium', category:'streaming', icon:'🎧', available:8, price:99 },
-  { id:'youtube-premium', name:'YouTube Premium', category:'streaming', icon:'📺', available:0, price:199 },
-  { id:'disney-plus', name:'Disney+', category:'entertainment', icon:'🏰', available:3, price:129 },
-  { id:'canva-pro', name:'Canva Pro', category:'editing', icon:'🎨', available:6, price:199 },
-  { id:'chatgpt-plus', name:'ChatGPT Plus', category:'ai', icon:'🤖', available:4, price:299 }
+  { id: 'netflix-premium',  name: 'Netflix Premium',  category: 'entertainment', icon: '🎬', available: 5, price: 149 },
+  { id: 'spotify-premium',  name: 'Spotify Premium',  category: 'streaming',     icon: '🎧', available: 8, price: 99  },
+  { id: 'youtube-premium',  name: 'YouTube Premium',  category: 'streaming',     icon: '📺', available: 0, price: 199 },
+  { id: 'disney-plus',      name: 'Disney+',          category: 'entertainment', icon: '🏰', available: 3, price: 129 },
+  { id: 'canva-pro',        name: 'Canva Pro',        category: 'editing',       icon: '🎨', available: 6, price: 199 },
+  { id: 'chatgpt-plus',     name: 'ChatGPT Plus',     category: 'ai',            icon: '🤖', available: 4, price: 299 }
 ];
 
 /* ===== Toast System ===== */
@@ -492,21 +492,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
- // ✅ Checkout form (fixed)
-const coForm = $('#coForm');
-if (coForm) {
-  coForm.addEventListener('submit', handleCheckout);
+  // ✅ Checkout form (fixed)
+  const coForm = $('#coForm');
+  if (coForm) {
+    coForm.addEventListener('submit', handleCheckout);
 
-  const accTypeSelect = coForm.querySelector('select[name="account_type"]');
-  if (accTypeSelect) {
-    accTypeSelect.addEventListener('change', function(e) {
-      const row = $('#inviteGmailRow');
-      if (!row) return;
-      row.style.display =
-        (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
-    });
+    const accTypeSelect = coForm.querySelector('select[name="account_type"]');
+    if (accTypeSelect) {
+      accTypeSelect.addEventListener('change', function(e) {
+        const row = $('#inviteGmailRow');
+        if (!row) return;
+        row.style.display =
+          (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
+      });
+    }
   }
-}
 
   // Report form
   $('#rep-submit').addEventListener('click', handleReport);
@@ -579,6 +579,7 @@ function handleSignup() {
   users.push(user);
   localStorage.setItem('aiaxcart_users', JSON.stringify(users));
 
+  // Try to save to database
   if (window.db_upsertBuyer) {
     window.db_upsertBuyer(user).catch(console.error);
   }
@@ -591,8 +592,11 @@ function handleSignup() {
 /* ===== Product System ===== */
 function renderProducts() {
   const container = $('#categories-container');
+  
+  // Show loading
   container.innerHTML = '<div class="note">Loading products...</div>';
 
+  // Try to load from database first
   if (window.db_listCatalogWithCounts) {
     window.db_listCatalogWithCounts().then(products => {
       if (products && products.length > 0) {
@@ -605,6 +609,7 @@ function renderProducts() {
       showDemoProducts();
     });
   } else {
+    // Fallback to demo products
     showDemoProducts();
   }
 }
@@ -613,27 +618,31 @@ function displayProducts(products) {
   const container = $('#categories-container');
   const byCategory = {};
 
+  // Group by category
   products.forEach(product => {
     const category = product.category || 'other';
-    if (!byCategory[category]) byCategory[category] = [];
+    if (!byCategory[category]) {
+      byCategory[category] = [];
+    }
     byCategory[category].push(product);
   });
 
   const categoryOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
   let html = '';
 
-  const categoryNames = {
-    entertainment: '🎬 Entertainment',
-    streaming: '🎧 Streaming & Music',
-    educational: '📚 Educational',
-    editing: '🎨 Editing & Creative',
-    ai: '🤖 AI Tools'
-  };
-
   categoryOrder.forEach(category => {
     const categoryProducts = byCategory[category];
     if (!categoryProducts || !categoryProducts.length) return;
 
+    const categoryNames = {
+      entertainment: '🎬 Entertainment',
+      streaming: '🎧 Streaming & Music',
+      educational: '📚 Educational',
+      editing: '🎨 Editing & Creative',
+      ai: '🤖 AI Tools'
+    };
+
+    // Show only first 3 products
     const displayProducts = categoryProducts.slice(0, 3);
     const hasMore = categoryProducts.length > 3;
 
@@ -651,15 +660,17 @@ function displayProducts(products) {
               ? Math.min(...prices.map(p => p.price_php || 0))
               : (product.price || 0);
 
+            const safeName = (product.name || '').replace(/'/g,"\\'");
+
             return `
-              <div class="p-card" data-name="${product.name.toLowerCase()}">
+              <div class="p-card" data-name="${(product.name || '').toLowerCase()}">
                 <div style="font-weight:700;font-size:1.05rem">${product.icon || '🛒'} ${product.name}</div>
                 <div>${hasStock
                   ? `<span class="pill" style="background:#d4edda;color:#155724">${product.available} available</span>`
                   : `<span class="pill">Out of stock</span>`}</div>
                 <div class="note">From ₱${minPrice}</div>
                 <button class="btn btn-primary" ${hasStock ? '' : 'disabled'}
-                  onclick="openCheckout('${product.id}', '${product.name.replace(/'/g, "\\'")}')">
+                  onclick="openCheckout('${product.id}', '${safeName}')">
                   ${hasStock ? 'Buy Now' : 'Unavailable'}
                 </button>
               </div>
@@ -677,8 +688,11 @@ function showDemoProducts() {
   const container = $('#categories-container');
   const byCategory = {};
 
+  // Group demo products by category
   DEMO_PRODUCTS.forEach(product => {
-    if (!byCategory[product.category]) byCategory[product.category] = [];
+    if (!byCategory[product.category]) {
+      byCategory[product.category] = [];
+    }
     byCategory[product.category].push(product);
   });
 
@@ -711,7 +725,7 @@ function showDemoProducts() {
                 : `<span class="pill">Out of stock</span>`}</div>
               <div class="note">From ₱${product.price}</div>
               <button class="btn btn-primary" ${product.available > 0 ? '' : 'disabled'}
-                onclick="openCheckout('${product.id}', '${product.name}')">
+                onclick="openCheckout('${product.id}', '${product.name.replace(/'/g,"\\'")}')">
                 ${product.available > 0 ? 'Buy Now' : 'Unavailable'}
               </button>
             </div>
@@ -761,17 +775,53 @@ function closeCheckout() {
   $('#coMsg').textContent = '';
 }
 
-function handleCheckout(e) {
+async function handleCheckout(e) {
   e.preventDefault();
   const form = e.target;
   const btn = $('#coSubmit');
   
   btn.disabled = true;
   btn.textContent = 'Processing...';
-  
-  // Simple simulated order (pwede mong palitan later ng db_createOrder)
-  setTimeout(() => {
-    const orderId = 'AXP-' + Date.now();
+
+  try {
+    const buyer_name  = form.buyer_name.value.trim();
+    const buyer_email = form.buyer_email.value.trim();
+    const product_id  = form.product_id.value;
+    const product_name= form.product_name.value;
+    const account_type= form.account_type.value;
+    const duration_key= form.duration_key.value;
+    const price       = parseFloat(form.price.value || 0);
+    const invite_gmail= form.invite_gmail ? form.invite_gmail.value.trim() : null;
+
+    if (!buyer_name || !buyer_email || !product_id || !account_type || !duration_key || !price) {
+      throw new Error('Please fill all required fields.');
+    }
+
+    if (account_type.toLowerCase() === 'invite') {
+      if (!invite_gmail || !/^[^@]+@gmail\.com$/i.test(invite_gmail)) {
+        throw new Error('Invite type requires a valid Gmail address.');
+      }
+    }
+
+    let orderId;
+
+    if (window.db_createOrder) {
+      const order = await window.db_createOrder({
+        buyer_name,
+        buyer_email,
+        product_id,
+        product_name,
+        account_type,
+        duration_key,
+        price,
+        invite_gmail
+      });
+      orderId = order.id;
+    } else {
+      // Fallback demo order
+      orderId = 'AXP-' + Date.now();
+    }
+
     $('#coMsg').textContent = `✅ Order placed! Order ID: ${orderId}`;
     toast('Order placed successfully!', 'ok');
     
@@ -779,114 +829,261 @@ function handleCheckout(e) {
       closeCheckout();
       renderProducts();
       updateAccountTab();
-    }, 2000);
-    
+    }, 1500);
+  } catch (err) {
+    console.error(err);
+    toast('Checkout failed: ' + err.message, 'err');
+  } finally {
     btn.disabled = false;
     btn.textContent = 'Place Order';
-  }, 1000);
+  }
 }
 
-/* ===== Rules System (demo for now) ===== */
+/* ===== Rules System ===== */
 function loadRules() {
   const rulesWrap = $('#rules-wrap');
+  
+  // Simple demo rules for now
   rulesWrap.innerHTML = `
     <div class="note">
       <h4>General Rules</h4>
-      <p>• All sales are final - no refunds after account delivery</p>
-      <p>• Accounts are for personal use only</p>
-      <p>• Keep your login credentials secure</p>
-      <p>• Report any issues within 24 hours</p>
-      <p>• Sharing accounts may result in suspension</p>
+      <p>• All sales are final - no refunds after account delivery.</p>
+      <p>• Accounts are for personal use only.</p>
+      <p>• Keep your login credentials secure.</p>
+      <p>• Report any issues within 24 hours of receiving the account.</p>
+      <p>• Sharing accounts outside agreed terms may result in suspension.</p>
     </div>
   `;
 
-  const rulesSearch = $('#rules-search');
-  if (rulesSearch) {
-    rulesSearch.oninput = function(e){
+  // Simple client-side search
+  const search = $('#rules-search');
+  if (search && !search._bound) {
+    search._bound = true;
+    search.addEventListener('input', function(e){
       const q = e.target.value.toLowerCase();
       rulesWrap.querySelectorAll('p').forEach(p=>{
         p.style.display = p.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
-    };
+    });
   }
 }
 
 /* ===== Report System ===== */
 function handleReport() {
-  if (!currentUser) return;
+  if (!currentUser) {
+    toast('Please login to submit a report.', 'warn');
+    return;
+  }
   
   const orderId = $('#rep-order').value.trim();
   const product = $('#rep-product').value.trim();
-  const issue = $('#rep-issue').value.trim();
+  const issue   = $('#rep-issue').value.trim();
+  const file    = $('#rep-img').files?.[0] || null;
   
   if (!issue) {
     toast('Please describe the issue', 'warn');
     return;
   }
-  
-  toast('Report submitted successfully!', 'ok');
-  
-  $('#rep-order').value = '';
-  $('#rep-product').value = '';
-  $('#rep-issue').value = '';
-  $('#rep-img').value = '';
+
+  // If DB helper exists, use it
+  if (window.db_addBuyerReport) {
+    window.db_addBuyerReport({
+      order_id: orderId || null,
+      product: product || null,
+      issue,
+      buyer: currentUser.name,
+      email: currentUser.email,
+      file
+    }).then(()=>{
+      toast('Report submitted successfully!', 'ok');
+      $('#rep-order').value = '';
+      $('#rep-product').value = '';
+      $('#rep-issue').value = '';
+      $('#rep-img').value = '';
+      loadUserReports();
+    }).catch(err=>{
+      console.error(err);
+      toast('Failed to submit report', 'err');
+    });
+  } else {
+    // Fallback demo
+    toast('Report submitted successfully! (demo)', 'ok');
+    $('#rep-order').value = '';
+    $('#rep-product').value = '';
+    $('#rep-issue').value = '';
+    $('#rep-img').value = '';
+  }
 }
 
-function loadUserReports() {
-  $('#my-reports').innerHTML = '<div class="note">No reports submitted yet.</div>';
+async function loadUserReports() {
+  if (!currentUser) {
+    $('#my-reports').innerHTML = '';
+    return;
+  }
+
+  const box = $('#my-reports');
+
+  if (!window.db_fetchBuyerReports) {
+    box.innerHTML = '<div class="note">No reports yet.</div>';
+    return;
+  }
+
+  try {
+    const list = await window.db_fetchBuyerReports(currentUser.email);
+    if (!list || !list.length) {
+      box.innerHTML = '<div class="note">No reports yet.</div>';
+      return;
+    }
+    const html = await Promise.all(list.map(async r=>{
+      let img = '';
+      if (r.image_path && window.getPublicURL) {
+        const url = await window.getPublicURL(r.image_path);
+        img = `<div style="margin-top:.5rem"><img src="${url}" style="max-width:220px;border-radius:8px"></div>`;
+      }
+      return `
+        <div class="card">
+          <div><b>Report ID:</b> ${r.id}</div>
+          <div><b>Order ID:</b> ${r.order_id || 'N/A'}</div>
+          <div><b>Product:</b> ${r.product || 'N/A'}</div>
+          <div><b>Issue:</b> ${r.issue}</div>
+          <div><b>Status:</b> <span class="pill" style="background:${r.status === 'resolved' ? '#d4edda' : '#fff3cd'};color:${r.status === 'resolved' ? '#155724' : '#856404'}">${r.status || 'pending'}</span></div>
+          <div class="note">${new Date(r.created_at).toLocaleString()}</div>
+          ${img}
+        </div>
+      `;
+    }));
+    box.innerHTML = html.join('');
+  } catch (err) {
+    console.error(err);
+    box.innerHTML = '<div class="note">Failed to load reports.</div>';
+  }
 }
 
 /* ===== Feedback System ===== */
 function handleFeedback() {
-  if (!currentUser) return;
+  if (!currentUser) {
+    toast('Please login to submit feedback.', 'warn');
+    return;
+  }
   
   const text = $('#fb-text').value.trim();
+  const file = $('#fb-img').files?.[0] || null;
   
   if (!text) {
     toast('Please enter your feedback', 'warn');
     return;
   }
-  
-  toast('Thank you for your feedback!', 'ok');
-  
-  $('#fb-text').value = '';
-  $('#fb-img').value = '';
+
+  if (window.db_addFeedback) {
+    window.db_addFeedback({ user: currentUser.name, text, file })
+      .then(()=>{
+        toast('Thank you for your feedback!', 'ok');
+        $('#fb-text').value = '';
+        $('#fb-img').value = '';
+        loadFeedback();
+      })
+      .catch(err=>{
+        console.error(err);
+        toast('Failed to submit feedback', 'err');
+      });
+  } else {
+    // Fallback
+    toast('Thank you for your feedback! (demo)', 'ok');
+    $('#fb-text').value = '';
+    $('#fb-img').value = '';
+  }
 }
 
-function loadFeedback() {
-  $('#fb-list').innerHTML = `
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
-        <div class="user-avatar" style="background:#FFD3D6">J</div>
-        <div>
-          <strong>Juan Dela Cruz</strong>
-          <div class="note">2 days ago</div>
+async function loadFeedback() {
+  const box = $('#fb-list');
+
+  if (!window.db_fetchFeedback) {
+    // Demo feedback
+    box.innerHTML = `
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+          <div class="user-avatar" style="background:#FFD3D6">J</div>
+          <div>
+            <strong>Juan Dela Cruz</strong>
+            <div class="note">2 days ago</div>
+          </div>
         </div>
+        <div>Great service! My Netflix account was delivered instantly. Will buy again! 👍</div>
       </div>
-      <div>Great service! My Netflix account was delivered instantly. Will buy again! 👍</div>
-    </div>
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
-        <div class="user-avatar" style="background:#FFD3D6">M</div>
-        <div>
-          <strong>Maria Santos</strong>
-          <div class="note">1 week ago</div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+          <div class="user-avatar" style="background:#FFD3D6">M</div>
+          <div>
+            <strong>Maria Santos</strong>
+            <div class="note">1 week ago</div>
+          </div>
         </div>
+        <div>Fast and reliable. Had a small issue but customer service resolved it quickly.</div>
       </div>
-      <div>Fast and reliable. Had a small issue but customer service resolved it quickly.</div>
-    </div>
-  `;
+    `;
+    return;
+  }
+
+  try {
+    const list = await window.db_fetchFeedback();
+    if (!list || !list.length) {
+      box.innerHTML = '<div class="note">No feedback yet.</div>';
+      return;
+    }
+    box.innerHTML = list.map(f=>{
+      const initial = (f.user || '?')[0]?.toUpperCase?.() || 'U';
+      return `
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+            <div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${initial}</div>
+            <div>
+              <strong>${f.user || 'User'}</strong>
+              <div class="note">${new Date(f.created_at || Date.now()).toLocaleString()}</div>
+            </div>
+          </div>
+          <div>${f.text || ''}</div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    box.innerHTML = '<div class="note">Failed to load feedback.</div>';
+  }
 }
 
 /* ===== Account System ===== */
-function updateAccountTab() {
+async function updateAccountTab() {
   const accountContent = $('#account-content');
   
   if (!currentUser) {
     accountContent.innerHTML = '<div class="note">Please login to view your account information and orders.</div>';
     return;
   }
-  
+
+  let orders = [];
+  if (window.db_listOrdersByEmail) {
+    try {
+      orders = await window.db_listOrdersByEmail(currentUser.email);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const pending = orders.filter(o => o.status === 'pending');
+  const confirmed = orders.filter(o => o.status === 'confirmed');
+
+  const renderOrders = (arr) => {
+    if (!arr.length) return '<div class="note">None.</div>';
+    return arr.map(o=>`
+      <div class="card">
+        <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
+        <div class="note">Order ID: ${o.id}</div>
+        <div class="note">Placed: ${new Date(o.created_at).toLocaleString()}</div>
+        <div class="note">Status: ${o.status}</div>
+      </div>
+    `).join('');
+  };
+
   accountContent.innerHTML = `
     <h3>My Account</h3>
     <div class="card">
@@ -897,8 +1094,13 @@ function updateAccountTab() {
     </div>
     
     <div class="card">
-      <h4>Order History</h4>
-      <div class="note">No orders yet. Start shopping to see your orders here!</div>
+      <h4>Pending Orders</h4>
+      ${renderOrders(pending)}
+    </div>
+
+    <div class="card">
+      <h4>Confirmed Orders</h4>
+      ${renderOrders(confirmed)}
     </div>
   `;
 }
