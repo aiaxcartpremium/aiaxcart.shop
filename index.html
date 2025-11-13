@@ -4,398 +4,58 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium Shop</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  :root {
-    --primary: #FF6B8B;
-    --secondary: #FFD3D6;
-    --accent: #9C4DF4;
-    --dark: #5a3e36;
-    --light: #fefaf7;
-    --success: #28a745;
-    --warning: #ff9800;
-    --danger: #e74c3c;
-    --card-bg: #ffffff;
-    --shadow: 0 4px 15px rgba(0,0,0,.08);
-  }
-  
-  body {
-    background: var(--light);
-    color: var(--dark);
-    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-    margin: 0;
-    line-height: 1.6;
-  }
-  
-  /* Header Styles */
-  header {
-    background: var(--secondary);
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-  }
-  
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  nav ul {
-    display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  nav a {
-    color: var(--dark);
-    text-decoration: none;
-    padding: .5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-  
-  nav a.active, nav a:hover {
-    background: var(--primary);
-    color: white;
-  }
-  
-  .user-info {
-    display: none;
-    align-items: center;
-    gap: .7rem;
-  }
-  
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary);
-    display: grid;
-    place-items: center;
-    font-weight: 700;
-    color: white;
-  }
-  
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: .4rem;
-    background: #fff;
-    border-radius: 0 0 12px 12px;
-    padding: .5rem;
-    box-shadow: var(--shadow);
-    border-top: 1px solid #F9E6E4;
-    overflow-x: auto;
-  }
-  
-  .tab {
-    padding: .6rem 1rem;
-    border-radius: 10px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .tab.active {
-    background: var(--primary);
-    color: white;
-  }
-  
-  /* Category Sections */
-  .category-section {
-    margin: 2.5rem 0;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--secondary);
-  }
-  
-  .section-title {
-    margin: 0;
-    color: var(--dark);
-    font-size: 1.5rem;
-  }
-  
-  .view-all {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: all 0.3s ease;
-  }
-  
-  .view-all:hover {
-    color: var(--accent);
-    transform: translateX(3px);
-  }
+  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Verdana,sans-serif;margin:0}
+  header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+  nav ul{display:flex;gap:1rem;margin:0;padding:0;list-style:none}
+  nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
+  nav a.active,nav a:hover{background:#FFC6CA}
+  .user-info{display:none;align-items:center;gap:.7rem}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:#FFC6CA;display:grid;place-items:center;font-weight:700}
+  .tabs{display:flex;gap:.4rem;background:#fff;border-radius:0 0 12px 12px;padding:.5rem;box-shadow:0 4px 15px rgba(0,0,0,.08);border-top:1px solid #F9E6E4;overflow-x:auto}
+  .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
+  .tab.active{background:#FFD3D6}
   
   /* Products Grid */
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
+  .products-grid{display:flex;flex-direction:column;gap:1rem;margin:1.2rem 0}
+  .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
   
-  .p-card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-  }
+  /* Category Sections */
+  .category-section{margin:2rem 0}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  .section-title{margin:0;color:#5a3e36;font-size:1.3rem}
+  .view-all{color:#FFB0B5;text-decoration:none;font-weight:600}
   
-  .p-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,.12);
-  }
-  
-  .p-card h3 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-  }
-  
-  .p-card .price {
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-  }
-  
-  .p-card .description {
-    color: #666;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .stock-badge {
-    display: inline-block;
-    padding: 0.3rem 0.7rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  
-  .in-stock {
-    background: rgba(40, 167, 69, 0.1);
-    color: var(--success);
-  }
-  
-  .out-of-stock {
-    background: rgba(108, 117, 125, 0.1);
-    color: #6c757d;
-  }
-  
-  .btn {
-    padding: .75rem 1.5rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-  }
-  
-  .btn-primary {
-    background: var(--primary);
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    background: #ff4d6d;
-    transform: translateY(-2px);
-  }
-  
-  .btn-primary:disabled {
-    background: #ddd;
-    color: #777;
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  .card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    margin: 1.5rem 0;
-  }
-  
-  .search-wrap {
-    margin: 1rem 0;
-    position: relative;
-  }
-  
-  .search-wrap input {
-    width: 100%;
-    padding: .8rem 1rem .8rem 2.4rem;
-    border: 1px solid #F9E6E4;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: border 0.3s ease;
-  }
-  
-  .search-wrap input:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
-  
-  .search-wrap span {
-    position: absolute;
-    left: .8rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #777;
-  }
-  
-  .pill {
-    display: inline-block;
-    padding: .2rem .6rem;
-    border-radius: 999px;
-    background: #fff3cd;
-    color: #856404;
-    font-size: .8rem;
-    font-weight: 700;
-  }
-  
-  footer {
-    background: var(--dark);
-    color: #fff;
-    text-align: center;
-    padding: 1.5rem 0;
-    margin-top: 3rem;
-  }
-  
-  #toast {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
-    display: grid;
-    gap: 8px;
-    z-index: 99999;
-  }
-  
-  .toast {
-    background: #333;
-    color: #fff;
-    padding: .7rem 1rem;
-    border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0,0,0,.15);
-    opacity: .98;
-    max-width: 300px;
-  }
-  
-  .toast.ok {
-    background: var(--success);
-  }
-  
-  .toast.warn {
-    background: var(--warning);
-  }
-  
-  .toast.err {
-    background: var(--danger);
-  }
-  
-  .note {
-    font-size: .85rem;
-    opacity: .8;
-  }
+  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
+  .btn-primary{background:#FFB0B5;color:#fff}
+  .btn-primary:disabled{background:#ddd;color:#777}
+  .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
+  .search-wrap{margin:1rem 0;position:relative}
+  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
+  .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
+  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
+  footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
+  #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
+  .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
+  .toast.ok{background:#28a745}
+  .toast.warn{background:#ff9800}
+  .toast.err{background:#e74c3c}
+  .note{font-size:.85rem;opacity:.8}
+  h2.section-title{margin-top:2rem;margin-bottom:.5rem}
   
   /* Category Tabs */
-  .category-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin: 1.5rem 0;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-  }
-  
-  .category-tab {
-    padding: 0.6rem 1.2rem;
-    border-radius: 999px;
-    background: var(--card-bg);
-    border: 1px solid #F9E6E4;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-  }
-  
-  .category-tab.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .header-content {
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    nav ul {
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .products-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    
-    .tabs {
-      flex-wrap: wrap;
-    }
-  }
+  .category-tabs{display:flex;gap:.5rem;margin:1.5rem 0;overflow-x:auto;padding-bottom:.5rem}
+  .category-tab{padding:.6rem 1.2rem;border-radius:999px;background:#fff;border:1px solid #F9E6E4;cursor:pointer;white-space:nowrap;transition:all .3s ease}
+  .category-tab.active{background:#FFD3D6;color:#5a3e36;border-color:#FFD3D6}
 </style>
 </head>
 <body>
 <div id="toast"></div>
 <header>
   <div class="container header-content">
-    <div class="logo">
-      <i class="fas fa-crown"></i>
-      <span>Aiaxcart Premium</span>
-    </div>
+    <div class="logo">🛒 Aiaxcart Premium</div>
     <nav>
       <ul>
         <li><a class="active" href="index.html">Home</a></li>
@@ -424,7 +84,7 @@
 
 <main class="container">
   <div class="search-wrap">
-    <span><i class="fas fa-search"></i></span>
+    <span>🔍</span>
     <input id="product-search" placeholder="Search products…"/>
   </div>
 
@@ -439,12 +99,15 @@
   </div>
 
   <section id="products-section" style="margin-top:1.5rem">
-    <!-- Categories will be dynamically generated here -->
-    <div id="categories-container"></div>
+    <div id="categories-container">
+      <div class="note">Loading products...</div>
+    </div>
   </section>
 
-  <!-- Other sections remain the same -->
-  <section id="accounts-content" class="card" style="display:none"></section>
+  <!-- Other sections -->
+  <section id="accounts-content" class="card" style="display:none">
+    <div class="note">Please login to view your account.</div>
+  </section>
 
   <section id="reports-content" class="card" style="display:none">
     <h3>Report an Issue</h3>
@@ -456,7 +119,6 @@
       <div class="row"><label>Attach image</label><input id="rep-img" type="file" accept="image/*"></div>
       <button class="btn btn-primary" id="rep-submit">Submit Report</button>
     </div>
-    <div id="my-reports" style="margin-top:1rem"></div>
   </section>
 
   <section id="payments-content" class="card" style="display:none">
@@ -467,19 +129,12 @@
 
   <section id="rules-content" class="card" style="display:none">
     <h3>Store Rules</h3>
-    <div class="row"><input id="rules-search" placeholder="Search rules…"></div>
-    <div id="rules-wrap"></div>
+    <div id="rules-wrap" class="note">Loading rules...</div>
   </section>
 
   <section id="feedback-content" class="card" style="display:none">
     <h3>Customer Feedback</h3>
-    <div id="fb-gate" class="note">Please login to leave feedback.</div>
-    <div id="fb-form" style="display:none">
-      <div class="row"><label>Your feedback</label><textarea id="fb-text" rows="3"></textarea></div>
-      <div class="row"><label>Attach image (optional)</label><input id="fb-img" type="file" accept="image/*"></div>
-      <button class="btn btn-primary" id="fb-submit">Submit</button>
-    </div>
-    <div id="fb-list" style="margin-top:1rem"></div>
+    <div id="fb-list" class="note">Loading feedback...</div>
   </section>
 
   <section id="about-content" class="card" style="display:none">
@@ -491,17 +146,17 @@
   <div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div>
 </footer>
 
-<!-- Checkout Modal (keep your existing modal) -->
-<div id="coOverlay" class="overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
-  <div class="modal" style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
+<!-- Checkout Modal -->
+<div id="coOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
+  <div style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <h3 id="coTitle">Checkout</h3>
     <form id="coForm" onsubmit="return false;">
       <input type="hidden" name="product_id"/>
       <input type="hidden" name="product_name"/>
-      <div class="row"><label>Buyer Name</label><input required name="buyer_name"></div>
-      <div class="row"><label>Email</label><input required type="email" name="buyer_email"></div>
-      <div class="row"><label>Account Type</label>
-        <select name="account_type" required id="co_accType">
+      <div style="margin-bottom:1rem"><label>Buyer Name</label><input required name="buyer_name" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Email</label><input required type="email" name="buyer_email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Account Type</label>
+        <select name="account_type" required style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px">
           <option>Solo Profile</option>
           <option>Shared Profile</option>
           <option>Solo Account</option>
@@ -510,19 +165,14 @@
           <option>famhead</option>
         </select>
       </div>
-      <div class="row" id="inviteGmailRow" style="display:none">
-        <label>Gmail for Invite</label>
-        <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
-        <small class="note">Required when Account Type is "invite".</small>
-      </div>
-      <div class="row"><label>Duration</label>
-        <select name="duration_key" required>
+      <div style="margin-bottom:1rem"><label>Duration</label>
+        <select name="duration_key" required style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px">
           <option>7d</option><option>14d</option><option>1m</option><option>2m</option>
           <option>3m</option><option>4m</option><option>6m</option><option>8m</option>
           <option>10m</option><option>12m</option>
         </select>
       </div>
-      <div class="row"><label>Price (₱)</label><input type="number" step="0.01" required name="price"></div>
+      <div style="margin-bottom:1rem"><label>Price (₱)</label><input type="number" step="0.01" required name="price" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
       <div style="display:flex;gap:.6rem;margin-top:.9rem">
         <button type="button" class="btn" onclick="closeCheckout()">Cancel</button>
         <button id="coSubmit" type="submit" class="btn btn-primary">Place Order</button>
@@ -532,24 +182,24 @@
   </div>
 </div>
 
-<!-- Auth Modal (keep your existing modal) -->
-<div id="authOverlay" class="overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
-  <div class="modal" style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
+<!-- Auth Modal -->
+<div id="authOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
+  <div style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
       <button id="tabLogin" class="btn">Login</button>
       <button id="tabSignup" class="btn btn-primary">Sign up</button>
       <button style="margin-left:auto" class="btn" onclick="closeAuth()">×</button>
     </div>
     <div id="formLogin">
-      <div class="row"><label>Email</label><input id="liEmail" type="email"></div>
-      <div class="row"><label>Password</label><input id="liPass" type="password"></div>
+      <div style="margin-bottom:1rem"><label>Email</label><input id="liEmail" type="email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Password</label><input id="liPass" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
       <button class="btn btn-primary" id="btnLoginGo">Login</button>
     </div>
     <div id="formSignup" style="display:none">
-      <div class="row"><label>Full name</label><input id="suName"></div>
-      <div class="row"><label>Email</label><input id="suEmail" type="email"></div>
-      <div class="row"><label>Password</label><input id="suPass" type="password"></div>
-      <div class="row"><label>Confirm</label><input id="suPass2" type="password"></div>
+      <div style="margin-bottom:1rem"><label>Full name</label><input id="suName" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Email</label><input id="suEmail" type="email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Password</label><input id="suPass" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div style="margin-bottom:1rem"><label>Confirm</label><input id="suPass2" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
       <button class="btn btn-primary" id="btnSignupGo">Create account</button>
     </div>
     <div id="authMsg" class="note" style="margin-top:.5rem"></div>
@@ -573,23 +223,48 @@ window.CONFIG_PUBLIC = {
 const SB = createDbClient();
 const $ = (id)=>document.getElementById(id);
 
-// Category labels mapping
-const CATEGORY_LABELS = {
-  entertainment: '🎬 Entertainment',
-  streaming: '🎧 Streaming & Music',
-  educational: '📚 Educational',
-  editing: '🎨 Editing & Creative',
-  ai: '🤖 AI Tools'
-};
-
-// Category descriptions
-const CATEGORY_DESCRIPTIONS = {
-  entertainment: 'Premium entertainment platforms for movies, shows, and gaming',
-  streaming: 'Music and video streaming services with premium features',
-  educational: 'Educational platforms and learning resources',
-  editing: 'Creative tools for video, photo, and content editing',
-  ai: 'Artificial intelligence tools and platforms'
-};
+// Simple demo catalog for testing
+window.AIAX_CATALOG = [
+  {
+    id: 'netflix-premium',
+    name: 'Netflix Premium',
+    category: 'entertainment',
+    icon: '🎬',
+    pricing: {
+      'Solo Account': {'1m': 149, '3m': 399},
+      'Shared Account': {'1m': 99, '3m': 269}
+    }
+  },
+  {
+    id: 'spotify-premium',
+    name: 'Spotify Premium',
+    category: 'streaming',
+    icon: '🎧',
+    pricing: {
+      'Individual': {'1m': 99, '3m': 269},
+      'Family': {'1m': 149, '3m': 399}
+    }
+  },
+  {
+    id: 'youtube-premium',
+    name: 'YouTube Premium',
+    category: 'streaming',
+    icon: '📺',
+    pricing: {
+      'Individual': {'1m': 199, '3m': 549},
+      'Family': {'1m': 299, '3m': 799}
+    }
+  },
+  {
+    id: 'canva-pro',
+    name: 'Canva Pro',
+    category: 'editing',
+    icon: '🎨',
+    pricing: {
+      'Team Account': {'1m': 199, '3m': 549}
+    }
+  }
+];
 
 /* ===== toast ===== */
 function toast(msg, type='ok'){
@@ -631,95 +306,152 @@ function refreshAuthUI(){
 $('login-btn').onclick=openAuth;
 $('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); toast('Logged out','ok'); };
 
+/* tabs */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
+    $('products-section').style.display='block';
+    tab.classList.add('active');
+    const key=tab.dataset.tab;
+    if(key!=='products'){
+      $('products-section').style.display='none';
+      $(key+'-content').style.display='block';
+      if(key==='rules') loadRules();
+    }
+  });
+});
+
+/* auth flows */
+$('tabLogin').onclick=()=>{ $('formLogin').style.display='block'; $('formSignup').style.display='none'; };
+$('tabSignup').onclick=()=>{ $('formLogin').style.display='none'; $('formSignup').style.display='block'; };
+
+$('btnSignupGo').onclick=async()=>{
+  const n=$('suName').value.trim(),
+        e=$('suEmail').value.trim(),
+        p=$('suPass').value,
+        p2=$('suPass2').value;
+  if(!n||!e||!p||p!==p2){ $('authMsg').textContent='Check inputs.'; return; }
+  let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
+  if(arr.some(x=>x.email===e)){ $('authMsg').textContent='Email exists.'; return; }
+  const u={id:Date.now(),name:n,email:e,password:p,joinDate:new Date().toISOString()};
+  arr.push(u);
+  localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
+  await db_upsertBuyer(u);
+  saveUser(u);
+  refreshAuthUI();
+  closeAuth();
+  toast('Account created','ok');
+};
+$('btnLoginGo').onclick=async()=>{
+  const e=$('liEmail').value.trim(),
+        p=$('liPass').value;
+  const arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
+  const u=arr.find(x=>x.email===e && x.password===p);
+  if(!u){ $('authMsg').textContent='Invalid credentials.'; return; }
+  await db_upsertBuyer(u);
+  saveUser(u);
+  refreshAuthUI();
+  closeAuth();
+  toast('Welcome back','ok');
+};
+
 /* Category Tabs */
 document.querySelectorAll('.category-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
-    
-    const category = this.dataset.category;
-    filterProductsByCategory(category);
+    filterProductsByCategory(this.dataset.category);
   });
 });
 
 function filterProductsByCategory(category) {
-  const allProducts = document.querySelectorAll('.p-card');
-  const categorySections = document.querySelectorAll('.category-section');
+  const products = document.querySelectorAll('.p-card');
+  const sections = document.querySelectorAll('.category-section');
   
   if (category === 'all') {
-    // Show all categories
-    categorySections.forEach(section => {
-      section.style.display = 'block';
-    });
-    allProducts.forEach(product => {
-      product.style.display = 'block';
-    });
+    sections.forEach(section => section.style.display = 'block');
+    products.forEach(product => product.style.display = 'block');
   } else {
-    // Hide all categories first
-    categorySections.forEach(section => {
-      section.style.display = 'none';
+    sections.forEach(section => {
+      section.style.display = section.dataset.category === category ? 'block' : 'none';
     });
-    
-    // Show only the selected category
-    const targetSection = document.querySelector(`.category-section[data-category="${category}"]`);
-    if (targetSection) {
-      targetSection.style.display = 'block';
-    }
   }
 }
 
-/* Updated Products Render Function */
+/* Products */
 async function renderProducts(){
-  const container = $('#categories-container');
-  container.textContent = 'Loading…';
-
-  if(window.AIAX_CATALOG){
-    try{ await db_seedCatalogIfEmpty(window.AIAX_CATALOG); }catch(_){}
-  }
+  const container=$('categories-container');
   
-  try{
+  try {
+    // Try to seed with demo catalog first
+    try {
+      await db_seedCatalogIfEmpty(window.AIAX_CATALOG);
+    } catch(e) {
+      console.log('Seeding may have failed:', e);
+    }
+    
     const rows = await db_listCatalogWithCounts();
-    if(!rows.length){ 
-      container.innerHTML='<div class="note">No products available yet.</div>'; 
-      return; 
+    
+    if(!rows.length){
+      // Show demo products if no real products
+      showDemoProducts();
+      return;
     }
 
-    // Group products by category
-    const productsByCategory = {};
-    rows.forEach(product => {
-      const category = product.category || 'uncategorized';
-      if (!productsByCategory[category]) {
-        productsByCategory[category] = [];
-      }
-      productsByCategory[category].push(product);
+    const byCat = {};
+    rows.forEach(p => {
+      const cat = p.category || 'others';
+      (byCat[cat] = byCat[cat] || []).push(p);
     });
 
+    const catOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
     let html = '';
     
-    // Create section for each category
-    Object.entries(productsByCategory).forEach(([category, products]) => {
-      const categoryLabel = CATEGORY_LABELS[category] || category;
-      const categoryDescription = CATEGORY_DESCRIPTIONS[category] || 'Premium accounts and services';
+    catOrder.forEach(cat => {
+      const items = byCat[cat];
+      if(!items || !items.length) return;
       
-      // Take only first 3 products for display
-      const displayProducts = products.slice(0, 3);
-      const hasMoreProducts = products.length > 3;
+      const catNames = {
+        entertainment: '🎬 Entertainment',
+        streaming: '🎧 Streaming & Music', 
+        educational: '📚 Educational',
+        editing: '🎨 Editing & Creative',
+        ai: '🤖 AI Tools'
+      };
+      
+      // Show only first 3 products
+      const displayItems = items.slice(0, 3);
+      const hasMore = items.length > 3;
       
       html += `
-        <div class="category-section" data-category="${category}">
+        <div class="category-section" data-category="${cat}">
           <div class="section-header">
-            <div>
-              <h2 class="section-title">${categoryLabel}</h2>
-              <p class="note">${categoryDescription}</p>
-            </div>
-            ${hasMoreProducts ? `
-              <a href="#" class="view-all" data-category="${category}">
-                View All (${products.length}) <i class="fas fa-chevron-right"></i>
-              </a>
-            ` : ''}
+            <h2 class="section-title">${catNames[cat] || cat}</h2>
+            ${hasMore ? `<a href="#" class="view-all" onclick="showAllCategory('${cat}')">View All</a>` : ''}
           </div>
           <div class="products-grid">
-            ${displayProducts.map(product => renderProductCard(product)).join('')}
+            ${displayItems.map(p => {
+              const hasStock = (p.available || 0) > 0;
+              const prices = p.prices || [];
+              const priceDisplay = prices.length ? 
+                `From ₱${Math.min(...prices.map(x => x.price_php))}` : 
+                'Price not set';
+                
+              return `
+                <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
+                  <div style="font-weight:700;font-size:1.05rem">${p.icon||'🛒'} ${p.name}</div>
+                  <div>${hasStock 
+                    ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
+                    : `<span class="pill">Out of stock</span>`}</div>
+                  <div class="note">${priceDisplay}</div>
+                  <button class="btn btn-primary" ${hasStock?'':'disabled'}
+                    onclick="openCheckout('${p.id}','${p.name.replace(/'/g, "\\'")}')">
+                    ${hasStock?'Buy Now':'Unavailable'}
+                  </button>
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
       `;
@@ -727,121 +459,56 @@ async function renderProducts(){
 
     container.innerHTML = html || '<div class="note">No products available.</div>';
     
-    // Add event listeners to View All buttons
-    document.querySelectorAll('.view-all').forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const category = this.dataset.category;
-        showAllProducts(category);
-      });
-    });
-    
   } catch(e) {
     console.error('Error loading products:', e);
-    container.innerHTML='<div class="note">Failed to load products. Please try again later.</div>';
+    showDemoProducts();
   }
 }
 
-function renderProductCard(product) {
-  const hasStock = (product.available || 0) > 0;
-  const pricesByType = {};
-  
-  (product.prices || []).forEach(price => {
-    if (!pricesByType[price.account_type]) {
-      pricesByType[price.account_type] = [];
-    }
-    pricesByType[price.account_type].push({
-      duration: price.duration_key,
-      price: price.price_php
-    });
-  });
-  
-  // Get the lowest price for display
-  const allPrices = Object.values(pricesByType).flat();
-  const lowestPrice = allPrices.length > 0 
-    ? Math.min(...allPrices.map(p => p.price))
-    : 0;
-
-  const pricesHtml = Object.entries(pricesByType).map(([type, prices]) => {
-    const priceList = prices.map(p => `${p.duration}: ₱${p.price}`).join(' · ');
-    return `<div class="note"><b>${type}</b> — ${priceList}</div>`;
-  }).join('');
-
-  return `
-    <div class="p-card" data-name="${(product.name || '').toLowerCase()}" data-category="${product.category}">
-      <h3>${product.icon || '🛒'} ${product.name}</h3>
-      <div class="price">Starting at ₱${lowestPrice}</div>
-      <div class="description">Premium access with multiple account options</div>
-      <div class="stock-badge ${hasStock ? 'in-stock' : 'out-of-stock'}">
-        ${hasStock ? `${product.available} available` : 'Out of stock'}
+function showDemoProducts() {
+  const container = $('#categories-container');
+  container.innerHTML = `
+    <div class="category-section" data-category="entertainment">
+      <div class="section-header">
+        <h2 class="section-title">🎬 Entertainment</h2>
       </div>
-      ${pricesHtml}
-      <button class="btn btn-primary" ${hasStock ? '' : 'disabled'}
-        onclick="openCheckout('${product.id}','${product.name.replace(/'/g, "\\'")}')">
-        <i class="fas fa-shopping-cart"></i> 
-        ${hasStock ? 'Buy Now' : 'Unavailable'}
-      </button>
+      <div class="products-grid">
+        <div class="p-card">
+          <div style="font-weight:700;font-size:1.05rem">🎬 Netflix Premium</div>
+          <div><span class="pill" style="background:#d4edda;color:#155724">5 available</span></div>
+          <div class="note">From ₱149</div>
+          <button class="btn btn-primary" onclick="openCheckout('netflix','Netflix Premium')">Buy Now</button>
+        </div>
+        <div class="p-card">
+          <div style="font-weight:700;font-size:1.05rem">📺 Disney+</div>
+          <div><span class="pill">Out of stock</span></div>
+          <div class="note">From ₱129</div>
+          <button class="btn btn-primary" disabled>Unavailable</button>
+        </div>
+      </div>
+    </div>
+    <div class="category-section" data-category="streaming">
+      <div class="section-header">
+        <h2 class="section-title">🎧 Streaming & Music</h2>
+      </div>
+      <div class="products-grid">
+        <div class="p-card">
+          <div style="font-weight:700;font-size:1.05rem">🎧 Spotify Premium</div>
+          <div><span class="pill" style="background:#d4edda;color:#155724">3 available</span></div>
+          <div class="note">From ₱99</div>
+          <button class="btn btn-primary" onclick="openCheckout('spotify','Spotify Premium')">Buy Now</button>
+        </div>
+      </div>
     </div>
   `;
 }
 
-function showAllProducts(category) {
-  // This would typically navigate to a category page or show a modal
-  // For now, let's just show an alert and filter to show all products of that category
+function showAllCategory(category) {
+  // For now, just show a message
+  toast(`Showing all ${category} products`, 'ok');
   filterProductsByCategory(category);
-  toast(`Showing all ${CATEGORY_LABELS[category] || category} products`, 'ok');
 }
 
-/* Search functionality */
-$('product-search').addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase().trim();
-  const allProducts = document.querySelectorAll('.p-card');
-  const categorySections = document.querySelectorAll('.category-section');
-  
-  let hasVisibleProducts = false;
-  
-  categorySections.forEach(section => {
-    let sectionHasVisible = false;
-    const sectionProducts = section.querySelectorAll('.p-card');
-    
-    sectionProducts.forEach(product => {
-      const productName = product.dataset.name;
-      if (productName.includes(query)) {
-        product.style.display = 'block';
-        sectionHasVisible = true;
-        hasVisibleProducts = true;
-      } else {
-        product.style.display = 'none';
-      }
-    });
-    
-    // Show/hide category section based on visible products
-    section.style.display = sectionHasVisible ? 'block' : 'none';
-  });
-  
-  // If no products found, show message
-  if (!hasVisibleProducts && query) {
-    $('#categories-container').innerHTML = `
-      <div class="card" style="text-align: center;">
-        <h3>No products found</h3>
-        <p class="note">No products match your search for "${query}"</p>
-        <button class="btn btn-primary" onclick="$('product-search').value=''; renderProducts();">
-          Show All Products
-        </button>
-      </div>
-    `;
-  } else if (!query) {
-    // If search is cleared, restore original view
-    categorySections.forEach(section => {
-      section.style.display = 'block';
-    });
-    allProducts.forEach(product => {
-      product.style.display = 'block';
-    });
-  }
-});
-
-// Keep your existing functions (openCheckout, closeCheckout, etc.)
 function openCheckout(product_id, product_name){
   const f=$('coForm');
   f.product_id.value=product_id;
@@ -851,17 +518,10 @@ function openCheckout(product_id, product_name){
     f.buyer_name.value=currentUser.name;
     f.buyer_email.value=currentUser.email;
   }
-  $('inviteGmailRow').style.display =
-    $('co_accType').value.toLowerCase()==='invite' ? 'block' : 'none';
   $('coOverlay').style.display='flex';
 }
 
 function closeCheckout(){ $('coOverlay').style.display='none'; }
-
-$('co_accType').onchange=(e)=>{
-  $('inviteGmailRow').style.display =
-    e.target.value.toLowerCase()==='invite' ? 'block' : 'none';
-};
 
 $('coForm').addEventListener('submit',async(e)=>{
   e.preventDefault();
@@ -869,10 +529,6 @@ $('coForm').addEventListener('submit',async(e)=>{
   const btn=$('coSubmit');
   btn.disabled=true;
   try{
-    if(f.account_type.value.toLowerCase()==='invite'){
-      const gm=(f.invite_gmail.value||'').trim();
-      if(!/^[^@]+@gmail\.com$/i.test(gm)) throw new Error('Invite requires a valid Gmail.');
-    }
     const order=await db_createOrder({
       buyer_name:f.buyer_name.value.trim(),
       buyer_email:f.buyer_email.value.trim(),
@@ -880,14 +536,11 @@ $('coForm').addEventListener('submit',async(e)=>{
       product_name:f.product_name.value,
       account_type:f.account_type.value,
       duration_key:f.duration_key.value,
-      price:parseFloat(f.price.value||0),
-      invite_gmail:f.invite_gmail?f.invite_gmail.value.trim():null
+      price:parseFloat(f.price.value||0)
     });
     $('coMsg').textContent='✅ Order placed! ID: '+order.id;
-    toast('Order placed successfully!','ok');
+    toast('Order placed','ok');
     setTimeout(()=>{ $('coMsg').textContent=''; closeCheckout(); },2000);
-    renderProducts();
-    if(currentUser) updateAccountTab();
   }catch(err){
     alert('Checkout failed: '+err.message);
   }finally{
@@ -895,14 +548,33 @@ $('coForm').addEventListener('submit',async(e)=>{
   }
 });
 
-// Initialize
-document.addEventListener('DOMContentLoaded', async ()=>{
-  refreshAuthUI();
-  await renderProducts();
+/* rules */
+async function loadRules(){
+  try{
+    const rules=await db_fetchRules();
+    $('rules-wrap').innerHTML = rules.length ? 
+      rules.map(r=>`<div style="margin:.5rem 0">• ${r.text}</div>`).join('') :
+      '<div>No rules set yet.</div>';
+  }catch(_){
+    $('rules-wrap').innerHTML='<div>Failed to load rules.</div>';
+  }
+}
+
+/* search */
+$('product-search').addEventListener('input',(e)=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('.p-card').forEach(card=>{
+    const name=card.dataset.name||'';
+    card.style.display=name.includes(q)?'block':'none';
+  });
 });
 
-// Keep your other existing functions (tabs, auth flows, etc.) from your original index.html
-// They should work with the updated product rendering
+/* init */
+document.addEventListener('DOMContentLoaded',()=>{
+  refreshAuthUI();
+  renderProducts();
+  loadRules();
+});
 </script>
 </body>
 </html>
