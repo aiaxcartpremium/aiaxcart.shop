@@ -65,7 +65,7 @@ function isVerified(){
   const verOk=localStorage.getItem('ad-session-ver')===SESSION_VER;
   return ok&&fresh&&uidOk&&verOk;
 }
-// Auto-check and refresh session
+
 (function(){
   if(!isVerified()) {
     clearSession();
@@ -88,8 +88,10 @@ function toast(msg,type='ok'){
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium Admin</div>
     <nav>
-      <a href="index.html">Home</a>
-      <a class="active" href="admin.html">Admin</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a class="active" href="admin.html">Admin</a></li>
+      </ul>
     </nav>
   </div>
 </header>
@@ -123,9 +125,10 @@ function toast(msg,type='ok'){
     <div class="tab" data-tab="products">Products</div>
     <div class="tab" data-tab="rules">Store Rules</div>
     <div class="tab" data-tab="records">Records</div>
+    <div class="tab" data-tab="reports">Reports</div>
   </div>
 
-  <!-- Add Stock Panel -->
+  <!-- Add Stock -->
   <div id="p-add" class="panel active">
     <div class="card"><h3>Add Stock</h3>
       <form id="fAdd">
@@ -138,30 +141,89 @@ function toast(msg,type='ok'){
         <div class="row"><label>Profile</label><input id="as-prof"></div>
         <div class="row"><label>PIN</label><input id="as-pin"></div>
         <div class="row"><label>Auto-Archive (Days)</label><input id="as-drop" type="number" min="0" value="0"></div>
+        <div class="row"><label>Premium Until (date, optional)</label><input id="as-premAt" type="date"></div>
         <div class="row"><button class="btn btn-p" type="submit">Add Stock</button></div>
       </form>
+      <div id="msgAdd" style="color:#0a0;margin-top:.6rem"></div>
     </div>
   </div>
 
-  <!-- Other panels... -->
+  <!-- Manage -->
   <div id="p-manage" class="panel">
-    <div class="card"><h3>Manage Stocks</h3><div id="manageList" class="grid"><div class="note">Loading...</div></div></div>
+    <div class="card"><h3>Manage Stocks</h3><div id="manageList" class="grid"></div></div>
   </div>
 
+  <!-- Pending -->
   <div id="p-pending" class="panel">
-    <div class="card"><h3>Pending Orders</h3><div id="pendingList" class="grid"><div class="note">Loading...</div></div></div>
+    <div class="card"><h3>Pending Orders</h3><div id="pendingList" class="grid"></div></div>
   </div>
 
+  <!-- Sold -->
   <div id="p-sold" class="panel">
-    <div class="card"><h3>Sold Accounts</h3><div id="soldList" class="grid"><div class="note">Loading...</div></div></div>
+    <div class="card"><h3>Sold Accounts</h3><div id="soldList" class="grid"></div></div>
   </div>
 
+  <!-- Archived -->
+  <div id="p-arch" class="panel">
+    <div class="card"><h3>Archived</h3><div id="archList" class="grid"></div></div>
+  </div>
+
+  <!-- Products -->
   <div id="p-products" class="panel">
-    <div class="card"><h3>Products</h3><div id="prodList" class="grid"><div class="note">Loading...</div></div></div>
+    <div class="card"><h3>Add Product</h3>
+      <form id="fProd">
+        <div class="row"><label>Product Name</label><input id="pr-name" placeholder="Enter product name"></div>
+        <div class="row"><label>Category</label>
+          <select id="pr-cat">
+            <option value="entertainment">entertainment</option>
+            <option value="streaming">streaming</option>
+            <option value="educational">educational</option>
+            <option value="editing">editing</option>
+            <option value="ai">ai</option>
+          </select>
+        </div>
+        <div class="row"><label>Icon</label><input id="pr-icon" placeholder="e.g. 📺"></div>
+        <button class="btn btn-p" type="submit">Add Product</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Products</h3>
+      <div class="row">
+        <label>Filter by Category</label>
+        <select id="prodFilter">
+          <option value="">All Categories</option>
+          <option>entertainment</option>
+          <option>streaming</option>
+          <option>educational</option>
+          <option>editing</option>
+          <option>ai</option>
+        </select>
+      </div>
+      <div id="prodList" class="grid"></div>
+    </div>
   </div>
 
+  <!-- Rules -->
+  <div id="p-rules" class="panel">
+    <div class="card"><h3>Add Rule</h3>
+      <form id="fRule">
+        <div class="row"><label>Product</label><select id="ru-prod"><option value="general">general</option></select></div>
+        <div class="row"><label>Rule Text</label><textarea id="ru-text" rows="3"></textarea></div>
+        <button class="btn btn-p" type="submit">Add Rule</button>
+      </form>
+    </div>
+    <div class="card"><h3>Rules</h3><div id="rulesList" class="grid"></div></div>
+  </div>
+
+  <!-- Records -->
   <div id="p-records" class="panel">
-    <div class="card"><h3>Records</h3><div id="recInfo" class="note">Loading...</div></div>
+    <div class="card"><h3>Records (summary)</h3><div id="recInfo">Loading…</div></div>
+  </div>
+
+  <!-- Reports -->
+  <div id="p-reports" class="panel">
+    <div class="card"><h3>Buyer Reports</h3><div id="brList" class="grid"></div></div>
+    <div class="card"><h3>Sales Report</h3><div id="salesInfo"></div></div>
   </div>
 </div>
 
@@ -187,11 +249,7 @@ const $ = (id)=>document.getElementById(id);
 async function verifyOwnerUID(){
   const uid=($('#ownerUidInput').value||'').trim();
   const msg=$('#ownerVeriMsg');
-  
-  if(!uid){ 
-    msg.textContent='Please enter UID.'; 
-    return; 
-  }
+  if(!uid){ msg.textContent='Enter UID.'; return; }
   
   // Simple verification - just check if it matches the owner UID
   if(uid === window.CONFIG.ADMIN.OWNER_UID){
@@ -256,19 +314,57 @@ async function bootAdmin(){
         profile: $('#as-prof').value,
         pin: $('#as-pin').value,
         quantity: Number($('#as-qty').value||1),
-        auto_drop_days: Number($('#as-drop').value||0)
+        auto_drop_days: Number($('#as-drop').value||0),
+        premium_until: $('#as-premAt').value ? new Date($('#as-premAt').value).toISOString() : null
       };
       await db_addStock(payload);
       toast('Stock added successfully!','ok');
       // Clear form
       $('#as-email').value='';$('#as-pass').value='';$('#as-prof').value='';$('#as-pin').value='';
+      $('#as-qty').value=1;$('#as-drop').value=0;$('#as-premAt').value='';
       await refreshAll();
     }catch(error){
       toast('Error: '+error.message,'err');
     }
   };
 
-  // Initial load
+  $('#fProd').onsubmit = async (e)=>{
+    e.preventDefault();
+    try{
+      await db_addProduct({
+        name: $('#pr-name').value.trim(),
+        category: $('#pr-cat').value,
+        icon: $('#pr-icon').value,
+        is_active:true
+      });
+      $('#pr-name').value='';
+      $('#pr-icon').value='';
+      toast('Product added successfully!','ok');
+      await refreshAll();
+    }catch(error){
+      toast('Error adding product: '+error.message,'err');
+    }
+  };
+
+  $('#fRule').onsubmit = async (e)=>{
+    e.preventDefault();
+    try{
+      await db_addRule({
+        product: $('#ru-prod').value,
+        text: $('#ru-text').value.trim()
+      });
+      $('#ru-text').value='';
+      toast('Rule added successfully!','ok');
+      await refreshAll();
+    }catch(error){
+      toast('Error adding rule: '+error.message,'err');
+    }
+  };
+
+  // Set up real-time subscriptions
+  db_subscribeStockAndOrders(refreshAll);
+  
+  // Initial data load
   await refreshAll();
 }
 
@@ -278,7 +374,7 @@ function fillSelect(id,arr){
   el.innerHTML = arr.map(x=>`<option>${x}</option>`).join('');
 }
 
-/* Refresh data */
+/* Refresh Functions */
 async function refreshAll(){
   try{
     const stats = await db_adminStats();
@@ -289,24 +385,214 @@ async function refreshAll(){
 
     const products = await db_listProducts();
     $('#as-product').innerHTML = products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-    
-    // Load other data...
+    $('#ru-prod').innerHTML = `<option value="general">general</option>` + products.map(p=>`<option>${p.name}</option>`).join('');
+
+    const filter = $('#prodFilter').value || '';
+    const filteredProducts = filter ? products.filter(p=>p.category===filter) : products;
+    $('#prodList').innerHTML = filteredProducts.length ? filteredProducts.map(p=>`
+      <div class="card">
+        <div><b>${p.icon||'🛒'} ${p.name}</b></div>
+        <div>Category: ${p.category||'—'}</div>
+        <div style="margin-top:.4rem">
+          <button class="btn btn-w" onclick="promptEditProduct('${p.id}')">Edit</button>
+          <button class="btn btn-d" onclick="if(confirm('Delete ${p.name}?')) db_deleteProduct('${p.id}').then(()=>{toast('Deleted','warn');refreshAll();})">Delete</button>
+        </div>
+      </div>
+    `).join('') : '<div class="note">No products.</div>';
+
     const stocks = await db_listAvailableStocks();
     $('#manageList').innerHTML = stocks.length ? stocks.map(s=>`
       <div class="card">
         <div><b>${s.product_name}</b> • ${s.account_type} • ${s.duration_key}</div>
-        <div class="note">Email: ${s.email||'N/A'}</div>
-        <button class="btn btn-s" onclick="db_markSold('${s.id}',0).then(refreshAll)">Mark Sold</button>
+        <div class="note">Email: ${s.email||'N/A'} | Profile: ${s.profile||'N/A'}</div>
+        <div style="margin-top:.4rem">
+          <button class="btn btn-s" onclick="db_markSold('${s.id}',0).then(()=>{toast('Marked sold','ok');refreshAll();})">Mark Sold</button>
+          <button class="btn btn-w" onclick="db_archiveStock('${s.id}',new Date().toISOString()).then(()=>{toast('Archived','warn');refreshAll();})">Archive</button>
+          <button class="btn btn-d" onclick="if(confirm('Delete this stock?')) db_deleteStock('${s.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
+        </div>
       </div>
-    `).join('') : '<div class="note">No stocks</div>';
-    
+    `).join('') : '<div class="note">No available stocks.</div>';
+
+    const pend = await db_listPendingOrders();
+    $('#pendingList').innerHTML = pend.length ? pend.map(o=>`
+      <div class="card">
+        <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
+        <div class="note">Buyer: ${o.buyer_name} (${o.buyer_email}) | ID: ${o.id}</div>
+        <div style="margin-top:.4rem">
+          <button class="btn btn-s" onclick="db_confirmOrder('${o.id}').then(()=>{toast('Confirmed','ok');refreshAll();})">Confirm</button>
+          <button class="btn btn-d" onclick="db_cancelOrder('${o.id}').then(()=>{toast('Canceled','err');refreshAll();})">Cancel</button>
+        </div>
+      </div>
+    `).join('') : '<div class="note">No pending orders.</div>';
+
+    const sold = await db_listSold();
+    $('#soldList').innerHTML = sold.length ? sold.map(x=>`
+      <div class="card">
+        <div><b>${x.product_name}</b> • ₱${x.price_php||0}</div>
+        <div class="note">Sold: ${new Date(x.sold_at).toLocaleString()}</div>
+      </div>
+    `).join('') : '<div class="note">No sold records.</div>';
+
+    const arch = await db_listArchived();
+    $('#archList').innerHTML = arch.length ? arch.map(a=>`
+      <div class="card">
+        <div><b>${a.product_name}</b> • ${a.account_type} • ${a.duration_key}</div>
+        <div class="note">Archived: ${new Date(a.archived_at).toLocaleString()}</div>
+      </div>
+    `).join('') : '<div class="note">No archived stocks.</div>';
+
+    const rules = await db_listRules();
+    $('#rulesList').innerHTML = rules.length ? rules.map(r=>`
+      <div class="card">
+        <div><b>${r.product==='general'?'All Products':r.product}</b></div>
+        <div>${r.text}</div>
+        <div style="margin-top:.4rem">
+          <button class="btn btn-d" onclick="db_deleteRule('${r.id}').then(()=>{toast('Removed','err');refreshAll();})">Remove</button>
+        </div>
+      </div>
+    `).join('') : '<div class="note">No rules.</div>';
+
+    const rec = await db_listRecordsSummary();
+    $('#recInfo').innerHTML = `
+      <div>Total records: <b>${rec.total}</b></div>
+      <div>Total revenue: <b>₱${>₱${rec.revenue}</b></div>
+      <div>Website ordersrec.revenue}</b></div>
+      <div>Website orders: <b>: <b>${rec.web}</b> | Social: <b>${rec.social}</b></div>`;
+
+    const br = await db_listBuyerReports();
+    $('#brList').innerHTML = br.length ? br.map(r=>`
+      <div class="card">
+        <div><b>Report ID:</b> ${r.id}</div>
+        <div><b>Order ID:</b> ${r.order_id||'—'}</div>
+        <div><b>Buyer:</b> ${r.buyer}</div>
+        <div><b>Product:</b> ${r.product||'—'}</div>
+        <div><b>Issue:</b> ${r.issue}</div>
+        <div><b>Status:</b> ${r.status||'pending'}</div>
+        <div style="margin-top:.4rem">
+          ${r.status!=='resolved'
+            ? `<button class="btn btn-s" onclick="db_markReportResolved('${r.id}').then(()=>{toast('Resolved','ok');refreshAll();})">Mark Resolved</button>`
+            : ''}
+          <button class="btn btn-d" onclick="if(confirm('Delete this report?')) db_deleteReport('${r.id}').then(()=>${rec.web}</b> | Social: <b>${rec.social}</b></div>`;
+
+    const br = await db_listBuyerReports();
+    $('#brList').innerHTML = br.length ? br.map(r=>`
+      <div class="card">
+        <div><b>Report ID:</b> ${r.id}</div>
+        <div><b>Order ID:</b> ${r.order_id||'—'}</div>
+        <div><b>Buyer:</b> ${r.buyer}</div>
+        <div><b>Product:</b> ${r.product||'—'}</div>
+        <div><b>Issue:</b> ${r.issue}</div>
+        <div><b>Status:</b> ${r.status||'pending'}</div>
+        <div style="margin-top:.4rem">
+          ${r.status!=='resolved'
+            ? `<button class="btn btn-s" onclick="db_markReportResolved('${r.id}').then(()=>{toast('Resolved','ok');refreshAll();})">Mark Resolved</button>`
+            : ''}
+          <button class="btn btn-d" onclick="if(confirm('Delete this report?')) db_deleteReport('${r.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
+        </div>
+     {toast('Deleted','err');refreshAll();})">Delete</button>
+        </div>
+      </ </div>
+   div>
+    `).join('') : '<div class=" `).join('') : '<div class="note">note">No buyer reports.</div>';
+
+    $('#salesInfo').innerHTML = `
+      <div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
+
   }catch(error){
+    console.error('Error refreshing admin data:', error);
     toast('Error loading data','err');
   }
 }
 
-// Auto-refresh
+async function promptEditProduct(id){
+  const products = await db_listProducts();
+  const product = products.find(p => p.id === id);
+  if(!product) return;
+
+  const name = prompt('New product name?', product.name);
+  const category = prompt('No buyer reports.</div>';
+
+    $('#salesInfo').innerHTML = `
+      <div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
+
+  }catch(error){
+    console.error('Error refreshing admin data:', error);
+    toast('Error loading data','err');
+  }
+}
+
+async function promptEditProduct(id){
+  const products = await db_listProducts();
+  const product = products.find(p => p.id === id);
+  if(!product) return;
+
+  const name = prompt('New product name?', product.name);
+  const category = prompt('New category?', product.category);
+  const icon = prompt('New icon?', product.icon || '🛒');
+  
+  if(name !== null){
+    await db_updateProduct({ 
+      id, 
+      name: name || product.name, 
+      category: category || product.category, 
+      icon: icon || product.icon 
+    });
+    toast('Product updated successfully!','ok');
+    refreshAll();
+  }
+}
+
+// Auto-refresh every 30 seconds
 setInterval(refreshAll, 30000);
+
+// Category filter
+$('#prodFilter').onchange = refreshAll;
+
+// Session management
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==New category?', product.category);
+  const icon = prompt('New icon?', product.icon || '🛒');
+  
+  if(name !== null){
+    await db_updateProduct({ 
+      id, 
+      name: name || product.name, 
+      category: category || product.category, 
+      icon: icon || product.icon 
+    });
+    toast('Product updated successfully!','ok');
+    refreshAll();
+  }
+}
+
+// Auto-refresh every 30 seconds
+setInterval(refreshAll, 30000);
+
+// Category filter
+$('#prodFilter').onchange = refreshAll;
+
+// Session management
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    if(!is='visible'){
+    if(!isVerified()){ 
+     Verified()){ 
+      clearSession(); 
+      location.reload(); 
+    } else { 
+      localStorage.setItem('ad-ok- clearSession(); 
+      location.reload(); 
+    } else { 
+      localStorage.setItem('ad-ok-ts',Date.now()); 
+    }
+  }
+ts',Date.now()); 
+    }
+  }
+});
+</script>
+</body>
+</});
 </script>
 </body>
 </html>
