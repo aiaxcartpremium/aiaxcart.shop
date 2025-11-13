@@ -255,7 +255,6 @@ function verifyOwnerUID(){
     return; 
   }
   
-  // Simple verification
   if(uid === window.CONFIG.ADMIN.OWNER_UID){
     setSession(uid);
     msg.style.color = '#2a7';
@@ -270,15 +269,12 @@ function verifyOwnerUID(){
   }
 }
 
-// Add event listener to verify button
+// DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
   $('#verifyBtn').addEventListener('click', verifyOwnerUID);
   
-  // Also allow Enter key in input
   $('#ownerUidInput').addEventListener('keypress', function(e) {
-    if(e.key === 'Enter') {
-      verifyOwnerUID();
-    }
+    if(e.key === 'Enter') verifyOwnerUID();
   });
 });
 
@@ -320,7 +316,6 @@ async function bootAdmin(){
   fillSelect('as-type', accTypes);
   fillSelect('as-dur', durs);
 
-  // Form handlers
   $('#fAdd').addEventListener('submit', async (e) => {
     e.preventDefault();
     try{
@@ -342,9 +337,13 @@ async function bootAdmin(){
       }
       
       toast('Stock added successfully!','ok');
-      // Clear form
-      $('#as-email').value = ''; $('#as-pass').value = ''; $('#as-prof').value = ''; $('#as-pin').value = '';
-      $('#as-qty').value = 1; $('#as-drop').value = 0; $('#as-premAt').value = '';
+      $('#as-email').value = '';
+      $('#as-pass').value = '';
+      $('#as-prof').value = '';
+      $('#as-pin').value = '';
+      $('#as-qty').value = 1;
+      $('#as-drop').value = 0;
+      $('#as-premAt').value = '';
       
       await refreshAll();
     } catch(error) {
@@ -391,7 +390,6 @@ async function bootAdmin(){
     }
   });
 
-  // Initial data load
   await refreshAll();
 }
 
@@ -401,16 +399,14 @@ function fillSelect(id, arr){
   el.innerHTML = arr.map(x => `<option>${x}</option>`).join('');
 }
 
-/* Refresh Functions */
+/* Refresh Functions (demo for now) */
 async function refreshAll(){
   try{
-    // Demo stats
     $('#stat-products').innerText = '6';
     $('#stat-stock').innerText = '26';
     $('#stat-pending').innerText = '3';
     $('#stat-revenue').innerText = '₱2,450';
 
-    // Demo products for dropdown
     const demoProducts = [
       {id: 'netflix-premium', name: 'Netflix Premium'},
       {id: 'spotify-premium', name: 'Spotify Premium'},
@@ -423,7 +419,6 @@ async function refreshAll(){
     $('#as-product').innerHTML = demoProducts.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
     $('#ru-prod').innerHTML = `<option value="general">general</option>` + demoProducts.map(p => `<option>${p.name}</option>`).join('');
 
-    // Demo products list
     $('#prodList').innerHTML = demoProducts.map(p => `
       <div class="card">
         <div><b>${p.name}</b></div>
@@ -435,7 +430,6 @@ async function refreshAll(){
       </div>
     `).join('');
 
-    // Demo manage stocks
     $('#manageList').innerHTML = `
       <div class="card">
         <div><b>Netflix Premium</b> • Solo Account • 1m</div>
@@ -448,7 +442,6 @@ async function refreshAll(){
       </div>
     `;
 
-    // Demo pending orders
     $('#pendingList').innerHTML = `
       <div class="card">
         <div><b>Spotify Premium</b> • Individual • 3m</div>
@@ -460,13 +453,11 @@ async function refreshAll(){
       </div>
     `;
 
-    // Demo records
     $('#recInfo').innerHTML = `
       <div>Total records: <b>24</b></div>
       <div>Total revenue: <b>₱2,450</b></div>
       <div>Website orders: <b>18</b> | Social: <b>6</b></div>
     `;
-
   } catch(error) {
     console.error('Error refreshing admin data:', error);
     toast('Error loading data','err');
@@ -481,8 +472,11 @@ function promptEditProduct(id){
   }
 }
 
-// Category filter
-$('#prodFilter').addEventListener('change', refreshAll);
+// Category filter (safe)
+const prodFilter = $('#prodFilter');
+if (prodFilter) {
+  prodFilter.addEventListener('change', refreshAll);
+}
 
 // Session management
 document.addEventListener('visibilitychange', () => {
