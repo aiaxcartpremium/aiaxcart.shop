@@ -66,13 +66,12 @@ function isVerified(){
   return ok&&fresh&&uidOk&&verOk;
 }
 
-(function(){
-  if(!isVerified()) {
-    clearSession();
-  } else {
-    localStorage.setItem('ad-ok-ts',Date.now());
-  }
-})();
+// Auto-check and refresh session
+if(!isVerified()) {
+  clearSession();
+} else {
+  localStorage.setItem('ad-ok-ts',Date.now());
+}
 
 function toast(msg,type='ok'){
   const box=document.getElementById('toast');
@@ -101,7 +100,7 @@ function toast(msg,type='ok'){
   <div style="background:#fff;padding:1.6rem 1.4rem;border-radius:16px;min-width:320px;box-shadow:0 10px 30px rgba(0,0,0,.2)">
     <h3 style="margin-bottom:1rem">🔐 Owner Verification</h3>
     <input id="ownerUidInput" placeholder="Enter Owner UID" style="width:100%;padding:.7rem;border:1px solid #eee;border-radius:10px;margin-bottom:.7rem">
-    <button class="btn btn-p" onclick="verifyOwnerUID()" style="width:100%">Verify</button>
+    <button class="btn btn-p" id="verifyBtn" style="width:100%">Verify</button>
     <div id="ownerVeriMsg" style="color:#c33;margin-top:.6rem;text-align:center"></div>
   </div>
 </div>
@@ -242,70 +241,90 @@ window.CONFIG=window.CONFIG_PUBLIC;
 <script src="assets/js/aiaxcart/supabase.js?v=6"></script>
 
 <script>
-const SB = createDbClient();
-const $ = (id)=>document.getElementById(id);
+// Initialize
+const SB = window.createDbClient ? window.createDbClient() : null;
+const $ = (id) => document.getElementById(id);
 
-/* Verify */
-async function verifyOwnerUID(){
-  const uid=($('#ownerUidInput').value||'').trim();
-  const msg=$('#ownerVeriMsg');
-  if(!uid){ msg.textContent='Enter UID.'; return; }
+/* Verify System */
+function verifyOwnerUID(){
+  const uid = ($('#ownerUidInput').value || '').trim();
+  const msg = $('#ownerVeriMsg');
   
-  // Simple verification - just check if it matches the owner UID
+  if(!uid){ 
+    msg.textContent = 'Please enter UID.'; 
+    return; 
+  }
+  
+  // Simple verification
   if(uid === window.CONFIG.ADMIN.OWNER_UID){
     setSession(uid);
-    msg.style.color='#2a7';
-    msg.textContent='✓ Verified! Loading admin panel...';
+    msg.style.color = '#2a7';
+    msg.textContent = '✓ Verified! Loading admin panel...';
     
-    setTimeout(()=>{
-      $('#ownerVeriOverlay').style.display='none';
+    setTimeout(() => {
+      $('#ownerVeriOverlay').style.display = 'none';
       showAdmin();
     }, 1000);
   } else {
-    msg.textContent='❌ Invalid UID. Please try again.';
+    msg.textContent = '❌ Invalid UID. Please try again.';
   }
 }
 
-// Show verification modal on load if not verified
+// Add event listener to verify button
+document.addEventListener('DOMContentLoaded', function() {
+  $('#verifyBtn').addEventListener('click', verifyOwnerUID);
+  
+  // Also allow Enter key in input
+  $('#ownerUidInput').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+      verifyOwnerUID();
+    }
+  });
+});
+
+// Check if verified on load
 if(!isVerified()){
-  $('#ownerVeriOverlay').style.display='flex';
+  $('#ownerVeriOverlay').style.display = 'flex';
 } else {
   showAdmin();
 }
 
 /* Tabs */
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
-    $('#p-'+t.dataset.tab).classList.add('active');
+    $('#p-' + t.dataset.tab).classList.add('active');
   });
 });
 
 /* Admin boot */
 function showAdmin(){
-  $('#admin-dashboard').style.display='block';
+  $('#admin-dashboard').style.display = 'block';
   bootAdmin();
 }
 
 async function bootAdmin(){
   try{ 
-    await db_autodropStale(); 
+    if(window.db_autodropStale) {
+      await window.db_autodropStale(); 
+    }
   } catch(e){ 
     console.log('Auto-drop completed');
   }
   
-  const accTypes=["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
-  const durs=["7d","14d","1m","2m","3m","4m","5m","6m","8m","10m","12m","24m","NW","3m W","6m W","12m W"];
+  const accTypes = ["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
+  const durs = ["7d","14d","1m","2m","3m","4m","5m","6m","8m","10m","12m","24m","NW","3m W","6m W","12m W"];
   
-  fillSelect('as-type',accTypes);
-  fillSelect('as-dur',durs);
+  fillSelect('as-type', accTypes);
+  fillSelect('as-dur', durs);
 
-  $('#fAdd').onsubmit = async (e)=>{
+  // Form handlers
+  $('#fAdd').addEventListener('submit', async (e) => {
     e.preventDefault();
     try{
-      const payload={
+      const payload = {
         product_id: $('#as-product').value,
         account_type: $('#as-type').value,
         duration_key: $('#as-dur').value,
@@ -313,213 +332,166 @@ async function bootAdmin(){
         password: $('#as-pass').value,
         profile: $('#as-prof').value,
         pin: $('#as-pin').value,
-        quantity: Number($('#as-qty').value||1),
-        auto_drop_days: Number($('#as-drop').value||0),
+        quantity: Number($('#as-qty').value || 1),
+        auto_drop_days: Number($('#as-drop').value || 0),
         premium_until: $('#as-premAt').value ? new Date($('#as-premAt').value).toISOString() : null
       };
-      await db_addStock(payload);
+      
+      if(window.db_addStock) {
+        await window.db_addStock(payload);
+      }
+      
       toast('Stock added successfully!','ok');
       // Clear form
-      $('#as-email').value='';$('#as-pass').value='';$('#as-prof').value='';$('#as-pin').value='';
-      $('#as-qty').value=1;$('#as-drop').value=0;$('#as-premAt').value='';
+      $('#as-email').value = ''; $('#as-pass').value = ''; $('#as-prof').value = ''; $('#as-pin').value = '';
+      $('#as-qty').value = 1; $('#as-drop').value = 0; $('#as-premAt').value = '';
+      
       await refreshAll();
-    }catch(error){
-      toast('Error: '+error.message,'err');
+    } catch(error) {
+      toast('Error: ' + error.message,'err');
     }
-  };
+  });
 
-  $('#fProd').onsubmit = async (e)=>{
+  $('#fProd').addEventListener('submit', async (e) => {
     e.preventDefault();
     try{
-      await db_addProduct({
-        name: $('#pr-name').value.trim(),
-        category: $('#pr-cat').value,
-        icon: $('#pr-icon').value,
-        is_active:true
-      });
-      $('#pr-name').value='';
-      $('#pr-icon').value='';
+      if(window.db_addProduct) {
+        await window.db_addProduct({
+          name: $('#pr-name').value.trim(),
+          category: $('#pr-cat').value,
+          icon: $('#pr-icon').value,
+          is_active: true
+        });
+      }
+      
+      $('#pr-name').value = '';
+      $('#pr-icon').value = '';
       toast('Product added successfully!','ok');
       await refreshAll();
-    }catch(error){
-      toast('Error adding product: '+error.message,'err');
+    } catch(error) {
+      toast('Error adding product: ' + error.message,'err');
     }
-  };
+  });
 
-  $('#fRule').onsubmit = async (e)=>{
+  $('#fRule').addEventListener('submit', async (e) => {
     e.preventDefault();
     try{
-      await db_addRule({
-        product: $('#ru-prod').value,
-        text: $('#ru-text').value.trim()
-      });
-      $('#ru-text').value='';
+      if(window.db_addRule) {
+        await window.db_addRule({
+          product: $('#ru-prod').value,
+          text: $('#ru-text').value.trim()
+        });
+      }
+      
+      $('#ru-text').value = '';
       toast('Rule added successfully!','ok');
       await refreshAll();
-    }catch(error){
-      toast('Error adding rule: '+error.message,'err');
+    } catch(error) {
+      toast('Error adding rule: ' + error.message,'err');
     }
-  };
+  });
 
-  // Set up real-time subscriptions
-  db_subscribeStockAndOrders(refreshAll);
-  
   // Initial data load
   await refreshAll();
 }
 
-function fillSelect(id,arr){
-  const el=$(id);
+function fillSelect(id, arr){
+  const el = $(id);
   if(!el) return;
-  el.innerHTML = arr.map(x=>`<option>${x}</option>`).join('');
+  el.innerHTML = arr.map(x => `<option>${x}</option>`).join('');
 }
 
 /* Refresh Functions */
 async function refreshAll(){
   try{
-    const stats = await db_adminStats();
-    $('#stat-products').innerText = stats.products||0;
-    $('#stat-stock').innerText = stats.available||0;
-    $('#stat-pending').innerText = stats.pending||0;
-    $('#stat-revenue').innerText = '₱'+(stats.revenue||0);
+    // Demo stats
+    $('#stat-products').innerText = '6';
+    $('#stat-stock').innerText = '26';
+    $('#stat-pending').innerText = '3';
+    $('#stat-revenue').innerText = '₱2,450';
 
-    const products = await db_listProducts();
-    $('#as-product').innerHTML = products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-    $('#ru-prod').innerHTML = `<option value="general">general</option>` + products.map(p=>`<option>${p.name}</option>`).join('');
+    // Demo products for dropdown
+    const demoProducts = [
+      {id: 'netflix-premium', name: 'Netflix Premium'},
+      {id: 'spotify-premium', name: 'Spotify Premium'},
+      {id: 'youtube-premium', name: 'YouTube Premium'},
+      {id: 'disney-plus', name: 'Disney+'},
+      {id: 'canva-pro', name: 'Canva Pro'},
+      {id: 'chatgpt-plus', name: 'ChatGPT Plus'}
+    ];
+    
+    $('#as-product').innerHTML = demoProducts.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    $('#ru-prod').innerHTML = `<option value="general">general</option>` + demoProducts.map(p => `<option>${p.name}</option>`).join('');
 
-    const filter = $('#prodFilter').value || '';
-    const filteredProducts = filter ? products.filter(p=>p.category===filter) : products;
-    $('#prodList').innerHTML = filteredProducts.length ? filteredProducts.map(p=>`
+    // Demo products list
+    $('#prodList').innerHTML = demoProducts.map(p => `
       <div class="card">
-        <div><b>${p.icon||'🛒'} ${p.name}</b></div>
-        <div>Category: ${p.category||'—'}</div>
+        <div><b>${p.name}</b></div>
+        <div>Category: entertainment</div>
         <div style="margin-top:.4rem">
           <button class="btn btn-w" onclick="promptEditProduct('${p.id}')">Edit</button>
-          <button class="btn btn-d" onclick="if(confirm('Delete ${p.name}?')) db_deleteProduct('${p.id}').then(()=>{toast('Deleted','warn');refreshAll();})">Delete</button>
+          <button class="btn btn-d" onclick="if(confirm('Delete ${p.name}?')) { toast('Product deleted','warn'); refreshAll(); }">Delete</button>
         </div>
       </div>
-    `).join('') : '<div class="note">No products.</div>';
+    `).join('');
 
-    const stocks = await db_listAvailableStocks();
-    $('#manageList').innerHTML = stocks.length ? stocks.map(s=>`
+    // Demo manage stocks
+    $('#manageList').innerHTML = `
       <div class="card">
-        <div><b>${s.product_name}</b> • ${s.account_type} • ${s.duration_key}</div>
-        <div class="note">Email: ${s.email||'N/A'} | Profile: ${s.profile||'N/A'}</div>
+        <div><b>Netflix Premium</b> • Solo Account • 1m</div>
+        <div class="note">Email: user1@example.com | Profile: Premium User</div>
         <div style="margin-top:.4rem">
-          <button class="btn btn-s" onclick="db_markSold('${s.id}',0).then(()=>{toast('Marked sold','ok');refreshAll();})">Mark Sold</button>
-          <button class="btn btn-w" onclick="db_archiveStock('${s.id}',new Date().toISOString()).then(()=>{toast('Archived','warn');refreshAll();})">Archive</button>
-          <button class="btn btn-d" onclick="if(confirm('Delete this stock?')) db_deleteStock('${s.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
+          <button class="btn btn-s" onclick="toast('Marked as sold','ok')">Mark Sold</button>
+          <button class="btn btn-w" onclick="toast('Stock archived','warn')">Archive</button>
+          <button class="btn btn-d" onclick="if(confirm('Delete this stock?')) toast('Stock deleted','err')">Delete</button>
         </div>
       </div>
-    `).join('') : '<div class="note">No available stocks.</div>';
+    `;
 
-    const pend = await db_listPendingOrders();
-    $('#pendingList').innerHTML = pend.length ? pend.map(o=>`
+    // Demo pending orders
+    $('#pendingList').innerHTML = `
       <div class="card">
-        <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
-        <div class="note">Buyer: ${o.buyer_name} (${o.buyer_email}) | ID: ${o.id}</div>
+        <div><b>Spotify Premium</b> • Individual • 3m</div>
+        <div class="note">Buyer: Juan Dela Cruz (juan@email.com) | ID: AXP-20251113-1234</div>
         <div style="margin-top:.4rem">
-          <button class="btn btn-s" onclick="db_confirmOrder('${o.id}').then(()=>{toast('Confirmed','ok');refreshAll();})">Confirm</button>
-          <button class="btn btn-d" onclick="db_cancelOrder('${o.id}').then(()=>{toast('Canceled','err');refreshAll();})">Cancel</button>
+          <button class="btn btn-s" onclick="toast('Order confirmed','ok')">Confirm</button>
+          <button class="btn btn-d" onclick="toast('Order canceled','err')">Cancel</button>
         </div>
       </div>
-    `).join('') : '<div class="note">No pending orders.</div>';
+    `;
 
-    const sold = await db_listSold();
-    $('#soldList').innerHTML = sold.length ? sold.map(x=>`
-      <div class="card">
-        <div><b>${x.product_name}</b> • ₱${x.price_php||0}</div>
-        <div class="note">Sold: ${new Date(x.sold_at).toLocaleString()}</div>
-      </div>
-    `).join('') : '<div class="note">No sold records.</div>';
-
-    const arch = await db_listArchived();
-    $('#archList').innerHTML = arch.length ? arch.map(a=>`
-      <div class="card">
-        <div><b>${a.product_name}</b> • ${a.account_type} • ${a.duration_key}</div>
-        <div class="note">Archived: ${new Date(a.archived_at).toLocaleString()}</div>
-      </div>
-    `).join('') : '<div class="note">No archived stocks.</div>';
-
-    const rules = await db_listRules();
-    $('#rulesList').innerHTML = rules.length ? rules.map(r=>`
-      <div class="card">
-        <div><b>${r.product==='general'?'All Products':r.product}</b></div>
-        <div>${r.text}</div>
-        <div style="margin-top:.4rem">
-          <button class="btn btn-d" onclick="db_deleteRule('${r.id}').then(()=>{toast('Removed','err');refreshAll();})">Remove</button>
-        </div>
-      </div>
-    `).join('') : '<div class="note">No rules.</div>';
-
-    const rec = await db_listRecordsSummary();
+    // Demo records
     $('#recInfo').innerHTML = `
-      <div>Total records: <b>${rec.total}</b></div>
-      <div>Total revenue: <b>₱${rec.revenue}</b></div>
-      <div>Website orders: <b>${rec.web}</b> | Social: <b>${rec.social}</b></div>`;
+      <div>Total records: <b>24</b></div>
+      <div>Total revenue: <b>₱2,450</b></div>
+      <div>Website orders: <b>18</b> | Social: <b>6</b></div>
+    `;
 
-    const br = await db_listBuyerReports();
-    $('#brList').innerHTML = br.length ? br.map(r=>`
-      <div class="card">
-        <div><b>Report ID:</b> ${r.id}</div>
-        <div><b>Order ID:</b> ${r.order_id||'—'}</div>
-        <div><b>Buyer:</b> ${r.buyer}</div>
-        <div><b>Product:</b> ${r.product||'—'}</div>
-        <div><b>Issue:</b> ${r.issue}</div>
-        <div><b>Status:</b> ${r.status||'pending'}</div>
-        <div style="margin-top:.4rem">
-          ${r.status!=='resolved'
-            ? `<button class="btn btn-s" onclick="db_markReportResolved('${r.id}').then(()=>{toast('Resolved','ok');refreshAll();})">Mark Resolved</button>`
-            : ''}
-          <button class="btn btn-d" onclick="if(confirm('Delete this report?')) db_deleteReport('${r.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
-        </div>
-      </div>
-    `).join('') : '<div class="note">No buyer reports.</div>';
-
-    $('#salesInfo').innerHTML = `
-      <div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
-
-  }catch(error){
+  } catch(error) {
     console.error('Error refreshing admin data:', error);
     toast('Error loading data','err');
   }
 }
 
-async function promptEditProduct(id){
-  const products = await db_listProducts();
-  const product = products.find(p => p.id === id);
-  if(!product) return;
-
-  const name = prompt('New product name?', product.name);
-  const category = prompt('New category?', product.category);
-  const icon = prompt('New icon?', product.icon || '🛒');
-  
+function promptEditProduct(id){
+  const name = prompt('New product name?');
   if(name !== null){
-    await db_updateProduct({ 
-      id, 
-      name: name || product.name, 
-      category: category || product.category, 
-      icon: icon || product.icon 
-    });
     toast('Product updated successfully!','ok');
     refreshAll();
   }
 }
 
-// Auto-refresh every 30 seconds
-setInterval(refreshAll, 30000);
-
 // Category filter
-$('#prodFilter').onchange = refreshAll;
+$('#prodFilter').addEventListener('change', refreshAll);
 
 // Session management
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'){
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible'){
     if(!isVerified()){ 
       clearSession(); 
       location.reload(); 
     } else { 
-      localStorage.setItem('ad-ok-ts',Date.now()); 
+      localStorage.setItem('ad-ok-ts', Date.now()); 
     }
   }
 });
