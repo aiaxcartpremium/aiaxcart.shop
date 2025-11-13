@@ -28,12 +28,12 @@
   .section-title{margin:0;color:#5a3e36;font-size:1.3rem}
   .view-all{color:#FFB0B5;text-decoration:none;font-weight:600}
   
-  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
+  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer;font-family:inherit}
   .btn-primary{background:#FFB0B5;color:#fff}
   .btn-primary:disabled{background:#ddd;color:#777}
   .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
   .search-wrap{margin:1rem 0;position:relative}
-  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
+  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px;font-family:inherit}
   .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
   .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
   footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
@@ -49,6 +49,15 @@
   .category-tabs{display:flex;gap:.5rem;margin:1.5rem 0;overflow-x:auto;padding-bottom:.5rem}
   .category-tab{padding:.6rem 1.2rem;border-radius:999px;background:#fff;border:1px solid #F9E6E4;cursor:pointer;white-space:nowrap;transition:all .3s ease}
   .category-tab.active{background:#FFD3D6;color:#5a3e36;border-color:#FFD3D6}
+  
+  /* Form elements */
+  .row{margin-bottom:1rem}
+  .row label{display:block;margin-bottom:.5rem;font-weight:600}
+  .row input,.row select,.row textarea{width:100%;padding:.6rem;border:1px solid #E8E8E8;border-radius:8px;font-family:inherit}
+  
+  /* Content sections */
+  .content-section{display:none}
+  #products-section{display:block}
 </style>
 </head>
 <body>
@@ -58,8 +67,8 @@
     <div class="logo">🛒 Aiaxcart Premium</div>
     <nav>
       <ul>
-        <li><a class="active" href="index.html">Home</a></li>
-        <li><a id="admin-btn" href="admin.html">Admin</a></li>
+        <li><a class="active" href="#" data-tab="products">Home</a></li>
+        <li><a href="admin.html">Admin</a></li>
       </ul>
     </nav>
     <div id="auth-buttons">
@@ -83,62 +92,116 @@
 </header>
 
 <main class="container">
-  <div class="search-wrap">
-    <span>🔍</span>
-    <input id="product-search" placeholder="Search products…"/>
-  </div>
+  <!-- Products Section -->
+  <section id="products-section" class="content-section">
+    <div class="search-wrap">
+      <span>🔍</span>
+      <input id="product-search" placeholder="Search products…"/>
+    </div>
 
-  <!-- Category Tabs -->
-  <div class="category-tabs" id="category-tabs">
-    <div class="category-tab active" data-category="all">All Categories</div>
-    <div class="category-tab" data-category="entertainment">🎬 Entertainment</div>
-    <div class="category-tab" data-category="streaming">🎧 Streaming</div>
-    <div class="category-tab" data-category="educational">📚 Educational</div>
-    <div class="category-tab" data-category="editing">🎨 Editing</div>
-    <div class="category-tab" data-category="ai">🤖 AI</div>
-  </div>
+    <!-- Category Tabs -->
+    <div class="category-tabs" id="category-tabs">
+      <div class="category-tab active" data-category="all">All Categories</div>
+      <div class="category-tab" data-category="entertainment">🎬 Entertainment</div>
+      <div class="category-tab" data-category="streaming">🎧 Streaming</div>
+      <div class="category-tab" data-category="educational">📚 Educational</div>
+      <div class="category-tab" data-category="editing">🎨 Editing</div>
+      <div class="category-tab" data-category="ai">🤖 AI</div>
+    </div>
 
-  <section id="products-section" style="margin-top:1.5rem">
     <div id="categories-container">
       <div class="note">Loading products...</div>
     </div>
   </section>
 
-  <!-- Other sections -->
-  <section id="accounts-content" class="card" style="display:none">
-    <div class="note">Please login to view your account.</div>
-  </section>
-
-  <section id="reports-content" class="card" style="display:none">
-    <h3>Report an Issue</h3>
-    <div id="report-gate" class="note">Please login to report an issue.</div>
-    <div id="report-form" style="display:none">
-      <div class="row"><label>Order (optional)</label><input id="rep-order"></div>
-      <div class="row"><label>Product</label><input id="rep-product"></div>
-      <div class="row"><label>Issue</label><textarea id="rep-issue" rows="3"></textarea></div>
-      <div class="row"><label>Attach image</label><input id="rep-img" type="file" accept="image/*"></div>
-      <button class="btn btn-primary" id="rep-submit">Submit Report</button>
+  <!-- My Account Section -->
+  <section id="accounts-content" class="content-section card">
+    <div id="account-content">
+      <div class="note">Please login to view your account.</div>
     </div>
   </section>
 
-  <section id="payments-content" class="card" style="display:none">
+  <!-- Report Issue Section -->
+  <section id="reports-content" class="content-section card">
+    <h3>Report an Issue</h3>
+    <div id="report-gate">
+      <div class="note">Please login to report an issue.</div>
+    </div>
+    <div id="report-form" style="display:none">
+      <div class="row">
+        <label>Order ID (optional)</label>
+        <input id="rep-order" placeholder="Order ID if applicable">
+      </div>
+      <div class="row">
+        <label>Product</label>
+        <input id="rep-product" placeholder="Product name">
+      </div>
+      <div class="row">
+        <label>Issue Description</label>
+        <textarea id="rep-issue" rows="3" placeholder="Describe the issue you're experiencing"></textarea>
+      </div>
+      <div class="row">
+        <label>Attach screenshot (optional)</label>
+        <input id="rep-img" type="file" accept="image/*">
+      </div>
+      <button class="btn btn-primary" id="rep-submit">Submit Report</button>
+    </div>
+    <div id="my-reports" style="margin-top:1.5rem"></div>
+  </section>
+
+  <!-- Payments Section -->
+  <section id="payments-content" class="content-section card">
     <h3>Payment Methods</h3>
-    <p>GCash: <b>0962 554 4105</b></p>
-    <p>Maya: <b>0929 984 3629</b></p>
+    <div class="row">
+      <p><strong>GCash:</strong> 0962 554 4105</p>
+      <p><strong>Maya:</strong> 0929 984 3629</p>
+    </div>
+    <div class="note">
+      <p>Send payment to the numbers above and include your order ID in the reference/message.</p>
+    </div>
   </section>
 
-  <section id="rules-content" class="card" style="display:none">
+  <!-- Rules Section -->
+  <section id="rules-content" class="content-section card">
     <h3>Store Rules</h3>
-    <div id="rules-wrap" class="note">Loading rules...</div>
+    <div class="search-wrap">
+      <span>🔍</span>
+      <input id="rules-search" placeholder="Search rules…">
+    </div>
+    <div id="rules-wrap">
+      <div class="note">Loading rules...</div>
+    </div>
   </section>
 
-  <section id="feedback-content" class="card" style="display:none">
+  <!-- Feedback Section -->
+  <section id="feedback-content" class="content-section card">
     <h3>Customer Feedback</h3>
-    <div id="fb-list" class="note">Loading feedback...</div>
+    <div id="fb-gate">
+      <div class="note">Please login to leave feedback.</div>
+    </div>
+    <div id="fb-form" style="display:none">
+      <div class="row">
+        <label>Your Feedback</label>
+        <textarea id="fb-text" rows="3" placeholder="Share your experience..."></textarea>
+      </div>
+      <div class="row">
+        <label>Attach image (optional)</label>
+        <input id="fb-img" type="file" accept="image/*">
+      </div>
+      <button class="btn btn-primary" id="fb-submit">Submit Feedback</button>
+    </div>
+    <div id="fb-list" style="margin-top:1.5rem">
+      <div class="note">Loading feedback...</div>
+    </div>
   </section>
 
-  <section id="about-content" class="card" style="display:none">
-    <p>Aiaxcart Premium — Your trusted source for premium digital accounts.</p>
+  <!-- About Section -->
+  <section id="about-content" class="content-section card">
+    <h3>About Aiaxcart Premium</h3>
+    <p>Your trusted source for premium digital accounts and subscriptions.</p>
+    <div class="note">
+      <p>We provide authentic and reliable premium accounts for various streaming, productivity, and entertainment platforms.</p>
+    </div>
   </section>
 </main>
 
@@ -150,29 +213,51 @@
 <div id="coOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
   <div style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <h3 id="coTitle">Checkout</h3>
-    <form id="coForm" onsubmit="return false;">
+    <form id="coForm">
       <input type="hidden" name="product_id"/>
       <input type="hidden" name="product_name"/>
-      <div style="margin-bottom:1rem"><label>Buyer Name</label><input required name="buyer_name" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Email</label><input required type="email" name="buyer_email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Account Type</label>
-        <select name="account_type" required style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px">
+      <div class="row">
+        <label>Buyer Name</label>
+        <input required name="buyer_name" placeholder="Your full name">
+      </div>
+      <div class="row">
+        <label>Email</label>
+        <input required type="email" name="buyer_email" placeholder="your@email.com">
+      </div>
+      <div class="row">
+        <label>Account Type</label>
+        <select name="account_type" required>
+          <option value="">Select account type</option>
           <option>Solo Profile</option>
           <option>Shared Profile</option>
           <option>Solo Account</option>
           <option>Shared Account</option>
-          <option>invite</option>
-          <option>famhead</option>
+          <option>Invite</option>
+          <option>Family Head</option>
         </select>
       </div>
-      <div style="margin-bottom:1rem"><label>Duration</label>
-        <select name="duration_key" required style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px">
-          <option>7d</option><option>14d</option><option>1m</option><option>2m</option>
-          <option>3m</option><option>4m</option><option>6m</option><option>8m</option>
-          <option>10m</option><option>12m</option>
+      <div class="row" id="inviteGmailRow" style="display:none">
+        <label>Gmail for Invite</label>
+        <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
+        <div class="note">Required when Account Type is "Invite"</div>
+      </div>
+      <div class="row">
+        <label>Duration</label>
+        <select name="duration_key" required>
+          <option value="">Select duration</option>
+          <option>7d</option>
+          <option>14d</option>
+          <option>1m</option>
+          <option>2m</option>
+          <option>3m</option>
+          <option>6m</option>
+          <option>12m</option>
         </select>
       </div>
-      <div style="margin-bottom:1rem"><label>Price (₱)</label><input type="number" step="0.01" required name="price" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
+      <div class="row">
+        <label>Price (₱)</label>
+        <input type="number" step="0.01" required name="price" placeholder="0.00">
+      </div>
       <div style="display:flex;gap:.6rem;margin-top:.9rem">
         <button type="button" class="btn" onclick="closeCheckout()">Cancel</button>
         <button id="coSubmit" type="submit" class="btn btn-primary">Place Order</button>
@@ -186,23 +271,41 @@
 <div id="authOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
   <div style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
-      <button id="tabLogin" class="btn">Login</button>
-      <button id="tabSignup" class="btn btn-primary">Sign up</button>
+      <button id="tabLogin" class="btn btn-primary">Login</button>
+      <button id="tabSignup" class="btn">Sign up</button>
       <button style="margin-left:auto" class="btn" onclick="closeAuth()">×</button>
     </div>
     <div id="formLogin">
-      <div style="margin-bottom:1rem"><label>Email</label><input id="liEmail" type="email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Password</label><input id="liPass" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <button class="btn btn-primary" id="btnLoginGo">Login</button>
+      <div class="row">
+        <label>Email</label>
+        <input id="liEmail" type="email" placeholder="your@email.com">
+      </div>
+      <div class="row">
+        <label>Password</label>
+        <input id="liPass" type="password" placeholder="Your password">
+      </div>
+      <button class="btn btn-primary" id="btnLoginGo" style="width:100%">Login</button>
     </div>
     <div id="formSignup" style="display:none">
-      <div style="margin-bottom:1rem"><label>Full name</label><input id="suName" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Email</label><input id="suEmail" type="email" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Password</label><input id="suPass" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <div style="margin-bottom:1rem"><label>Confirm</label><input id="suPass2" type="password" style="width:100%;padding:.5rem;border:1px solid #F9E6E4;border-radius:8px"></div>
-      <button class="btn btn-primary" id="btnSignupGo">Create account</button>
+      <div class="row">
+        <label>Full name</label>
+        <input id="suName" placeholder="Your full name">
+      </div>
+      <div class="row">
+        <label>Email</label>
+        <input id="suEmail" type="email" placeholder="your@email.com">
+      </div>
+      <div class="row">
+        <label>Password</label>
+        <input id="suPass" type="password" placeholder="Create password">
+      </div>
+      <div class="row">
+        <label>Confirm Password</label>
+        <input id="suPass2" type="password" placeholder="Confirm password">
+      </div>
+      <button class="btn btn-primary" id="btnSignupGo" style="width:100%">Create Account</button>
     </div>
-    <div id="authMsg" class="note" style="margin-top:.5rem"></div>
+    <div id="authMsg" class="note" style="margin-top:.5rem;text-align:center"></div>
   </div>
 </div>
 
@@ -221,9 +324,9 @@ window.CONFIG_PUBLIC = {
 
 <script>
 const SB = createDbClient();
-const $ = (id)=>document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
-// Simple demo catalog for testing
+// Demo catalog for testing
 window.AIAX_CATALOG = [
   {
     id: 'netflix-premium',
@@ -263,156 +366,271 @@ window.AIAX_CATALOG = [
     pricing: {
       'Team Account': {'1m': 199, '3m': 549}
     }
+  },
+  {
+    id: 'disney-plus',
+    name: 'Disney+',
+    category: 'entertainment',
+    icon: '🏰',
+    pricing: {
+      'Solo Account': {'1m': 129, '3m': 349}
+    }
+  },
+  {
+    id: 'chatgpt-plus',
+    name: 'ChatGPT Plus',
+    category: 'ai',
+    icon: '🤖',
+    pricing: {
+      'Individual': {'1m': 299, '3m': 799}
+    }
   }
 ];
 
-/* ===== toast ===== */
+/* ===== Toast ===== */
 function toast(msg, type='ok'){
-  const box=$('toast');
-  const el=document.createElement('div');
-  el.className=`toast ${type}`;
-  el.textContent=msg;
+  const box = $('#toast');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
   box.appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1800);
+  setTimeout(() => { 
+    el.style.opacity = '0'; 
+    setTimeout(() => el.remove(), 300); 
+  }, 3000);
 }
 
-/* ===== auth local ===== */
+/* ===== Auth System ===== */
 let currentUser = getSavedUser();
+
 function getSavedUser(){
-  const s=localStorage.getItem('aiaxcart_current_user');
-  return s?JSON.parse(s):null;
+  const s = localStorage.getItem('aiaxcart_current_user');
+  return s ? JSON.parse(s) : null;
 }
+
 function saveUser(u){
-  currentUser=u;
-  if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u));
-  else localStorage.removeItem('aiaxcart_current_user');
+  currentUser = u;
+  if(u) {
+    localStorage.setItem('aiaxcart_current_user', JSON.stringify(u));
+  } else {
+    localStorage.removeItem('aiaxcart_current_user');
+  }
+  refreshAuthUI();
+  refreshContentSections();
 }
-function openAuth(){ $('authOverlay').style.display='flex'; }
-function closeAuth(){ $('authOverlay').style.display='none'; $('authMsg').textContent=''; }
+
+function openAuth(){ 
+  $('#authOverlay').style.display = 'flex'; 
+}
+
+function closeAuth(){ 
+  $('#authOverlay').style.display = 'none'; 
+  $('#authMsg').textContent = ''; 
+}
 
 function refreshAuthUI(){
-  const ab=$('auth-buttons');
-  const ui=$('user-info');
+  const ab = $('#auth-buttons');
+  const ui = $('#user-info');
   if(currentUser){
-    ab.style.display='none';
-    ui.style.display='flex';
-    $('user-name').textContent=currentUser.name;
-    $('user-avatar').textContent=currentUser.name.charAt(0).toUpperCase();
-  }else{
-    ab.style.display='block';
-    ui.style.display='none';
-  }
-}
-$('login-btn').onclick=openAuth;
-$('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); toast('Logged out','ok'); };
-
-/* tabs */
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
-    $('products-section').style.display='block';
-    tab.classList.add('active');
-    const key=tab.dataset.tab;
-    if(key!=='products'){
-      $('products-section').style.display='none';
-      $(key+'-content').style.display='block';
-      if(key==='rules') loadRules();
-    }
-  });
-});
-
-/* auth flows */
-$('tabLogin').onclick=()=>{ $('formLogin').style.display='block'; $('formSignup').style.display='none'; };
-$('tabSignup').onclick=()=>{ $('formLogin').style.display='none'; $('formSignup').style.display='block'; };
-
-$('btnSignupGo').onclick=async()=>{
-  const n=$('suName').value.trim(),
-        e=$('suEmail').value.trim(),
-        p=$('suPass').value,
-        p2=$('suPass2').value;
-  if(!n||!e||!p||p!==p2){ $('authMsg').textContent='Check inputs.'; return; }
-  let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
-  if(arr.some(x=>x.email===e)){ $('authMsg').textContent='Email exists.'; return; }
-  const u={id:Date.now(),name:n,email:e,password:p,joinDate:new Date().toISOString()};
-  arr.push(u);
-  localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
-  await db_upsertBuyer(u);
-  saveUser(u);
-  refreshAuthUI();
-  closeAuth();
-  toast('Account created','ok');
-};
-$('btnLoginGo').onclick=async()=>{
-  const e=$('liEmail').value.trim(),
-        p=$('liPass').value;
-  const arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
-  const u=arr.find(x=>x.email===e && x.password===p);
-  if(!u){ $('authMsg').textContent='Invalid credentials.'; return; }
-  await db_upsertBuyer(u);
-  saveUser(u);
-  refreshAuthUI();
-  closeAuth();
-  toast('Welcome back','ok');
-};
-
-/* Category Tabs */
-document.querySelectorAll('.category-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    filterProductsByCategory(this.dataset.category);
-  });
-});
-
-function filterProductsByCategory(category) {
-  const products = document.querySelectorAll('.p-card');
-  const sections = document.querySelectorAll('.category-section');
-  
-  if (category === 'all') {
-    sections.forEach(section => section.style.display = 'block');
-    products.forEach(product => product.style.display = 'block');
+    ab.style.display = 'none';
+    ui.style.display = 'flex';
+    $('#user-name').textContent = currentUser.name;
+    $('#user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
   } else {
-    sections.forEach(section => {
-      section.style.display = section.dataset.category === category ? 'block' : 'none';
-    });
+    ab.style.display = 'block';
+    ui.style.display = 'none';
   }
 }
 
-/* Products */
-async function renderProducts(){
-  const container=$('categories-container');
+function refreshContentSections() {
+  // Update report section
+  if (currentUser) {
+    $('#report-gate').style.display = 'none';
+    $('#report-form').style.display = 'block';
+    loadUserReports();
+  } else {
+    $('#report-gate').style.display = 'block';
+    $('#report-form').style.display = 'none';
+    $('#my-reports').innerHTML = '';
+  }
+
+  // Update feedback section
+  if (currentUser) {
+    $('#fb-gate').style.display = 'none';
+    $('#fb-form').style.display = 'block';
+  } else {
+    $('#fb-gate').style.display = 'block';
+    $('#fb-form').style.display = 'none';
+  }
+
+  // Update account section
+  updateAccountTab();
+}
+
+// Auth event listeners
+$('login-btn').onclick = openAuth;
+$('logout-btn').onclick = () => { 
+  saveUser(null); 
+  toast('Logged out successfully', 'ok'); 
+};
+
+/* ===== Tab Navigation ===== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const targetTab = this.dataset.tab;
+    
+    // Update active tab
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    
+    // Show target section
+    document.querySelectorAll('.content-section').forEach(section => {
+      section.style.display = 'none';
+    });
+    $(targetTab + '-section' || targetTab + '-content').style.display = 'block';
+    
+    // Load section-specific content
+    if(targetTab === 'rules') loadRules();
+    if(targetTab === 'feedback') loadFeedback();
+    if(targetTab === 'accounts') updateAccountTab();
+    if(targetTab === 'reports' && currentUser) loadUserReports();
+  });
+});
+
+// Home navigation
+document.querySelectorAll('nav a[data-tab]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetTab = this.dataset.tab;
+    document.querySelectorAll('.tab').forEach(tab => {
+      if(tab.dataset.tab === targetTab) {
+        tab.click();
+      }
+    });
+  });
+});
+
+/* ===== Auth Modal ===== */
+$('tabLogin').onclick = () => { 
+  $('#formLogin').style.display = 'block'; 
+  $('#formSignup').style.display = 'none'; 
+  $('#tabLogin').classList.add('btn-primary');
+  $('#tabSignup').classList.remove('btn-primary');
+};
+
+$('tabSignup').onclick = () => { 
+  $('#formLogin').style.display = 'none'; 
+  $('#formSignup').style.display = 'block'; 
+  $('#tabSignup').classList.add('btn-primary');
+  $('#tabLogin').classList.remove('btn-primary');
+};
+
+$('btnSignupGo').onclick = async () => {
+  const name = $('#suName').value.trim();
+  const email = $('#suEmail').value.trim();
+  const pass = $('#suPass').value;
+  const pass2 = $('#suPass2').value;
+  
+  if(!name || !email || !pass) { 
+    $('#authMsg').textContent = 'Please fill all fields.'; 
+    return; 
+  }
+  if(pass !== pass2) { 
+    $('#authMsg').textContent = 'Passwords do not match.'; 
+    return; 
+  }
+  
+  let users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+  if(users.some(u => u.email === email)) { 
+    $('#authMsg').textContent = 'Email already exists.'; 
+    return; 
+  }
+  
+  const user = {
+    id: Date.now().toString(),
+    name: name,
+    email: email,
+    password: pass,
+    joinDate: new Date().toISOString()
+  };
+  
+  users.push(user);
+  localStorage.setItem('aiaxcart_users', JSON.stringify(users));
   
   try {
-    // Try to seed with demo catalog first
+    await db_upsertBuyer(user);
+    saveUser(user);
+    closeAuth();
+    toast('Account created successfully!', 'ok');
+  } catch(error) {
+    toast('Error creating account', 'err');
+  }
+};
+
+$('btnLoginGo').onclick = async () => {
+  const email = $('#liEmail').value.trim();
+  const pass = $('#liPass').value;
+  
+  if(!email || !pass) { 
+    $('#authMsg').textContent = 'Please enter email and password.'; 
+    return; 
+  }
+  
+  const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+  const user = users.find(u => u.email === email && u.password === pass);
+  
+  if(!user) { 
+    $('#authMsg').textContent = 'Invalid email or password.'; 
+    return; 
+  }
+  
+  try {
+    await db_upsertBuyer(user);
+    saveUser(user);
+    closeAuth();
+    toast('Welcome back!', 'ok');
+  } catch(error) {
+    toast('Error logging in', 'err');
+  }
+};
+
+/* ===== Products System ===== */
+async function renderProducts(){
+  const container = $('#categories-container');
+  container.innerHTML = '<div class="note">Loading products...</div>';
+
+  try {
+    // Try to seed with demo catalog
     try {
       await db_seedCatalogIfEmpty(window.AIAX_CATALOG);
     } catch(e) {
-      console.log('Seeding may have failed:', e);
+      console.log('Seeding may have completed');
     }
     
-    const rows = await db_listCatalogWithCounts();
+    const products = await db_listCatalogWithCounts();
     
-    if(!rows.length){
-      // Show demo products if no real products
+    if(!products.length){
       showDemoProducts();
       return;
     }
 
-    const byCat = {};
-    rows.forEach(p => {
-      const cat = p.category || 'others';
-      (byCat[cat] = byCat[cat] || []).push(p);
+    const byCategory = {};
+    products.forEach(product => {
+      const category = product.category || 'other';
+      if (!byCategory[category]) {
+        byCategory[category] = [];
+      }
+      byCategory[category].push(product);
     });
 
-    const catOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
+    const categoryOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
     let html = '';
     
-    catOrder.forEach(cat => {
-      const items = byCat[cat];
-      if(!items || !items.length) return;
+    categoryOrder.forEach(category => {
+      const categoryProducts = byCategory[category];
+      if(!categoryProducts || !categoryProducts.length) return;
       
-      const catNames = {
+      const categoryNames = {
         entertainment: '🎬 Entertainment',
         streaming: '🎧 Streaming & Music', 
         educational: '📚 Educational',
@@ -421,33 +639,32 @@ async function renderProducts(){
       };
       
       // Show only first 3 products
-      const displayItems = items.slice(0, 3);
-      const hasMore = items.length > 3;
+      const displayProducts = categoryProducts.slice(0, 3);
+      const hasMore = categoryProducts.length > 3;
       
       html += `
-        <div class="category-section" data-category="${cat}">
+        <div class="category-section" data-category="${category}">
           <div class="section-header">
-            <h2 class="section-title">${catNames[cat] || cat}</h2>
-            ${hasMore ? `<a href="#" class="view-all" onclick="showAllCategory('${cat}')">View All</a>` : ''}
+            <h2 class="section-title">${categoryNames[category] || category}</h2>
+            ${hasMore ? `<a href="#" class="view-all" onclick="showAllCategory('${category}')">View All</a>` : ''}
           </div>
           <div class="products-grid">
-            ${displayItems.map(p => {
-              const hasStock = (p.available || 0) > 0;
-              const prices = p.prices || [];
-              const priceDisplay = prices.length ? 
-                `From ₱${Math.min(...prices.map(x => x.price_php))}` : 
-                'Price not set';
+            ${displayProducts.map(product => {
+              const hasStock = (product.available || 0) > 0;
+              const prices = product.prices || [];
+              const minPrice = prices.length ? 
+                Math.min(...prices.map(p => p.price_php)) : 0;
                 
               return `
-                <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
-                  <div style="font-weight:700;font-size:1.05rem">${p.icon||'🛒'} ${p.name}</div>
+                <div class="p-card" data-name="${product.name.toLowerCase()}">
+                  <div style="font-weight:700;font-size:1.05rem">${product.icon || '🛒'} ${product.name}</div>
                   <div>${hasStock 
-                    ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
+                    ? `<span class="pill" style="background:#d4edda;color:#155724">${product.available} available</span>`
                     : `<span class="pill">Out of stock</span>`}</div>
-                  <div class="note">${priceDisplay}</div>
-                  <button class="btn btn-primary" ${hasStock?'':'disabled'}
-                    onclick="openCheckout('${p.id}','${p.name.replace(/'/g, "\\'")}')">
-                    ${hasStock?'Buy Now':'Unavailable'}
+                  <div class="note">From ₱${minPrice}</div>
+                  <button class="btn btn-primary" ${hasStock ? '' : 'disabled'}
+                    onclick="openCheckout('${product.id}', '${product.name.replace(/'/g, "\\'")}')">
+                    ${hasStock ? 'Buy Now' : 'Unavailable'}
                   </button>
                 </div>
               `;
@@ -459,8 +676,8 @@ async function renderProducts(){
 
     container.innerHTML = html || '<div class="note">No products available.</div>';
     
-  } catch(e) {
-    console.error('Error loading products:', e);
+  } catch(error) {
+    console.error('Error loading products:', error);
     showDemoProducts();
   }
 }
@@ -480,10 +697,10 @@ function showDemoProducts() {
           <button class="btn btn-primary" onclick="openCheckout('netflix','Netflix Premium')">Buy Now</button>
         </div>
         <div class="p-card">
-          <div style="font-weight:700;font-size:1.05rem">📺 Disney+</div>
-          <div><span class="pill">Out of stock</span></div>
+          <div style="font-weight:700;font-size:1.05rem">🏰 Disney+</div>
+          <div><span class="pill" style="background:#d4edda;color:#155724">3 available</span></div>
           <div class="note">From ₱129</div>
-          <button class="btn btn-primary" disabled>Unavailable</button>
+          <button class="btn btn-primary" onclick="openCheckout('disney','Disney+')">Buy Now</button>
         </div>
       </div>
     </div>
@@ -494,9 +711,15 @@ function showDemoProducts() {
       <div class="products-grid">
         <div class="p-card">
           <div style="font-weight:700;font-size:1.05rem">🎧 Spotify Premium</div>
-          <div><span class="pill" style="background:#d4edda;color:#155724">3 available</span></div>
+          <div><span class="pill" style="background:#d4edda;color:#155724">8 available</span></div>
           <div class="note">From ₱99</div>
           <button class="btn btn-primary" onclick="openCheckout('spotify','Spotify Premium')">Buy Now</button>
+        </div>
+        <div class="p-card">
+          <div style="font-weight:700;font-size:1.05rem">📺 YouTube Premium</div>
+          <div><span class="pill">Out of stock</span></div>
+          <div class="note">From ₱199</div>
+          <button class="btn btn-primary" disabled>Unavailable</button>
         </div>
       </div>
     </div>
@@ -504,76 +727,375 @@ function showDemoProducts() {
 }
 
 function showAllCategory(category) {
-  // For now, just show a message
-  toast(`Showing all ${category} products`, 'ok');
   filterProductsByCategory(category);
+  toast(`Showing all ${category} products`, 'ok');
 }
 
-function openCheckout(product_id, product_name){
-  const f=$('coForm');
-  f.product_id.value=product_id;
-  f.product_name.value=product_name;
-  $('coTitle').textContent='Checkout • '+product_name;
-  if(currentUser){
-    f.buyer_name.value=currentUser.name;
-    f.buyer_email.value=currentUser.email;
-  }
-  $('coOverlay').style.display='flex';
-}
-
-function closeCheckout(){ $('coOverlay').style.display='none'; }
-
-$('coForm').addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  const f=e.target;
-  const btn=$('coSubmit');
-  btn.disabled=true;
-  try{
-    const order=await db_createOrder({
-      buyer_name:f.buyer_name.value.trim(),
-      buyer_email:f.buyer_email.value.trim(),
-      product_id:f.product_id.value,
-      product_name:f.product_name.value,
-      account_type:f.account_type.value,
-      duration_key:f.duration_key.value,
-      price:parseFloat(f.price.value||0)
-    });
-    $('coMsg').textContent='✅ Order placed! ID: '+order.id;
-    toast('Order placed','ok');
-    setTimeout(()=>{ $('coMsg').textContent=''; closeCheckout(); },2000);
-  }catch(err){
-    alert('Checkout failed: '+err.message);
-  }finally{
-    btn.disabled=false;
-  }
-});
-
-/* rules */
-async function loadRules(){
-  try{
-    const rules=await db_fetchRules();
-    $('rules-wrap').innerHTML = rules.length ? 
-      rules.map(r=>`<div style="margin:.5rem 0">• ${r.text}</div>`).join('') :
-      '<div>No rules set yet.</div>';
-  }catch(_){
-    $('rules-wrap').innerHTML='<div>Failed to load rules.</div>';
-  }
-}
-
-/* search */
-$('product-search').addEventListener('input',(e)=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('.p-card').forEach(card=>{
-    const name=card.dataset.name||'';
-    card.style.display=name.includes(q)?'block':'none';
+/* ===== Category Filter ===== */
+document.querySelectorAll('.category-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    filterProductsByCategory(this.dataset.category);
   });
 });
 
-/* init */
-document.addEventListener('DOMContentLoaded',()=>{
+function filterProductsByCategory(category) {
+  const sections = document.querySelectorAll('.category-section');
+  
+  if (category === 'all') {
+    sections.forEach(section => section.style.display = 'block');
+  } else {
+    sections.forEach(section => {
+      section.style.display = section.dataset.category === category ? 'block' : 'none';
+    });
+  }
+}
+
+/* ===== Search ===== */
+$('product-search').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  const products = document.querySelectorAll('.p-card');
+  
+  products.forEach(product => {
+    const productName = product.dataset.name || '';
+    product.style.display = productName.includes(query) ? 'block' : 'none';
+  });
+});
+
+/* ===== Checkout System ===== */
+function openCheckout(productId, productName){
+  const form = $('#coForm');
+  form.product_id.value = productId;
+  form.product_name.value = productName;
+  $('#coTitle').textContent = `Checkout • ${productName}`;
+  
+  if(currentUser){
+    form.buyer_name.value = currentUser.name;
+    form.buyer_email.value = currentUser.email;
+  }
+  
+  $('#coOverlay').style.display = 'flex';
+}
+
+function closeCheckout(){ 
+  $('#coOverlay').style.display = 'none'; 
+  $('#coMsg').textContent = '';
+}
+
+// Show/hide invite email field
+$('coForm').account_type.addEventListener('change', function(e) {
+  $('#inviteGmailRow').style.display = 
+    e.target.value.toLowerCase() === 'invite' ? 'block' : 'none';
+});
+
+$('coForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = $('#coSubmit');
+  
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  
+  try {
+    if(form.account_type.value.toLowerCase() === 'invite'){
+      const gmail = (form.invite_gmail.value || '').trim();
+      if(!/^[^@]+@gmail\.com$/i.test(gmail)) {
+        throw new Error('Invite requires a valid Gmail address');
+      }
+    }
+    
+    const order = await db_createOrder({
+      buyer_name: form.buyer_name.value.trim(),
+      buyer_email: form.buyer_email.value.trim(),
+      product_id: form.product_id.value,
+      product_name: form.product_name.value,
+      account_type: form.account_type.value,
+      duration_key: form.duration_key.value,
+      price: parseFloat(form.price.value || 0),
+      invite_gmail: form.invite_gmail ? form.invite_gmail.value.trim() : null
+    });
+    
+    $('#coMsg').textContent = `✅ Order placed! Order ID: ${order.id}`;
+    toast('Order placed successfully!', 'ok');
+    
+    setTimeout(() => {
+      closeCheckout();
+      renderProducts(); // Refresh product availability
+      updateAccountTab(); // Refresh orders in account
+    }, 2000);
+    
+  } catch(error) {
+    $('#coMsg').textContent = `Error: ${error.message}`;
+    toast('Order failed: ' + error.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Place Order';
+  }
+});
+
+/* ===== Rules System ===== */
+async function loadRules(){
+  try {
+    const rules = await db_fetchRules();
+    const rulesWrap = $('#rules-wrap');
+    
+    if(!rules.length){
+      rulesWrap.innerHTML = `
+        <div class="note">
+          <h4>General Rules</h4>
+          <p>• All sales are final - no refunds after account delivery</p>
+          <p>• Accounts are for personal use only</p>
+          <p>• Keep your login credentials secure</p>
+          <p>• Report any issues within 24 hours</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const byProduct = {};
+    rules.forEach(rule => {
+      const product = rule.product || 'general';
+      if (!byProduct[product]) {
+        byProduct[product] = [];
+      }
+      byProduct[product].push(rule);
+    });
+    
+    let html = '';
+    if(byProduct.general){
+      html += `<div><h4>General Rules</h4>${byProduct.general.map(r => `<p>• ${r.text}</p>`).join('')}</div>`;
+    }
+    
+    Object.keys(byProduct).filter(k => k !== 'general').forEach(product => {
+      html += `<div style="margin-top:1rem"><h4>${product} Rules</h4>${byProduct[product].map(r => `<p>• ${r.text}</p>`).join('')}</div>`;
+    });
+    
+    rulesWrap.innerHTML = html;
+  } catch(error) {
+    $('#rules-wrap').innerHTML = '<div class="note">Error loading rules</div>';
+  }
+}
+
+// Rules search
+$('rules-search').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  const rules = $('#rules-wrap').querySelectorAll('p');
+  
+  rules.forEach(rule => {
+    rule.style.display = rule.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+  });
+});
+
+/* ===== Reports System ===== */
+$('rep-submit').addEventListener('click', async () => {
+  if(!currentUser) return;
+  
+  const orderId = $('#rep-order').value.trim();
+  const product = $('#rep-product').value.trim();
+  const issue = $('#rep-issue').value.trim();
+  const file = $('#rep-img').files[0];
+  
+  if(!issue){
+    toast('Please describe the issue', 'warn');
+    return;
+  }
+  
+  try {
+    await db_addBuyerReport({
+      order_id: orderId || null,
+      product: product || null,
+      issue: issue,
+      buyer: currentUser.name,
+      email: currentUser.email,
+      file: file
+    });
+    
+    // Clear form
+    $('#rep-order').value = '';
+    $('#rep-product').value = '';
+    $('#rep-issue').value = '';
+    $('#rep-img').value = '';
+    
+    loadUserReports();
+    toast('Report submitted successfully!', 'ok');
+  } catch(error) {
+    toast('Error submitting report: ' + error.message, 'err');
+  }
+});
+
+async function loadUserReports(){
+  if(!currentUser) return;
+  
+  try {
+    const reports = await db_fetchBuyerReports(currentUser.email);
+    const myReports = $('#my-reports');
+    
+    if(!reports.length){
+      myReports.innerHTML = '<div class="note">No reports submitted yet.</div>';
+      return;
+    }
+    
+    const html = await Promise.all(reports.map(async report => {
+      let imgHtml = '';
+      if(report.image_path){
+        try {
+          const url = await getPublicURL(report.image_path);
+          imgHtml = `<div style="margin-top:.5rem"><img src="${url}" style="max-width:200px;border-radius:8px"></div>`;
+        } catch(e) {}
+      }
+      
+      const statusColor = report.status === 'resolved' ? '#d4edda' : '#fff3cd';
+      const statusTextColor = report.status === 'resolved' ? '#155724' : '#856404';
+      
+      return `
+        <div class="card">
+          <div><strong>Report ID:</strong> ${report.id}</div>
+          <div><strong>Order:</strong> ${report.order_id || 'N/A'}</div>
+          <div><strong>Product:</strong> ${report.product || 'N/A'}</div>
+          <div><strong>Issue:</strong> ${report.issue}</div>
+          <div><strong>Status:</strong> <span class="pill" style="background:${statusColor};color:${statusTextColor}">${report.status || 'pending'}</span></div>
+          <div class="note">Submitted: ${new Date(report.created_at).toLocaleString()}</div>
+          ${imgHtml}
+        </div>
+      `;
+    }));
+    
+    myReports.innerHTML = html.join('');
+  } catch(error) {
+    $('#my-reports').innerHTML = '<div class="note">Error loading reports</div>';
+  }
+}
+
+/* ===== Feedback System ===== */
+$('fb-submit').addEventListener('click', async () => {
+  if(!currentUser) return;
+  
+  const text = $('#fb-text').value.trim();
+  const file = $('#fb-img').files[0];
+  
+  if(!text){
+    toast('Please enter your feedback', 'warn');
+    return;
+  }
+  
+  try {
+    await db_addFeedback({
+      user: currentUser.name,
+      text: text,
+      file: file
+    });
+    
+    // Clear form
+    $('#fb-text').value = '';
+    $('#fb-img').value = '';
+    
+    loadFeedback();
+    toast('Thank you for your feedback!', 'ok');
+  } catch(error) {
+    toast('Error submitting feedback: ' + error.message, 'err');
+  }
+});
+
+async function loadFeedback(){
+  try {
+    const feedback = await db_fetchFeedback();
+    const fbList = $('#fb-list');
+    
+    if(!feedback.length){
+      fbList.innerHTML = '<div class="note">No feedback yet. Be the first to share!</div>';
+      return;
+    }
+    
+    const html = await Promise.all(feedback.map(async item => {
+      let imgHtml = '';
+      if(item.image_path){
+        try {
+          const url = await getPublicURL(item.image_path);
+          imgHtml = `<div style="margin-top:.5rem"><img src="${url}" style="max-width:200px;border-radius:8px"></div>`;
+        } catch(e) {}
+      }
+      
+      const initial = (item.user || 'U')[0].toUpperCase();
+      
+      return `
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+            <div class="user-avatar" style="background:#FFD3D6">${initial}</div>
+            <div>
+              <strong>${item.user || 'User'}</strong>
+              <div class="note">${new Date(item.created_at).toLocaleString()}</div>
+            </div>
+          </div>
+          <div>${item.text}</div>
+          ${imgHtml}
+        </div>
+      `;
+    }));
+    
+    fbList.innerHTML = html.join('');
+  } catch(error) {
+    $('#fb-list').innerHTML = '<div class="note">Error loading feedback</div>';
+  }
+}
+
+/* ===== Account System ===== */
+async function updateAccountTab(){
+  const accountContent = $('#account-content');
+  
+  if(!currentUser){
+    accountContent.innerHTML = '<div class="note">Please login to view your account information and orders.</div>';
+    return;
+  }
+  
+  try {
+    const orders = await db_listOrdersByEmail(currentUser.email);
+    const pendingOrders = orders.filter(o => o.status === 'pending');
+    const confirmedOrders = orders.filter(o => o.status === 'confirmed');
+    
+    accountContent.innerHTML = `
+      <h3>My Account</h3>
+      <div class="card">
+        <h4>Profile Information</h4>
+        <p><strong>Name:</strong> ${currentUser.name}</p>
+        <p><strong>Email:</strong> ${currentUser.email}</p>
+        <p><strong>Member since:</strong> ${new Date(currentUser.joinDate).toLocaleDateString()}</p>
+      </div>
+      
+      <div class="card">
+        <h4>Pending Orders (${pendingOrders.length})</h4>
+        ${pendingOrders.length ? pendingOrders.map(order => `
+          <div style="padding:.5rem 0;border-bottom:1px solid #f0f0f0">
+            <div><strong>${order.product_name}</strong> • ${order.account_type} • ${order.duration_key}</div>
+            <div class="note">Order ID: ${order.id} • ₱${order.price_php || 0}</div>
+            <div class="note">Placed: ${new Date(order.created_at).toLocaleString()}</div>
+          </div>
+        `).join('') : '<div class="note">No pending orders</div>'}
+      </div>
+      
+      <div class="card">
+        <h4>Confirmed Orders (${confirmedOrders.length})</h4>
+        ${confirmedOrders.length ? confirmedOrders.map(order => `
+          <div style="padding:.5rem 0;border-bottom:1px solid #f0f0f0">
+            <div><strong>${order.product_name}</strong> • ${order.account_type} • ${order.duration_key}</div>
+            <div class="note">Order ID: ${order.id} • ₱${order.price_php || 0}</div>
+            <div class="note">Confirmed: ${new Date(order.confirmed_at).toLocaleString()}</div>
+          </div>
+        `).join('') : '<div class="note">No confirmed orders</div>'}
+      </div>
+    `;
+  } catch(error) {
+    accountContent.innerHTML = '<div class="note">Error loading account information</div>';
+  }
+}
+
+/* ===== Initialize ===== */
+document.addEventListener('DOMContentLoaded', async () => {
   refreshAuthUI();
-  renderProducts();
-  loadRules();
+  refreshContentSections();
+  await renderProducts();
+  await loadRules();
+  await loadFeedback();
 });
 </script>
 </body>
