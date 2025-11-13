@@ -1,47 +1,61 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium Shop</title>
 <style>
- body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Verdana,sans-serif;margin:0}
- header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
- .container{max-width:1200px;margin:0 auto;padding:0 20px}
- .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
- nav ul{display:flex;gap:1rem;margin:0;padding:0;list-style:none}
- nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
- nav a.active,nav a:hover{background:#FFC6CA}
- .user-info{display:none;align-items:center;gap:.7rem}
- .user-avatar{width:36px;height:36px;border-radius:50%;background:#FFC6CA;display:grid;place-items:center;font-weight:700}
- .tabs{display:flex;gap:.4rem;background:#fff;border-radius:0 0 12px 12px;padding:.5rem;box-shadow:0 4px 15px rgba(0,0,0,.08);border-top:1px solid #F9E6E4;overflow-x:auto}
- .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
- .tab.active{background:#FFD3D6}
- .products-grid{display:flex;flex-direction:column;gap:1rem;margin:1.2rem 0}
- .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
- .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
- .btn-primary{background:#FFB0B5;color:#fff}.btn-primary:disabled{background:#ddd;color:#777}
- .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
- .search-wrap{margin:1rem 0;position:relative}.search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
- .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
- .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
- footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
- /* toasts */
- #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
- .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
- .toast.ok{background:#28a745}.toast.warn{background:#ff9800}.toast.err{background:#e74c3c}
+  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Verdana,sans-serif;margin:0}
+  header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+  nav ul{display:flex;gap:1rem;margin:0;padding:0;list-style:none}
+  nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
+  nav a.active,nav a:hover{background:#FFC6CA}
+  .user-info{display:none;align-items:center;gap:.7rem}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:#FFC6CA;display:grid;place-items:center;font-weight:700}
+  .tabs{display:flex;gap:.4rem;background:#fff;border-radius:0 0 12px 12px;padding:.5rem;box-shadow:0 4px 15px rgba(0,0,0,.08);border-top:1px solid #F9E6E4;overflow-x:auto}
+  .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
+  .tab.active{background:#FFD3D6}
+  .products-grid{display:flex;flex-direction:column;gap:1rem;margin:1.2rem 0}
+  .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
+  .btn-primary{background:#FFB0B5;color:#fff}
+  .btn-primary:disabled{background:#ddd;color:#777}
+  .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
+  .search-wrap{margin:1rem 0;position:relative}
+  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
+  .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
+  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
+  footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
+  #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
+  .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
+  .toast.ok{background:#28a745}
+  .toast.warn{background:#ff9800}
+  .toast.err{background:#e74c3c}
+  .note{font-size:.85rem;color:#555}
 </style>
 <link rel="stylesheet" href="assets/css/extras.css"/>
-</head><body>
+</head>
+<body>
 <div id="toast"></div>
+
 <header>
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium</div>
-    <nav><ul>
-      <li><a class="active" href="index.html">Home</a></li>
-      <li><a id="admin-btn" href="admin.html">Admin</a></li>
-    </ul></nav>
-    <div id="auth-buttons"><button class="btn" id="login-btn">Login / Sign up</button></div>
-    <div id="user-info" class="user-info">
-      <div id="user-avatar" class="user-avatar"></div><span id="user-name"></span>
-      <button class="btn" id="logout-btn">Logout</button>
+    <nav>
+      <ul>
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a id="adminBtn" href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div id="authButtons">
+      <button class="btn" id="loginBtn">Login / Sign up</button>
+    </div>
+    <div id="userInfo" class="user-info">
+      <div id="userAvatar" class="user-avatar"></div>
+      <span id="userName"></span>
+      <button class="btn" id="logoutBtn">Logout</button>
     </div>
   </div>
   <div class="container tabs">
@@ -56,82 +70,101 @@
 </header>
 
 <main class="container">
-  <div class="search-wrap"><span>🔍</span><input id="product-search" placeholder="Search products…"/></div>
+  <div class="search-wrap">
+    <span>🔍</span>
+    <input id="productSearch" placeholder="Search products…"/>
+  </div>
 
-  <section id="products-section" style="margin-top:1.5rem">
+  <section id="productsSection" style="margin-top:1.5rem">
     <h2>Products</h2>
-    <div id="products-wrap" class="products-grid"></div>
+    <div id="productsWrap" class="products-grid"></div>
   </section>
 
-  <section id="accounts-content" class="card" style="display:none"></section>
+  <section id="accountsContent" class="card" style="display:none"></section>
 
-  <section id="reports-content" class="card" style="display:none">
+  <section id="reportsContent" class="card" style="display:none">
     <h3>Report an Issue</h3>
-    <div id="report-gate" class="note">Please login to report an issue.</div>
-    <div id="report-form" style="display:none">
-      <div class="row"><label>Order (optional)</label><input id="rep-order"></div>
-      <div class="row"><label>Product</label><input id="rep-product"></div>
-      <div class="row"><label>Issue</label><textarea id="rep-issue" rows="3"></textarea></div>
-      <div class="row"><label>Attach image</label><input id="rep-img" type="file" accept="image/*"></div>
-      <button class="btn btn-primary" id="rep-submit">Submit Report</button>
+    <div id="reportGate" class="note">Please login to report an issue.</div>
+    <div id="reportForm" style="display:none">
+      <div class="row"><label>Order (optional)</label><input id="repOrder"></div>
+      <div class="row"><label>Product</label><input id="repProduct"></div>
+      <div class="row"><label>Issue</label><textarea id="repIssue" rows="3"></textarea></div>
+      <div class="row"><label>Attach image</label><input id="repImg" type="file" accept="image/*"></div>
+      <button class="btn btn-primary" id="repSubmit">Submit Report</button>
     </div>
-    <div id="my-reports" style="margin-top:1rem"></div>
+    <div id="myReports" style="margin-top:1rem"></div>
   </section>
 
-  <section id="payments-content" class="card" style="display:none">
+  <section id="paymentsContent" class="card" style="display:none">
     <h3>Payment Methods</h3>
-    <p>GCash: <b>0962 554 4105</b></p><p>Maya: <b>0929 984 3629</b></p>
+    <p>GCash: <b>0962 554 4105</b></p>
+    <p>Maya: <b>0929 984 3629</b></p>
   </section>
 
-  <section id="rules-content" class="card" style="display:none">
+  <section id="rulesContent" class="card" style="display:none">
     <h3>Store Rules</h3>
-    <div class="row"><input id="rules-search" placeholder="Search rules…"></div>
-    <div id="rules-wrap"></div>
-  </section>
-
-  <section id="feedback-content" class="card" style="display:none">
-    <h3>Customer Feedback</h3>
-    <div id="fb-gate" class="note">Please login to leave feedback.</div>
-    <div id="fb-form" style="display:none">
-      <div class="row"><label>Your feedback</label><textarea id="fb-text" rows="3"></textarea></div>
-      <div class="row"><label>Attach image (optional)</label><input id="fb-img" type="file" accept="image/*"></div>
-      <button class="btn btn-primary" id="fb-submit">Submit</button>
+    <div class="row">
+      <input id="rulesSearch" placeholder="Search rules…">
     </div>
-    <div id="fb-list" style="margin-top:1rem"></div>
+    <div id="rulesWrap"></div>
   </section>
 
-  <section id="about-content" class="card" style="display:none">
+  <section id="feedbackContent" class="card" style="display:none">
+    <h3>Customer Feedback</h3>
+    <div id="fbGate" class="note">Please login to leave feedback.</div>
+    <div id="fbForm" style="display:none">
+      <div class="row"><label>Your feedback</label><textarea id="fbText" rows="3"></textarea></div>
+      <div class="row"><label>Attach image (optional)</label><input id="fbImg" type="file" accept="image/*"></div>
+      <button class="btn btn-primary" id="fbSubmit">Submit</button>
+    </div>
+    <div id="fbList" style="margin-top:1rem"></div>
+  </section>
+
+  <section id="aboutContent" class="card" style="display:none">
     <p>Aiaxcart Premium — Your trusted source for premium digital accounts.</p>
   </section>
 </main>
 
-<footer><div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div></footer>
+<footer>
+  <div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div>
+</footer>
 
 <!-- Checkout Modal -->
 <div id="coOverlay" class="overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
   <div class="modal" style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <h3 id="coTitle">Checkout</h3>
     <form id="coForm" onsubmit="return false;">
-      <input type="hidden" name="product_id"/><input type="hidden" name="product_name"/>
+      <input type="hidden" name="product_id"/>
+      <input type="hidden" name="product_name"/>
       <div class="row"><label>Buyer Name</label><input required name="buyer_name"></div>
       <div class="row"><label>Email</label><input required type="email" name="buyer_email"></div>
-      <div class="row"><label>Account Type</label>
-        <select name="account_type" required id="co_accType">
-          <option>Solo Profile</option><option>Shared Profile</option>
-          <option>Solo Account</option><option>Shared Account</option>
-          <option>invite</option><option>famhead</option>
-        </select></div>
-      <div class="row" id="inviteGmailRow" style="display:none"><label>Gmail for Invite</label>
+      <div class="row">
+        <label>Account Type</label>
+        <select name="account_type" required id="coAccType">
+          <option>Solo Profile</option>
+          <option>Shared Profile</option>
+          <option>Solo Account</option>
+          <option>Shared Account</option>
+          <option>invite</option>
+          <option>famhead</option>
+        </select>
+      </div>
+      <div class="row" id="inviteGmailRow" style="display:none">
+        <label>Gmail for Invite</label>
         <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
-        <small class="note">Required when Account Type is “invite”.</small></div>
-      <div class="row"><label>Duration</label>
+        <small class="note">Required when Account Type is “invite”.</small>
+      </div>
+      <div class="row">
+        <label>Duration</label>
         <select name="duration_key" required>
           <option>7d</option><option>14d</option><option>1m</option><option>2m</option>
           <option>3m</option><option>4m</option><option>6m</option><option>8m</option>
-          <option>10m</option><option>12m</option></select></div>
+          <option>10m</option><option>12m</option>
+        </select>
+      </div>
       <div class="row"><label>Price (₱)</label><input type="number" step="0.01" required name="price"></div>
       <div style="display:flex;gap:.6rem;margin-top:.9rem">
-        <button type="button" class="btn" onclick="closeCheckout()">Cancel</button>
+        <button type="button" class="btn" id="coCancel">Cancel</button>
         <button id="coSubmit" type="submit" class="btn btn-primary">Place Order</button>
       </div>
     </form>
@@ -145,7 +178,7 @@
     <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
       <button id="tabLogin" class="btn">Login</button>
       <button id="tabSignup" class="btn btn-primary">Sign up</button>
-      <button style="margin-left:auto" class="btn" onclick="closeAuth()">×</button>
+      <button style="margin-left:auto" class="btn" id="authCloseBtn">×</button>
     </div>
     <div id="formLogin">
       <div class="row"><label>Email</label><input id="liEmail" type="email"></div>
@@ -163,212 +196,295 @@
   </div>
 </div>
 
-<!-- CONFIG (real keys) -->
+<!-- CONFIG -->
 <script>
-window.CONFIG_PUBLIC = {
+window.CONFIG_PUBLIC={
   DATABASE:{
     SUPABASE_URL:"https://oujvsjnbxmgpdoftzpxl.supabase.co",
     SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo"
   },
-  ADMIN:{ OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36" }
+  ADMIN:{OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36"}
 };
 </script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="assets/js/aiaxcart/supabase.js?v=6"></script>
 <script>
-/* ===== toast ===== */
-function toast(msg, type='ok'){
+function toast(msg,type='ok'){
   const box=document.getElementById('toast');
-  const el=document.createElement('div'); el.className=`toast ${type}`; el.textContent=msg;
-  box.appendChild(el); setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1800);
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.textContent=msg;
+  box.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1800);
 }
 
-/* ===== auth local (plus record buyer to DB) ===== */
 const SB = createDbClient();
+
+/* ===== auth local + buyer table ===== */
 let currentUser = getSavedUser();
-function getSavedUser(){ const s=localStorage.getItem('aiaxcart_current_user'); return s?JSON.parse(s):null; }
-function saveUser(u){ currentUser=u; if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u)); else localStorage.removeItem('aiaxcart_current_user'); }
+
+function getSavedUser(){
+  const s=localStorage.getItem('aiaxcart_current_user');
+  return s?JSON.parse(s):null;
+}
+function saveUser(u){
+  currentUser=u;
+  if(u) localStorage.setItem('aiaxcart_current_user',JSON.stringify(u));
+  else localStorage.removeItem('aiaxcart_current_user');
+}
+
+/* DOM refs */
+const loginBtn=document.getElementById('loginBtn');
+const logoutBtn=document.getElementById('logoutBtn');
+const authButtons=document.getElementById('authButtons');
+const userInfo=document.getElementById('userInfo');
+const userAvatar=document.getElementById('userAvatar');
+const userName=document.getElementById('userName');
+
+const authOverlay=document.getElementById('authOverlay');
+const authMsg=document.getElementById('authMsg');
+const tabLogin=document.getElementById('tabLogin');
+const tabSignup=document.getElementById('tabSignup');
+const formLogin=document.getElementById('formLogin');
+const formSignup=document.getElementById('formSignup');
+const authCloseBtn=document.getElementById('authCloseBtn');
+
+const liEmail=document.getElementById('liEmail');
+const liPass=document.getElementById('liPass');
+const suName=document.getElementById('suName');
+const suEmail=document.getElementById('suEmail');
+const suPass=document.getElementById('suPass');
+const suPass2=document.getElementById('suPass2');
+const btnSignupGo=document.getElementById('btnSignupGo');
+const btnLoginGo=document.getElementById('btnLoginGo');
+
+const productSearch=document.getElementById('productSearch');
+const productsWrap=document.getElementById('productsWrap');
+const productsSection=document.getElementById('productsSection');
+
+const accountsContent=document.getElementById('accountsContent');
+const reportsContent=document.getElementById('reportsContent');
+const paymentsContent=document.getElementById('paymentsContent');
+const rulesContent=document.getElementById('rulesContent');
+const feedbackContent=document.getElementById('feedbackContent');
+const aboutContent=document.getElementById('aboutContent');
+
+const coOverlay=document.getElementById('coOverlay');
+const coForm=document.getElementById('coForm');
+const coTitle=document.getElementById('coTitle');
+const coAccType=document.getElementById('coAccType');
+const inviteGmailRow=document.getElementById('inviteGmailRow');
+const coMsg=document.getElementById('coMsg');
+const coSubmit=document.getElementById('coSubmit');
+const coCancel=document.getElementById('coCancel');
+
+const reportGate=document.getElementById('reportGate');
+const reportForm=document.getElementById('reportForm');
+const repOrder=document.getElementById('repOrder');
+const repProduct=document.getElementById('repProduct');
+const repIssue=document.getElementById('repIssue');
+const repImg=document.getElementById('repImg');
+const repSubmit=document.getElementById('repSubmit');
+const myReports=document.getElementById('myReports');
+
+const rulesSearch=document.getElementById('rulesSearch');
+const rulesWrap=document.getElementById('rulesWrap');
+
+const fbGate=document.getElementById('fbGate');
+const fbForm=document.getElementById('fbForm');
+const fbText=document.getElementById('fbText');
+const fbImg=document.getElementById('fbImg');
+const fbSubmit=document.getElementById('fbSubmit');
+const fbList=document.getElementById('fbList');
+
+/* Auth modal helpers */
 function openAuth(){ authOverlay.style.display='flex'; }
 function closeAuth(){ authOverlay.style.display='none'; authMsg.textContent=''; }
+
+loginBtn.onclick=openAuth;
+authCloseBtn.onclick=closeAuth;
+
+logoutBtn.onclick=()=>{
+  saveUser(null);
+  refreshAuthUI();
+  toast('Logged out','ok');
+};
+
 function refreshAuthUI(){
-  const ab=document.getElementById('auth-buttons'); const ui=document.getElementById('user-info');
-  if(currentUser){ ab.style.display='none'; ui.style.display='flex';
-    user-name.textContent=currentUser.name; user-avatar.textContent=currentUser.name.charAt(0).toUpperCase();
-  }else{ ab.style.display='block'; ui.style.display='none'; }
+  if(currentUser){
+    authButtons.style.display='none';
+    userInfo.style.display='flex';
+    userName.textContent=currentUser.name;
+    userAvatar.textContent=currentUser.name.charAt(0).toUpperCase();
+  }else{
+    authButtons.style.display='block';
+    userInfo.style.display='none';
+  }
+  gateReportUI();
+  gateFeedbackUI();
 }
-document.getElementById('login-btn').onclick=openAuth;
-document.getElementById('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); toast('Logged out','ok'); };
 
-/* tabs */
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
-    document.getElementById('products-section').style.display='block';
-    tab.classList.add('active');
-    const key=tab.dataset.tab;
-    if(key!=='products'){
-      document.getElementById('products-section').style.display='none';
-      document.getElementById(`${key}-content`).style.display='block';
-      if(key==='reports') loadUserReports();
-      if(key==='feedback') loadFeedback();
-      if(key==='rules') loadRules();
-      if(key==='accounts') updateAccountTab();
-    }
-  });
-});
+tabLogin.onclick=()=>{
+  formLogin.style.display='block';
+  formSignup.style.display='none';
+};
+tabSignup.onclick=()=>{
+  formLogin.style.display='none';
+  formSignup.style.display='block';
+};
 
-/* auth flows */
-tabLogin.onclick=()=>{ formLogin.style.display='block'; formSignup.style.display='none'; };
-tabSignup.onclick=()=>{ formLogin.style.display='none'; formSignup.style.display='block'; };
-
+/* signup / login */
 btnSignupGo.onclick=async()=>{
-  const n=suName.value.trim(), e=suEmail.value.trim(), p=suPass.value, p2=suPass2.value;
+  const n=suName.value.trim();
+  const e=suEmail.value.trim();
+  const p=suPass.value;
+  const p2=suPass2.value;
   if(!n||!e||!p||p!==p2){ authMsg.textContent='Check inputs.'; return; }
   let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
   if(arr.some(x=>x.email===e)){ authMsg.textContent='Email exists.'; return; }
   const u={id:Date.now(),name:n,email:e,password:p,joinDate:new Date().toISOString()};
-  arr.push(u); localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
-  await db_upsertBuyer(u); saveUser(u); refreshAuthUI(); closeAuth(); toast('Account created','ok');
+  arr.push(u);
+  localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
+  await db_upsertBuyer(u);
+  saveUser(u);
+  refreshAuthUI();
+  closeAuth();
+  toast('Account created','ok');
 };
+
 btnLoginGo.onclick=async()=>{
-  const e=liEmail.value.trim(), p=liPass.value;
+  const e=liEmail.value.trim();
+  const p=liPass.value;
   const arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
   const u=arr.find(x=>x.email===e && x.password===p);
   if(!u){ authMsg.textContent='Invalid credentials.'; return; }
-  await db_upsertBuyer(u); saveUser(u); refreshAuthUI(); closeAuth(); toast('Welcome back','ok');
+  await db_upsertBuyer(u);
+  saveUser(u);
+  refreshAuthUI();
+  closeAuth();
+  toast('Welcome back','ok');
 };
 
-/* search */
-product-search.addEventListener('input', (e)=>{
+/* Tabs behaviour */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+
+    // hide all sections
+    [productsSection,accountsContent,reportsContent,paymentsContent,rulesContent,feedbackContent,aboutContent]
+      .forEach(sec=>sec.style.display='none');
+
+    const key=tab.dataset.tab;
+    if(key==='products'){
+      productsSection.style.display='block';
+    }else if(key==='accounts'){
+      accountsContent.style.display='block';
+      if(currentUser) updateAccountTab();
+    }else if(key==='reports'){
+      reportsContent.style.display='block';
+      if(currentUser) loadUserReports();
+    }else if(key==='payments'){
+      paymentsContent.style.display='block';
+    }else if(key==='rules'){
+      rulesContent.style.display='block';
+      loadRules();
+    }else if(key==='feedback'){
+      feedbackContent.style.display='block';
+      loadFeedback();
+    }else if(key==='about'){
+      aboutContent.style.display='block';
+    }
+  });
+});
+
+/* Search on products */
+productSearch.addEventListener('input',(e)=>{
   const q=e.target.value.toLowerCase();
-  document.querySelectorAll('#products-wrap .p-card').forEach(card=>{
+  document.querySelectorAll('#productsWrap .p-card').forEach(card=>{
     card.style.display = (card.dataset.name||'').includes(q) ? '' : 'none';
   });
 });
 
-/* products */
+/* Products rendering */
 async function renderProducts(){
-  const wrap=document.getElementById('products-wrap'); wrap.textContent='Loading…';
-  if(window.AIAX_CATALOG){ try{ await db_seedCatalogIfEmpty(window.AIAX_CATALOG); }catch(_){ } }
+  productsWrap.textContent='Loading…';
+  if(window.AIAX_CATALOG){
+    try{ await db_seedCatalogIfEmpty(window.AIAX_CATALOG); }catch(_){}
+  }
   try{
     const rows=await db_listCatalogWithCounts();
-    wrap.innerHTML = rows.map(p=>{
+    productsWrap.innerHTML = rows.map(p=>{
       const hasStock=(p.available||0)>0;
-      const pricesByType={}; (p.prices||[]).forEach(x=>{
-        (pricesByType[x.account_type]=pricesByType[x.account_type]||[]).push(`${x.duration_key}: ₱${x.price_php}`);
+      const pricesByType={};
+      (p.prices||[]).forEach(x=>{
+        (pricesByType[x.account_type]=pricesByType[x.account_type]||[])
+          .push(`${x.duration_key}: ₱${x.price_php}`);
       });
-      const pricesHtml = Object.entries(pricesByType).map(([t,arr])=>`<div class="note"><b>${t}</b> — ${arr.join(' · ')}</div>`).join('');
-      return `<div class="p-card" data-name="${(p.name||'').toLowerCase()}">
+      const pricesHtml = Object.entries(pricesByType).map(([t,arr])=>`
+        <div class="note"><b>${t}</b> — ${arr.join(' · ')}</div>`).join('');
+      return `
+      <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
         <div style="font-weight:700">${p.icon||'🛒'} ${p.name}</div>
         <div class="note">${p.category}</div>
-        <div>${hasStock?`<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`:`<span class="pill">Out of stock</span>`}</div>
+        <div style="margin:.4rem 0">
+          ${hasStock
+            ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
+            : `<span class="pill">Out of stock</span>`}
+          ${p.archived?` <span class="pill">${p.archived} archived</span>`:''}
+        </div>
         ${pricesHtml}
-        <button class="btn btn-primary" ${hasStock?'':'disabled'} onclick="openCheckout('${p.id}','${p.name}')">${hasStock?'Buy':'Unavailable'}</button>
+        <button class="btn btn-primary" ${hasStock?'':'disabled'} onclick="openCheckout('${p.id}','${p.name}')">
+          ${hasStock?'Buy':'Unavailable'}
+        </button>
       </div>`;
     }).join('') || '<div class="note">No products yet.</div>';
-  }catch(e){ wrap.innerHTML='<div class="note">Failed to load products.</div>'; }
+  }catch(e){
+    console.error(e);
+    productsWrap.innerHTML='<div class="note">Failed to load products.</div>';
+  }
 }
-function openCheckout(product_id, product_name){
-  const f=coForm; f.product_id.value=product_id; f.product_name.value=product_name;
+
+function openCheckout(product_id,product_name){
+  const f=coForm;
+  f.product_id.value=product_id;
+  f.product_name.value=product_name;
   coTitle.textContent='Checkout • '+product_name;
-  if(currentUser){ f.buyer_name.value=currentUser.name; f.buyer_email.value=currentUser.email; }
-  inviteGmailRow.style.display = (co_accType.value.toLowerCase()==='invite')?'block':'none';
+  if(currentUser){
+    f.buyer_name.value=currentUser.name;
+    f.buyer_email.value=currentUser.email;
+  }else{
+    f.buyer_name.value='';
+    f.buyer_email.value='';
+  }
+  inviteGmailRow.style.display = (coAccType.value.toLowerCase()==='invite')?'block':'none';
+  coMsg.textContent='';
   coOverlay.style.display='flex';
 }
 function closeCheckout(){ coOverlay.style.display='none'; }
-co_accType.onchange=(e)=>{ inviteGmailRow.style.display=(e.target.value.toLowerCase()==='invite')?'block':'none'; };
+coCancel.onclick=closeCheckout;
+
+coAccType.onchange=(e)=>{
+  inviteGmailRow.style.display = (e.target.value.toLowerCase()==='invite')?'block':'none';
+};
+
 coForm.addEventListener('submit',async(e)=>{
-  e.preventDefault(); const f=e.target; const btn=coSubmit; btn.disabled=true;
+  e.preventDefault();
+  const f=e.target;
+  coSubmit.disabled=true;
   try{
     if(f.account_type.value.toLowerCase()==='invite'){
-      const gm=(f.invite_gmail.value||'').trim(); if(!/^[^@]+@gmail\.com$/i.test(gm)) throw new Error('Invite requires a valid Gmail.');
+      const gm=(f.invite_gmail.value||'').trim();
+      if(!/^[^@]+@gmail\.com$/i.test(gm)) throw new Error('Invite requires a valid Gmail.');
     }
     const order=await db_createOrder({
-      buyer_name:f.buyer_name.value.trim(), buyer_email:f.buyer_email.value.trim(),
-      product_id:f.product_id.value, product_name:f.product_name.value,
-      account_type:f.account_type.value, duration_key:f.duration_key.value,
-      price:parseFloat(f.price.value||0), invite_gmail:f.invite_gmail?f.invite_gmail.value.trim():null
+      buyer_name:f.buyer_name.value.trim(),
+      buyer_email:f.buyer_email.value.trim(),
+      product_id:f.product_id.value,
+      product_name:f.product_name.value,
+      account_type:f.account_type.value,
+      duration_key:f.duration_key.value,
+      price:parseFloat(f.price.value||0),
+      invite_gmail:f.invite_gmail?f.invite_gmail.value.trim():null
     });
-    coMsg.textContent='✅ Order placed! ID: '+order.id; toast('Order placed','ok');
-    setTimeout(()=>{ coMsg.textContent=''; closeCheckout(); },1000);
-    renderProducts(); if(currentUser) updateAccountTab();
-  }catch(err){ alert('Checkout failed: '+err.message); } finally{ btn.disabled=false; }
-});
-
-/* rules */
-async function loadRules(){
-  const wrap=document.getElementById('rules-wrap'); wrap.textContent='Loading…';
-  try{
-    const rules=await db_fetchRules(); const byProd={}; rules.forEach(r=>{ const k=r.product||'general'; (byProd[k]=byProd[k]||[]).push(r); });
-    let html=''; if(byProd['general']) html+=`<div class="card"><h4>General Rules & Regulations</h4>${byProd['general'].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`;
-    Object.keys(byProd).filter(k=>'general'!==k).forEach(k=>{ html+=`<div class="card"><h4>${k} Rules</h4>${byProd[k].map(r=>`<div class="note">• ${r.text}</div>`).join('')}</div>`; });
-    wrap.innerHTML=html||'<div class="note">No rules yet.</div>';
-  }catch(_){ wrap.innerHTML='<div class="note">Failed to load rules.</div>'; }
-}
-rules-search.addEventListener('input',(e)=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('#rules-wrap .note').forEach(n=>{ n.style.display = n.textContent.toLowerCase().includes(q)?'':'none'; });
-});
-
-/* reports */
-function gateReportUI(){ const on=!!currentUser; report-gate.style.display=on?'none':'block'; report-form.style.display=on?'block':'none'; }
-rep-submit.onclick=async()=>{
-  if(!currentUser) return;
-  const orderId=rep-order.value.trim(), product=rep-product.value.trim(), issue=rep-issue.value.trim();
-  const file = rep-img.files?.[0];
-  if(!issue){ alert('Please describe the issue.'); return; }
-  await db_addBuyerReport({ order_id:orderId||null, product:product||null, issue, buyer:currentUser.name, email:currentUser.email, file });
-  rep-order.value=''; rep-product.value=''; rep-issue.value=''; rep-img.value='';
-  loadUserReports(); toast('Report submitted','ok');
-};
-async function loadUserReports(){
-  if(!currentUser){ my-reports.innerHTML=''; return; }
-  const list=await db_fetchBuyerReports(currentUser.email);
-  my-reports.innerHTML = (list&&list.length)? await Promise.all(list.map(async r=>{
-    let img=''; if(r.image_path){ const url=await getPublicURL(r.image_path); img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:220px;border-radius:8px"></div>`; }
-    return `<div class="card"><div><b>Report ID:</b> ${r.id}</div><div><b>Order ID:</b> ${r.order_id||'N/A'}</div><div><b>Product:</b> ${r.product||'N/A'}</div><div><b>Issue:</b> ${r.issue}</div><div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status||'pending'}</span></div><div class="note">${new Date(r.created_at).toLocaleString()}</div>${img}</div>`;
-  })).then(a=>a.join('')) : '<div class="note">No reports yet.</div>';
-}
-
-/* feedback */
-function gateFeedbackUI(){ const on=!!currentUser; fb-gate.style.display=on?'none':'block'; fb-form.style.display=on?'block':'none'; }
-fb-submit.onclick=async()=>{
-  const txt=fb-text.value.trim(); const file=fb-img.files?.[0];
-  if(!currentUser){ alert('Please login.'); return; }
-  if(!txt){ alert('Write some feedback.'); return; }
-  await db_addFeedback({ user:currentUser.name, text:txt, file }); fb-text.value=''; fb-img.value=''; loadFeedback(); toast('Thanks for the feedback!','ok');
-};
-async function loadFeedback(){
-  const list=await db_fetchFeedback();
-  fb-list.innerHTML = (list&&list.length)? await Promise.all(list.map(async f=>{
-    let img=''; if(f.image_path){ const url=await getPublicURL(f.image_path); img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:220px;border-radius:8px"></div>`; }
-    return `<div class="card"><div style="display:flex;align-items:center;gap:.6rem"><div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${(f.user||'?')[0]?.toUpperCase?.()||'U'}</div><div><b>${f.user||'User'}</b><div class="note">${new Date(f.created_at||Date.now()).toLocaleString()}</div></div></div><div style="margin-top:.6rem">${f.text||''}</div>${img}</div>`;
-  })).then(a=>a.join('')) : '<div class="note">No feedback yet.</div>';
-}
-
-/* My Account */
-async function updateAccountTab(){
-  const box=document.getElementById('accounts-content');
-  if(!currentUser){ box.innerHTML=''; return; }
-  const orders=await db_listOrdersByEmail(currentUser.email);
-  const pend=orders.filter(o=>o.status==='pending');
-  const conf=orders.filter(o=>o.status==='confirmed');
-  const row = arr=>arr.map(o=>`<div class="card"><div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div><div class="note">Order ID: ${o.id}</div><div class="note">Placed: ${new Date(o.created_at).toLocaleString()}</div></div>`).join('');
-  box.innerHTML = `
-    <h2>My Account</h2>
-    <div class="card"><h3>Profile Information</h3>
-      <p><strong>Name:</strong> ${currentUser.name}</p>
-      <p><strong>Email:</strong> ${currentUser.email}</p>
-      <p><strong>Member since:</strong> ${new Date(currentUser.joinDate||Date.now()).toLocaleDateString()}</p></div>
-    <div class="card"><h3>Pending Orders</h3>${row(pend)||'<div class="note">None.</div>'}</div>
-    <div class="card"><h3>Confirmed Orders</h3>${row(conf)||'<div class="note">None.</div>'}</div>`;
-}
-
-/* boot */
-document.addEventListener('DOMContentLoaded', async ()=>{
-  refreshAuthUI(); gateReportUI(); gateFeedbackUI();
-  await renderProducts(); await loadRules(); await loadFeedback();
-});
-</script>
-</body></html>
+    coMsg.textContent='✅ Order placed! ID: '+o
