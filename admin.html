@@ -1,48 +1,82 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium | Admin</title>
 <link rel="stylesheet" href="assets/css/extras.css"/>
 <style>
- body{background:#fefaf7;color:#382f2c;font-family:'Segoe UI',Tahoma,Verdana,sans-serif}
- header{background:#FFD3D6;box-shadow:0 6px 22px rgba(0,0,0,.08)}
- .container{max-width:1100px;margin:0 auto;padding:0 20px}
- .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
- nav a{color:#382f2c;text-decoration:none;padding:.5rem 1rem;border-radius:10px}
- nav a.active,nav a:hover{background:#FFC6CA}
- .tabs{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
- .tab{padding:.6rem 1rem;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer}
- .tab.active{background:#FFD3D6}
- .panel{display:none}.panel.active{display:block}
- .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
- .stat{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;text-align:center}
- .stat h3{color:#FFB0B5;margin:.3rem 0}
- .card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;margin:1rem 0}
- .row{margin:.5rem 0}.row label{display:block;margin:.25rem 0}
- .row input,.row select,.row textarea{width:100%;padding:.6rem;border:1px solid #E8E8E8;border-radius:8px}
- .btn{padding:.55rem 1rem;border:none;border-radius:9px;cursor:pointer}
- .btn-p{background:#FFB0B5;color:#fff}.btn-w{background:#FFA726;color:#fff}.btn-s{background:#66BB6A;color:#fff}.btn-d{background:#FF6B6B;color:#fff}
- .grid{display:flex;flex-direction:column;gap:.7rem}
- #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
- .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
- .toast.ok{background:#28a745}.toast.warn{background:#ff9800}.toast.err{background:#e74c3c}
+  body{background:#fefaf7;color:#382f2c;font-family:'Segoe UI',Tahoma,Verdana,sans-serif}
+  header{background:#FFD3D6;box-shadow:0 6px 22px rgba(0,0,0,.08)}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+  nav a{color:#382f2c;text-decoration:none;padding:.5rem 1rem;border-radius:10px}
+  nav a.active,nav a:hover{background:#FFC6CA}
+  .tabs{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+  .tab{padding:.6rem 1rem;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer}
+  .tab.active{background:#FFD3D6}
+  .panel{display:none}
+  .panel.active{display:block}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  .stat{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;text-align:center}
+  .stat h3{color:#FFB0B5;margin:.3rem 0}
+  .card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:1.2rem;margin:1rem 0}
+  .row{margin:.5rem 0}
+  .row label{display:block;margin:.25rem 0}
+  .row input,.row select,.row textarea{width:100%;padding:.6rem;border:1px solid #E8E8E8;border-radius:8px}
+  .btn{padding:.55rem 1rem;border:none;border-radius:9px;cursor:pointer}
+  .btn-p{background:#FFB0B5;color:#fff}
+  .btn-w{background:#FFA726;color:#fff}
+  .btn-s{background:#66BB6A;color:#fff}
+  .btn-d{background:#FF6B6B;color:#fff}
+  .grid{display:flex;flex-direction:column;gap:.7rem}
+  #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
+  .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
+  .toast.ok{background:#28a745}
+  .toast.warn{background:#ff9800}
+  .toast.err{background:#e74c3c}
+  .note{font-size:.85rem;color:#555}
 </style>
-</head><body>
+</head>
+<body>
 <div id="toast"></div>
 
 <!-- SESSION GUARD -->
 <script>
 const OWNER_UID="2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36",SESSION_MIN=60,SESSION_VER="2025-11-12";
 function clearSession(){['ad-ok','ad-ok-ts','ad-owner-uid','ad-session-ver'].forEach(k=>localStorage.removeItem(k));}
-function setSession(uid){localStorage.setItem('ad-ok','1');localStorage.setItem('ad-ok-ts',Date.now());localStorage.setItem('ad-owner-uid',uid);localStorage.setItem('ad-session-ver',SESSION_VER);}
-function isVerified(){const ok=localStorage.getItem('ad-ok')==='1';const ts=parseInt(localStorage.getItem('ad-ok-ts')||'0',10);const fresh=(Date.now()-ts)<(SESSION_MIN*60*1000);const uidOk=localStorage.getItem('ad-owner-uid')===OWNER_UID;const verOk=localStorage.getItem('ad-session-ver')===SESSION_VER;return ok&&fresh&&uidOk&&verOk;}
+function setSession(uid){
+  localStorage.setItem('ad-ok','1');
+  localStorage.setItem('ad-ok-ts',Date.now());
+  localStorage.setItem('ad-owner-uid',uid);
+  localStorage.setItem('ad-session-ver',SESSION_VER);
+}
+function isVerified(){
+  const ok=localStorage.getItem('ad-ok')==='1';
+  const ts=parseInt(localStorage.getItem('ad-ok-ts')||'0',10);
+  const fresh=(Date.now()-ts)<(SESSION_MIN*60*1000);
+  const uidOk=localStorage.getItem('ad-owner-uid')===OWNER_UID;
+  const verOk=localStorage.getItem('ad-session-ver')===SESSION_VER;
+  return ok&&fresh&&uidOk&&verOk;
+}
 (function(){try{ if(!isVerified()) clearSession(); else localStorage.setItem('ad-ok-ts',Date.now()); }catch(e){clearSession();}})();
-function toast(msg,type='ok'){ const box=document.getElementById('toast'); const el=document.createElement('div'); el.className=`toast ${type}`; el.textContent=msg; box.appendChild(el); setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1800); }
+function toast(msg,type='ok'){
+  const box=document.getElementById('toast');
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.textContent=msg;
+  box.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1800);
+}
 </script>
 
 <header>
   <div class="container header-content">
     <div class="logo">🛒 Aiaxcart Premium</div>
-    <nav><a href="index.html">Home</a><a class="active" href="admin.html">Admin</a></nav>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="active" href="admin.html">Admin</a>
+    </nav>
   </div>
 </header>
 
@@ -56,10 +90,469 @@ function toast(msg,type='ok'){ const box=document.getElementById('toast'); const
   </div>
 </div>
 
-<div class="container" id="admin-dashboard" style="display:none">
+<div class="container" id="adminDashboard" style="display:none">
   <h1 style="margin:1rem 0">Admin Console</h1>
   <div class="stats">
-    <div class="stat"><div>Total Products</div><h3 id="stat-products">0</h3></div>
+    <div class="stat">
+      <div>Total Products</div>
+      <h3 id="statProducts">0</h3>
+    </div>
+    <div class="stat">
+      <div>Available Stock</div>
+      <h3 id="statStock">0</h3>
+    </div>
+    <div class="stat">
+      <div>Pending Orders</div>
+      <h3 id="statPending">0</h3>
+    </div>
+    <div class="stat">
+      <div>Total Revenue</div>
+      <h3 id="statRevenue">₱0</h3>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="add">Add Stock</div>
+    <div class="tab" data-tab="manage">Manage Stocks</div>
+    <div class="tab" data-tab="pending">Pending Orders</div>
+    <div class="tab" data-tab="sold">Sold Accounts</div>
+    <div class="tab" data-tab="arch">Archived Stocks</div>
+    <div class="tab" data-tab="products">Products</div>
+    <div class="tab" data-tab="rules">Store Rules</div>
+    <div class="tab" data-tab="records">Records</div>
+    <div class="tab" data-tab="reports">Reports</div>
+  </div>
+
+  <!-- Add Stock -->
+  <div id="p-add" class="panel active">
+    <div class="card">
+      <h3>Add Stock</h3>
+      <form id="formAddStock">
+        <div class="row">
+          <label>Product</label>
+          <select id="asProduct"></select>
+        </div>
+        <div class="row">
+          <label>Account Type</label>
+          <select id="asType"></select>
+        </div>
+        <div class="row">
+          <label>Duration</label>
+          <select id="asDur"></select>
+        </div>
+        <div class="row">
+          <label>Quantity</label>
+          <input id="asQty" type="number" min="1" value="1">
+        </div>
+        <div class="row"><label>Email</label><input id="asEmail"></div>
+        <div class="row"><label>Password</label><input id="asPass"></div>
+        <div class="row"><label>Profile</label><input id="asProf"></div>
+        <div class="row"><label>PIN</label><input id="asPin"></div>
+        <div class="row">
+          <label>Auto-Archive (Days)</label>
+          <input id="asDrop" type="number" min="0" value="0">
+        </div>
+        <div class="row">
+          <label>Premium At (date, optional)</label>
+          <input id="asPremAt" type="date">
+        </div>
+        <div class="row">
+          <button class="btn btn-p" type="submit">Add Stock</button>
+        </div>
+      </form>
+      <div id="msgAdd" style="color:#0a0;margin-top:.6rem"></div>
+    </div>
+  </div>
+
+  <!-- Manage -->
+  <div id="p-manage" class="panel">
+    <div class="card">
+      <h3>Manage Stocks</h3>
+      <div id="manageList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Pending -->
+  <div id="p-pending" class="panel">
+    <div class="card">
+      <h3>Pending Orders</h3>
+      <div id="pendingList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Sold -->
+  <div id="p-sold" class="panel">
+    <div class="card">
+      <h3>Sold Accounts</h3>
+      <div id="soldList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Archived -->
+  <div id="p-arch" class="panel">
+    <div class="card">
+      <h3>Archived</h3>
+      <div id="archList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div id="p-products" class="panel">
+    <div class="card">
+      <h3>Add Product</h3>
+      <form id="formProd">
+        <div class="row">
+          <label>Product Name</label>
+          <input id="prName" placeholder="Enter product name">
+        </div>
+        <div class="row">
+          <label>Category</label>
+          <select id="prCat">
+            <option value="entertainment">entertainment</option>
+            <option value="streaming">streaming</option>
+            <option value="educational">educational</option>
+            <option value="editing">editing</option>
+            <option value="ai">ai</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>Icon</label>
+          <input id="prIcon" placeholder="e.g. 📺">
+        </div>
+        <button class="btn btn-p" type="submit">Add Product</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Products</h3>
+      <div class="row">
+        <label>Filter by Category</label>
+        <select id="prodFilter">
+          <option value="">All Categories</option>
+          <option>entertainment</option>
+          <option>streaming</option>
+          <option>educational</option>
+          <option>editing</option>
+          <option>ai</option>
+        </select>
+      </div>
+      <div id="prodList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div id="p-rules" class="panel">
+    <div class="card">
+      <h3>Add Rule</h3>
+      <form id="formRule">
+        <div class="row">
+          <label>Product</label>
+          <select id="ruProd">
+            <option value="general">general</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>Rule Text</label>
+          <textarea id="ruText" rows="3"></textarea>
+        </div>
+        <button class="btn btn-p" type="submit">Add Rule</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Rules</h3>
+      <div id="rulesList" class="grid"></div>
+    </div>
+  </div>
+
+  <!-- Records -->
+  <div id="p-records" class="panel">
+    <div class="card">
+      <h3>Records (summary)</h3>
+      <div id="recInfo">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div id="p-reports" class="panel">
+    <div class="card">
+      <h3>Buyer Reports</h3>
+      <div id="brList" class="grid"></div>
+    </div>
+    <div class="card">
+      <h3>Sales Report</h3>
+      <div id="salesInfo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<script>
+window.CONFIG_PUBLIC={
+  DATABASE:{
+    SUPABASE_URL:"https://oujvsjnbxmgpdoftzpxl.supabase.co",
+    SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91anZzam5ieG1ncGRvZnR6cHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzE1NTYsImV4cCI6MjA3ODQ0NzU1Nn0.vs06C-2kx4H2whyTReUPsVgLYhWotfkzetxdKD5LVQo"
+  },
+  ADMIN:{OWNER_UID:"2ece6eb8-ed7d-4e52-b1b8-f9220fb87e36"}
+};
+window.CONFIG=window.CONFIG_PUBLIC;
+</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="assets/js/aiaxcart/supabase.js?v=6"></script>
+<script>
+const SB = createDbClient();
+
+/* owner verify */
+async function verifyOwnerUID(){
+  const input=document.getElementById('ownerUidInput');
+  const msg=document.getElementById('ownerVeriMsg');
+  const uid=(input.value||'').trim();
+  if(!uid){ msg.textContent='Enter UID.'; return; }
+  function ok(){
+    setSession(uid);
+    msg.style.color='#2a7';
+    msg.textContent='Verified. Entering…';
+    document.getElementById('ownerVeriOverlay').style.display='none';
+    showAdmin();
+  }
+  try{
+    const yes=await db_isUidAdmin(uid);
+    if(yes||uid===window.CONFIG.ADMIN.OWNER_UID){ ok(); }
+    else { msg.textContent='Invalid UID.'; clearSession(); }
+  }catch(e){
+    if(uid===window.CONFIG.ADMIN.OWNER_UID){ ok(); }
+    else { msg.textContent='Verification failed.'; }
+  }
+}
+
+(function(){
+  const overlay=document.getElementById('ownerVeriOverlay');
+  if(!isVerified()) overlay.style.display='flex';
+  else showAdmin();
+})();
+
+/* tabs */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('p-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+/* admin boot */
+function showAdmin(){
+  document.getElementById('adminDashboard').style.display='block';
+  bootAdmin();
+}
+
+async function bootAdmin(){
+  try{ await db_autodropStale(); }catch(_){}
+  const accTypes=["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
+  const durs=["7d","14d","1m","2m","3m","4m","5m","6m","8m","10m","12m","24m","NW","3m W","6m W","12m W"];
+  fillSelect('asType',accTypes);
+  fillSelect('asDur',durs);
+
+  const formAdd=document.getElementById('formAddStock');
+  const asProduct=document.getElementById('asProduct');
+  const asType=document.getElementById('asType');
+  const asDur=document.getElementById('asDur');
+  const asQty=document.getElementById('asQty');
+  const asEmail=document.getElementById('asEmail');
+  const asPass=document.getElementById('asPass');
+  const asProf=document.getElementById('asProf');
+  const asPin=document.getElementById('asPin');
+  const asDrop=document.getElementById('asDrop');
+  const asPremAt=document.getElementById('asPremAt');
+
+  formAdd.onsubmit=async(e)=>{
+    e.preventDefault();
+    const payload={
+      product_id:asProduct.value,
+      account_type:asType.value,
+      duration_key:asDur.value,
+      email:asEmail.value,
+      password:asPass.value,
+      profile:asProf.value,
+      pin:asPin.value,
+      quantity:Number(asQty.value||1),
+      auto_drop_days:Number(asDrop.value||0),
+      premium_until:asPremAt.value?new Date(asPremAt.value).toISOString():null
+    };
+    await db_addStock(payload);
+    toast('Stock added','ok');
+    asEmail.value=asPass.value=asProf.value=asPin.value='';
+    asQty.value=1; asDrop.value=0; asPremAt.value='';
+    await refreshAll();
+  };
+
+  const formProd=document.getElementById('formProd');
+  formProd.onsubmit=async(e)=>{
+    e.preventDefault();
+    const name=document.getElementById('prName').value.trim();
+    const cat=document.getElementById('prCat').value;
+    const icon=document.getElementById('prIcon').value;
+    if(!name){ toast('Enter product name','warn'); return; }
+    await db_addProduct({ name, category:cat, icon, is_active:true });
+    document.getElementById('prName').value='';
+    document.getElementById('prIcon').value='';
+    toast('Product added','ok');
+    await refreshAll();
+  };
+
+  const formRule=document.getElementById('formRule');
+  formRule.onsubmit=async(e)=>{
+    e.preventDefault();
+    const prod=document.getElementById('ruProd').value;
+    const text=document.getElementById('ruText').value.trim();
+    if(!text){ toast('Enter rule','warn'); return; }
+    await db_addRule({ product:prod, text });
+    document.getElementById('ruText').value='';
+    toast('Rule added','ok');
+    await refreshAll();
+  };
+
+  db_subscribeStockAndOrders(refreshAll);
+  document.getElementById('prodFilter').onchange=refreshAll;
+  await refreshAll();
+}
+
+function fillSelect(id,arr){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML=arr.map(x=>`<option>${x}</option>`).join('');
+}
+
+/* renders */
+async function refreshAll(){
+  const statProducts=document.getElementById('statProducts');
+  const statStock=document.getElementById('statStock');
+  const statPending=document.getElementById('statPending');
+  const statRevenue=document.getElementById('statRevenue');
+
+  const stats=await db_adminStats();
+  statProducts.innerText=stats.products;
+  statStock.innerText=stats.available;
+  statPending.innerText=stats.pending;
+  statRevenue.innerText='₱'+stats.revenue;
+
+  const products=await db_listProducts();
+  const asProduct=document.getElementById('asProduct');
+  const ruProd=document.getElementById('ruProd');
+  asProduct.innerHTML=products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  ruProd.innerHTML='<option value="general">general</option>'+products.map(p=>`<option>${p.name}</option>`).join('');
+
+  const filter=document.getElementById('prodFilter').value||'';
+  const list=filter?products.filter(p=>p.category===filter):products;
+  const prodList=document.getElementById('prodList');
+  prodList.innerHTML = list.map(p=>`
+    <div class="card">
+      <div><b>${p.icon||'🛒'} ${p.name}</b></div>
+      <div>Category: ${p.category||'—'}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-w" onclick="promptEditProduct('${p.id}')">Edit</button>
+        <button class="btn btn-d" onclick="db_deleteProduct('${p.id}').then(()=>{toast('Deleted','warn');refreshAll();})">Delete</button>
+      </div>
+    </div>`).join('') || '<div class="note">No products.</div>';
+
+  const stocks=await db_listAvailableStocks();
+  const manageList=document.getElementById('manageList');
+  manageList.innerHTML = stocks.length? stocks.map(s=>`
+    <div class="card">
+      <div><b>${s.product_name}</b> • ${s.account_type} • ${s.duration_key}</div>
+      <div class="note">Email: ${s.email||'N/A'} | Profile: ${s.profile||'N/A'}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-s" onclick="db_markSold('${s.id}',0).then(()=>{toast('Marked sold','ok');refreshAll();})">Mark Sold</button>
+        <button class="btn btn-w" onclick="db_archiveStock('${s.id}',new Date().toISOString()).then(()=>{toast('Archived','warn');refreshAll();})">Archive</button>
+        <button class="btn btn-d" onclick="db_deleteStock('${s.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
+      </div>
+    </div>`).join('') : '<div class="note">No available stocks.</div>';
+
+  const pend=await db_listPendingOrders();
+  const pendingList=document.getElementById('pendingList');
+  pendingList.innerHTML = pend.length? pend.map(o=>`
+    <div class="card">
+      <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
+      <div class="note">Buyer: ${o.buyer_name} (${o.buyer_email}) | ID: ${o.id}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-s" onclick="db_confirmOrder('${o.id}').then(()=>{toast('Confirmed','ok');refreshAll();})">Confirm</button>
+        <button class="btn btn-d" onclick="db_cancelOrder('${o.id}').then(()=>{toast('Canceled','err');refreshAll();})">Cancel</button>
+      </div>
+    </div>`).join('') : '<div class="note">No pending orders.</div>';
+
+  const sold=await db_listSold();
+  const soldList=document.getElementById('soldList');
+  soldList.innerHTML = sold.length? sold.map(x=>`
+    <div class="card">
+      <div><b>${x.product_name}</b> • ₱${x.price_php||0}</div>
+      <div class="note">Sold: ${x.sold_at?new Date(x.sold_at).toLocaleString():'N/A'}</div>
+    </div>`).join('') : '<div class="note">No sold records yet.</div>';
+
+  const arch=await db_listArchived();
+  const archList=document.getElementById('archList');
+  archList.innerHTML = arch.length? arch.map(a=>`
+    <div class="card">
+      <div><b>${a.product_name}</b> • ${a.account_type} • ${a.duration_key}</div>
+      <div class="note">Archived: ${a.archived_at?new Date(a.archived_at).toLocaleString():'N/A'}</div>
+    </div>`).join('') : '<div class="note">No archived stocks.</div>';
+
+  const rules=await db_listRules();
+  const rulesList=document.getElementById('rulesList');
+  rulesList.innerHTML = rules.length? rules.map(r=>`
+    <div class="card">
+      <div><b>${r.product==='general'?'All Products':r.product}</b></div>
+      <div>${r.text}</div>
+      <div style="margin-top:.4rem">
+        <button class="btn btn-d" onclick="db_deleteRule('${r.id}').then(()=>{toast('Removed','err');refreshAll();})">Remove</button>
+      </div>
+    </div>`).join('') : '<div class="note">No rules yet.</div>';
+
+  const rec=await db_listRecordsSummary();
+  document.getElementById('recInfo').innerHTML =
+    `<div>Total records: <b>${rec.total}</b></div>
+     <div>Total revenue: <b>₱${rec.revenue}</b></div>
+     <div>Website orders: <b>${rec.web}</b> | Social: <b>${rec.social}</b></div>`;
+
+  const br=await db_listBuyerReports();
+  const brList=document.getElementById('brList');
+  brList.innerHTML = br.length? br.map(r=>`
+    <div class="card">
+      <div><b>Report ID:</b> ${r.id}</div>
+      <div><b>Order ID:</b> ${r.order_id||'—'}</div>
+      <div><b>Buyer:</b> ${r.buyer}</div>
+      <div><b>Product:</b> ${r.product||'—'}</div>
+      <div><b>Issue:</b> ${r.issue}</div>
+      <div><b>Status:</b> ${r.status||'pending'}</div>
+      <div class="note">${new Date(r.created_at).toLocaleString()}</div>
+      <div style="margin-top:.4rem">
+        ${r.status!=='resolved'
+          ? `<button class="btn btn-s" onclick="db_markReportResolved('${r.id}').then(()=>{toast('Resolved','ok');refreshAll();})">Mark Resolved</button>`
+          : ''}
+        <button class="btn btn-d" onclick="db_deleteReport('${r.id}').then(()=>{toast('Deleted','err');refreshAll();})">Delete</button>
+      </div>
+    </div>`).join('') : '<div class="note">No buyer reports.</div>';
+
+  document.getElementById('salesInfo').innerHTML =
+    `<div><b>Pending Reports:</b> ${br.filter(x=>x.status!=='resolved').length}</div>`;
+}
+
+async function promptEditProduct(id){
+  const name=prompt('New name? (leave blank to keep)');
+  const cat=prompt('New category? (entertainment/streaming/educational/editing/ai)');
+  const icon=prompt('New icon?');
+  await db_updateProduct({ id, name, category:cat, icon });
+  toast('Product updated','ok');
+  refreshAll();
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    if(!isVerified()){ clearSession(); location.reload(); }
+    else localStorage.setItem('ad-ok-ts',Date.now());
+  }
+});
+</script>
+</body>
+</html>    <div class="stat"><div>Total Products</div><h3 id="stat-products">0</h3></div>
     <div class="stat"><div>Available Stock</div><h3 id="stat-stock">0</h3></div>
     <div class="stat"><div>Pending Orders</div><h3 id="stat-pending">0</h3></div>
     <div class="stat"><div>Total Revenue</div><h3 id="stat-revenue">₱0</h3></div>
