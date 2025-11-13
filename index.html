@@ -327,11 +327,11 @@ window.CONFIG_PUBLIC = {
 <script src="assets/js/aiaxcart/supabase.js?v=6"></script>
 
 <script>
-// Initialize immediately
-const SB = window.createDbClient ? window.createDbClient() : null;
-const $ = (id) => document.getElementById(id);
+// === Helpers ===
+const SB = (window.createDbClient) ? window.createDbClient() : null;
+const $  = (id) => document.getElementById(id);
 
-// Demo products data (fallback if DB empty)
+// Demo products data (fallback)
 const DEMO_PRODUCTS = [
   { id: 'netflix-premium',  name: 'Netflix Premium',  category: 'entertainment', icon: '🎬', available: 5, price: 149 },
   { id: 'spotify-premium',  name: 'Spotify Premium',  category: 'streaming',     icon: '🎧', available: 8, price: 99  },
@@ -341,9 +341,10 @@ const DEMO_PRODUCTS = [
   { id: 'chatgpt-plus',     name: 'ChatGPT Plus',     category: 'ai',            icon: '🤖', available: 4, price: 299 }
 ];
 
-/* ===== Toast System ===== */
+// Toast
 function toast(msg, type = 'ok') {
   const box = $('#toast');
+  if (!box) return;
   const el = document.createElement('div');
   el.className = `toast ${type}`;
   el.textContent = msg;
@@ -354,8 +355,13 @@ function toast(msg, type = 'ok') {
   }, 3000);
 }
 
-/* ===== Auth System ===== */
-let currentUser = JSON.parse(localStorage.getItem('aiaxcart_current_user') || 'null');
+// Auth state
+let currentUser = null;
+try {
+  currentUser = JSON.parse(localStorage.getItem('aiaxcart_current_user') || 'null');
+} catch(_) {
+  currentUser = null;
+}
 
 function saveUser(user) {
   currentUser = user;
@@ -369,23 +375,31 @@ function saveUser(user) {
 }
 
 function openAuth() {
-  $('#authOverlay').style.display = 'flex';
+  const ov = $('#authOverlay');
+  if (ov) ov.style.display = 'flex';
 }
 
 function closeAuth() {
-  $('#authOverlay').style.display = 'none';
-  $('#authMsg').textContent = '';
+  const ov = $('#authOverlay');
+  const msg = $('#authMsg');
+  if (ov) ov.style.display = 'none';
+  if (msg) msg.textContent = '';
 }
 
 function refreshAuthUI() {
   const authBtn = $('#auth-buttons');
   const userInfo = $('#user-info');
-  
+  const nameEl = $('#user-name');
+  const avatarEl = $('#user-avatar');
+
+  if (!authBtn || !userInfo) return;
+
   if (currentUser) {
-    authBtn.style.display = 'none';
+    authBtn.style.display = 'block'; // show login container
+    authBtn.style.display = 'none';  // but hide button itself
     userInfo.style.display = 'flex';
-    $('#user-name').textContent = currentUser.name;
-    $('#user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    if (nameEl)   nameEl.textContent   = currentUser.name;
+    if (avatarEl) avatarEl.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
   } else {
     authBtn.style.display = 'block';
     userInfo.style.display = 'none';
@@ -393,150 +407,51 @@ function refreshAuthUI() {
 }
 
 function refreshContentSections() {
-  // Report section
+  const repGate = $('#report-gate');
+  const repForm = $('#report-form');
+  const fbGate  = $('#fb-gate');
+  const fbForm  = $('#fb-form');
+
   if (currentUser) {
-    $('#report-gate').style.display = 'none';
-    $('#report-form').style.display = 'block';
+    if (repGate) repGate.style.display = 'none';
+    if (repForm) repForm.style.display = 'block';
+    if (fbGate)  fbGate.style.display  = 'none';
+    if (fbForm)  fbForm.style.display  = 'block';
   } else {
-    $('#report-gate').style.display = 'block';
-    $('#report-form').style.display = 'none';
+    if (repGate) repGate.style.display = 'block';
+    if (repForm) repForm.style.display = 'none';
+    if (fbGate)  fbGate.style.display  = 'block';
+    if (fbForm)  fbForm.style.display  = 'none';
   }
 
-  // Feedback section
-  if (currentUser) {
-    $('#fb-gate').style.display = 'none';
-    $('#fb-form').style.display = 'block';
-  } else {
-    $('#fb-gate').style.display = 'block';
-    $('#fb-form').style.display = 'none';
-  }
-
-  // Account section
   updateAccountTab();
 }
 
-/* ===== Event Listeners ===== */
-document.addEventListener('DOMContentLoaded', function() {
-  // Auth buttons
-  $('#login-btn').addEventListener('click', openAuth);
-  $('#logout-btn').addEventListener('click', function() {
-    saveUser(null);
-    toast('Logged out successfully', 'ok');
-  });
-
-  // Auth modal tabs
-  $('#tabLogin').addEventListener('click', function() {
-    $('#formLogin').style.display = 'block';
-    $('#formSignup').style.display = 'none';
-    $('#tabLogin').classList.add('btn-primary');
-    $('#tabSignup').classList.remove('btn-primary');
-  });
-
-  $('#tabSignup').addEventListener('click', function() {
-    $('#formLogin').style.display = 'none';
-    $('#formSignup').style.display = 'block';
-    $('#tabSignup').classList.add('btn-primary');
-    $('#tabLogin').classList.remove('btn-primary');
-  });
-
-  // Auth form submissions
-  $('#btnLoginGo').addEventListener('click', handleLogin);
-  $('#btnSignupGo').addEventListener('click', handleSignup);
-
-  // Main tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-      const targetTab = this.dataset.tab;
-      
-      // Update active tab
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      
-      // Show target section
-      document.querySelectorAll('.content-section').forEach(section => {
-        section.style.display = 'none';
-      });
-      
-      if (targetTab === 'products') {
-        $('#products-section').style.display = 'block';
-      } else {
-        const sec = $(targetTab + '-content');
-        if (sec) sec.style.display = 'block';
-      }
-      
-      // Load section content
-      if (targetTab === 'rules') loadRules();
-      if (targetTab === 'feedback') loadFeedback();
-      if (targetTab === 'accounts') updateAccountTab();
-      if (targetTab === 'reports' && currentUser) loadUserReports();
-    });
-  });
-
-  // Category tabs
-  document.querySelectorAll('.category-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      filterProductsByCategory(this.dataset.category);
-    });
-  });
-
-  // Search
-  $('#product-search').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const products = document.querySelectorAll('.p-card');
-    
-    products.forEach(product => {
-      const productName = product.dataset.name || '';
-      product.style.display = productName.includes(query) ? 'block' : 'none';
-    });
-  });
-
-  // ✅ Checkout form (fixed)
-  const coForm = $('#coForm');
-  if (coForm) {
-    coForm.addEventListener('submit', handleCheckout);
-
-    const accTypeSelect = coForm.querySelector('select[name="account_type"]');
-    if (accTypeSelect) {
-      accTypeSelect.addEventListener('change', function(e) {
-        const row = $('#inviteGmailRow');
-        if (!row) return;
-        row.style.display =
-          (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
-      });
-    }
-  }
-
-  // Report form
-  $('#rep-submit').addEventListener('click', handleReport);
-
-  // Feedback form
-  $('#fb-submit').addEventListener('click', handleFeedback);
-
-  // Initialize
-  refreshAuthUI();
-  refreshContentSections();
-  renderProducts();
-  loadRules();
-  loadFeedback();
-});
-
 /* ===== Auth Handlers ===== */
 function handleLogin() {
-  const email = $('#liEmail').value.trim();
-  const password = $('#liPass').value;
+  const emailEl = $('#liEmail');
+  const passEl  = $('#liPass');
+  const msgEl   = $('#authMsg');
+  if (!emailEl || !passEl || !msgEl) return;
+
+  const email = emailEl.value.trim();
+  const password = passEl.value;
 
   if (!email || !password) {
-    $('#authMsg').textContent = 'Please enter email and password.';
+    msgEl.textContent = 'Please enter email and password.';
     return;
   }
 
-  const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+  let users = [];
+  try {
+    users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+  } catch(_) {
+    users = [];
+  }
   const user = users.find(u => u.email === email && u.password === password);
 
   if (!user) {
-    $('#authMsg').textContent = 'Invalid email or password.';
+    msgEl.textContent = 'Invalid email or password.';
     return;
   }
 
@@ -546,40 +461,50 @@ function handleLogin() {
 }
 
 function handleSignup() {
-  const name = $('#suName').value.trim();
-  const email = $('#suEmail').value.trim();
-  const password = $('#suPass').value;
-  const password2 = $('#suPass2').value;
+  const nameEl = $('#suName');
+  const emailEl = $('#suEmail');
+  const passEl  = $('#suPass');
+  const pass2El = $('#suPass2');
+  const msgEl   = $('#authMsg');
+
+  if (!nameEl || !emailEl || !passEl || !pass2El || !msgEl) return;
+
+  const name = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const password  = passEl.value;
+  const password2 = pass2El.value;
 
   if (!name || !email || !password) {
-    $('#authMsg').textContent = 'Please fill all fields.';
+    msgEl.textContent = 'Please fill all fields.';
     return;
   }
-
   if (password !== password2) {
-    $('#authMsg').textContent = 'Passwords do not match.';
+    msgEl.textContent = 'Passwords do not match.';
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
-  
+  let users = [];
+  try {
+    users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+  } catch(_) {
+    users = [];
+  }
   if (users.some(u => u.email === email)) {
-    $('#authMsg').textContent = 'Email already exists.';
+    msgEl.textContent = 'Email already exists.';
     return;
   }
 
   const user = {
     id: Date.now().toString(),
-    name: name,
-    email: email,
-    password: password,
+    name,
+    email,
+    password,
     joinDate: new Date().toISOString()
   };
 
   users.push(user);
   localStorage.setItem('aiaxcart_users', JSON.stringify(users));
 
-  // Try to save to database
   if (window.db_upsertBuyer) {
     window.db_upsertBuyer(user).catch(console.error);
   }
@@ -589,88 +514,77 @@ function handleSignup() {
   toast('Account created successfully!', 'ok');
 }
 
-/* ===== Product System ===== */
+/* ===== Products ===== */
 function renderProducts() {
   const container = $('#categories-container');
-  
-  // Show loading
+  if (!container) return;
   container.innerHTML = '<div class="note">Loading products...</div>';
 
-  // Try to load from database first
   if (window.db_listCatalogWithCounts) {
-    window.db_listCatalogWithCounts().then(products => {
-      if (products && products.length > 0) {
-        displayProducts(products);
-      } else {
+    window.db_listCatalogWithCounts()
+      .then(products => {
+        if (products && products.length) displayProducts(products);
+        else showDemoProducts();
+      })
+      .catch(err => {
+        console.error(err);
         showDemoProducts();
-      }
-    }).catch(error => {
-      console.error('Error loading products:', error);
-      showDemoProducts();
-    });
+      });
   } else {
-    // Fallback to demo products
     showDemoProducts();
   }
 }
 
 function displayProducts(products) {
   const container = $('#categories-container');
+  if (!container) return;
   const byCategory = {};
-
-  // Group by category
-  products.forEach(product => {
-    const category = product.category || 'other';
-    if (!byCategory[category]) {
-      byCategory[category] = [];
-    }
-    byCategory[category].push(product);
+  products.forEach(p=>{
+    const cat = p.category || 'other';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(p);
   });
 
-  const categoryOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
+  const categoryOrder = ['entertainment','streaming','educational','editing','ai'];
+  const categoryNames = {
+    entertainment: '🎬 Entertainment',
+    streaming:     '🎧 Streaming & Music',
+    educational:   '📚 Educational',
+    editing:       '🎨 Editing & Creative',
+    ai:            '🤖 AI Tools'
+  };
+
   let html = '';
+  categoryOrder.forEach(cat=>{
+    const list = byCategory[cat];
+    if (!list || !list.length) return;
 
-  categoryOrder.forEach(category => {
-    const categoryProducts = byCategory[category];
-    if (!categoryProducts || !categoryProducts.length) return;
-
-    const categoryNames = {
-      entertainment: '🎬 Entertainment',
-      streaming: '🎧 Streaming & Music',
-      educational: '📚 Educational',
-      editing: '🎨 Editing & Creative',
-      ai: '🤖 AI Tools'
-    };
-
-    // Show only first 3 products
-    const displayProducts = categoryProducts.slice(0, 3);
-    const hasMore = categoryProducts.length > 3;
+    const display = list.slice(0,3);
+    const hasMore = list.length > 3;
 
     html += `
-      <div class="category-section" data-category="${category}">
+      <div class="category-section" data-category="${cat}">
         <div class="section-header">
-          <h2 class="section-title">${categoryNames[category] || category}</h2>
-          ${hasMore ? `<a href="#" class="view-all" onclick="showAllCategory('${category}');return false;">View All</a>` : ''}
+          <h2 class="section-title">${categoryNames[cat] || cat}</h2>
+          ${hasMore ? `<a href="#" class="view-all" onclick="showAllCategory('${cat}');return false;">View All</a>` : ''}
         </div>
         <div class="products-grid">
-          ${displayProducts.map(product => {
-            const hasStock = (product.available || 0) > 0;
-            const prices = product.prices || [];
+          ${display.map(p=>{
+            const hasStock = (p.available || 0) > 0;
+            const prices = p.prices || [];
             const minPrice = prices.length
-              ? Math.min(...prices.map(p => p.price_php || 0))
-              : (product.price || 0);
-
-            const safeName = (product.name || '').replace(/'/g,"\\'");
-
+              ? Math.min(...prices.map(x=>x.price_php || 0))
+              : (p.price || 0);
+            const safeName = (p.name || '').replace(/'/g,"\\'");
             return `
-              <div class="p-card" data-name="${(product.name || '').toLowerCase()}">
-                <div style="font-weight:700;font-size:1.05rem">${product.icon || '🛒'} ${product.name}</div>
+              <div class="p-card" data-name="${(p.name||'').toLowerCase()}">
+                <div style="font-weight:700;font-size:1.05rem">${p.icon || '🛒'} ${p.name}</div>
                 <div>${hasStock
-                  ? `<span class="pill" style="background:#d4edda;color:#155724">${product.available} available</span>`
+                  ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
                   : `<span class="pill">Out of stock</span>`}</div>
                 <div class="note">From ₱${minPrice}</div>
                 <button class="btn btn-primary" ${hasStock ? '' : 'disabled'}
-                  onclick="openCheckout('${product.id}', '${safeName}')">
+                  onclick="openCheckout('${p.id}','${safeName}')">
                   ${hasStock ? 'Buy Now' : 'Unavailable'}
                 </button>
               </div>
@@ -686,47 +600,42 @@ function displayProducts(products) {
 
 function showDemoProducts() {
   const container = $('#categories-container');
+  if (!container) return;
   const byCategory = {};
-
-  // Group demo products by category
-  DEMO_PRODUCTS.forEach(product => {
-    if (!byCategory[product.category]) {
-      byCategory[product.category] = [];
-    }
-    byCategory[product.category].push(product);
+  DEMO_PRODUCTS.forEach(p=>{
+    if (!byCategory[p.category]) byCategory[p.category] = [];
+    byCategory[p.category].push(p);
   });
 
-  const categoryOrder = ['entertainment', 'streaming', 'educational', 'editing', 'ai'];
-  let html = '';
-
+  const categoryOrder = ['entertainment','streaming','educational','editing','ai'];
   const categoryNames = {
     entertainment: '🎬 Entertainment',
-    streaming: '🎧 Streaming & Music',
-    educational: '📚 Educational',
-    editing: '🎨 Editing & Creative',
-    ai: '🤖 AI Tools'
+    streaming:     '🎧 Streaming & Music',
+    educational:   '📚 Educational',
+    editing:       '🎨 Editing & Creative',
+    ai:            '🤖 AI Tools'
   };
 
-  categoryOrder.forEach(category => {
-    const products = byCategory[category];
-    if (!products || !products.length) return;
-
+  let html = '';
+  categoryOrder.forEach(cat=>{
+    const list = byCategory[cat];
+    if (!list || !list.length) return;
     html += `
-      <div class="category-section" data-category="${category}">
+      <div class="category-section" data-category="${cat}">
         <div class="section-header">
-          <h2 class="section-title">${categoryNames[category] || category}</h2>
+          <h2 class="section-title">${categoryNames[cat] || cat}</h2>
         </div>
         <div class="products-grid">
-          ${products.map(product => `
-            <div class="p-card" data-name="${product.name.toLowerCase()}">
-              <div style="font-weight:700;font-size:1.05rem">${product.icon} ${product.name}</div>
-              <div>${product.available > 0
-                ? `<span class="pill" style="background:#d4edda;color:#155724">${product.available} available</span>`
+          ${list.map(p=>`
+            <div class="p-card" data-name="${p.name.toLowerCase()}">
+              <div style="font-weight:700;font-size:1.05rem">${p.icon} ${p.name}</div>
+              <div>${p.available>0
+                ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
                 : `<span class="pill">Out of stock</span>`}</div>
-              <div class="note">From ₱${product.price}</div>
-              <button class="btn btn-primary" ${product.available > 0 ? '' : 'disabled'}
-                onclick="openCheckout('${product.id}', '${product.name.replace(/'/g,"\\'")}')">
-                ${product.available > 0 ? 'Buy Now' : 'Unavailable'}
+              <div class="note">From ₱${p.price}</div>
+              <button class="btn btn-primary" ${p.available>0 ? '' : 'disabled'}
+                onclick="openCheckout('${p.id}','${p.name.replace(/'/g,"\\'")}')">
+                ${p.available>0 ? 'Buy Now' : 'Unavailable'}
               </button>
             </div>
           `).join('')}
@@ -734,20 +643,17 @@ function showDemoProducts() {
       </div>
     `;
   });
-
   container.innerHTML = html;
 }
 
 function filterProductsByCategory(category) {
-  const sections = document.querySelectorAll('.category-section');
-  
-  if (category === 'all') {
-    sections.forEach(section => section.style.display = 'block');
-  } else {
-    sections.forEach(section => {
-      section.style.display = section.dataset.category === category ? 'block' : 'none';
-    });
-  }
+  document.querySelectorAll('.category-section').forEach(sec=>{
+    if (category === 'all') {
+      sec.style.display = 'block';
+    } else {
+      sec.style.display = (sec.dataset.category === category) ? 'block' : 'none';
+    }
+  });
 }
 
 function showAllCategory(category) {
@@ -755,56 +661,62 @@ function showAllCategory(category) {
   toast(`Showing all ${category} products`, 'ok');
 }
 
-/* ===== Checkout System ===== */
+/* ===== Checkout ===== */
 function openCheckout(productId, productName) {
   const form = $('#coForm');
+  const overlay = $('#coOverlay');
+  if (!form || !overlay) return;
+
   form.product_id.value = productId;
   form.product_name.value = productName;
-  $('#coTitle').textContent = `Checkout • ${productName}`;
-  
+  const title = $('#coTitle');
+  if (title) title.textContent = `Checkout • ${productName}`;
+
   if (currentUser) {
-    form.buyer_name.value = currentUser.name;
+    form.buyer_name.value  = currentUser.name;
     form.buyer_email.value = currentUser.email;
   }
-  
-  $('#coOverlay').style.display = 'flex';
+
+  overlay.style.display = 'flex';
 }
 
 function closeCheckout() {
-  $('#coOverlay').style.display = 'none';
-  $('#coMsg').textContent = '';
+  const overlay = $('#coOverlay');
+  const msg = $('#coMsg');
+  if (overlay) overlay.style.display = 'none';
+  if (msg) msg.textContent = '';
 }
 
 async function handleCheckout(e) {
   e.preventDefault();
   const form = e.target;
-  const btn = $('#coSubmit');
-  
+  const btn  = $('#coSubmit');
+  const msg  = $('#coMsg');
+  if (!form || !btn) return;
+
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
   try {
-    const buyer_name  = form.buyer_name.value.trim();
-    const buyer_email = form.buyer_email.value.trim();
-    const product_id  = form.product_id.value;
-    const product_name= form.product_name.value;
-    const account_type= form.account_type.value;
-    const duration_key= form.duration_key.value;
-    const price       = parseFloat(form.price.value || 0);
-    const invite_gmail= form.invite_gmail ? form.invite_gmail.value.trim() : null;
+    const buyer_name   = form.buyer_name.value.trim();
+    const buyer_email  = form.buyer_email.value.trim();
+    const product_id   = form.product_id.value;
+    const product_name = form.product_name.value;
+    const account_type = form.account_type.value;
+    const duration_key = form.duration_key.value;
+    const price        = parseFloat(form.price.value || 0);
+    const invite_gmail = form.invite_gmail ? form.invite_gmail.value.trim() : null;
 
     if (!buyer_name || !buyer_email || !product_id || !account_type || !duration_key || !price) {
       throw new Error('Please fill all required fields.');
     }
-
-    if (account_type.toLowerCase() === 'invite') {
+    if ((account_type || '').toLowerCase() === 'invite') {
       if (!invite_gmail || !/^[^@]+@gmail\.com$/i.test(invite_gmail)) {
         throw new Error('Invite type requires a valid Gmail address.');
       }
     }
 
     let orderId;
-
     if (window.db_createOrder) {
       const order = await window.db_createOrder({
         buyer_name,
@@ -818,19 +730,18 @@ async function handleCheckout(e) {
       });
       orderId = order.id;
     } else {
-      // Fallback demo order
       orderId = 'AXP-' + Date.now();
     }
 
-    $('#coMsg').textContent = `✅ Order placed! Order ID: ${orderId}`;
+    if (msg) msg.textContent = `✅ Order placed! Order ID: ${orderId}`;
     toast('Order placed successfully!', 'ok');
-    
-    setTimeout(() => {
+
+    setTimeout(()=>{
       closeCheckout();
       renderProducts();
       updateAccountTab();
     }, 1500);
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     toast('Checkout failed: ' + err.message, 'err');
   } finally {
@@ -839,12 +750,13 @@ async function handleCheckout(e) {
   }
 }
 
-/* ===== Rules System ===== */
+/* ===== Rules ===== */
 function loadRules() {
-  const rulesWrap = $('#rules-wrap');
-  
-  // Simple demo rules for now
-  rulesWrap.innerHTML = `
+  const wrap = $('#rules-wrap');
+  const search = $('#rules-search');
+  if (!wrap) return;
+
+  wrap.innerHTML = `
     <div class="note">
       <h4>General Rules</h4>
       <p>• All sales are final - no refunds after account delivery.</p>
@@ -855,37 +767,40 @@ function loadRules() {
     </div>
   `;
 
-  // Simple client-side search
-  const search = $('#rules-search');
   if (search && !search._bound) {
     search._bound = true;
-    search.addEventListener('input', function(e){
+    search.addEventListener('input', e=>{
       const q = e.target.value.toLowerCase();
-      rulesWrap.querySelectorAll('p').forEach(p=>{
+      wrap.querySelectorAll('p').forEach(p=>{
         p.style.display = p.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
     });
   }
 }
 
-/* ===== Report System ===== */
+/* ===== Reports ===== */
 function handleReport() {
   if (!currentUser) {
     toast('Please login to submit a report.', 'warn');
     return;
   }
-  
-  const orderId = $('#rep-order').value.trim();
-  const product = $('#rep-product').value.trim();
-  const issue   = $('#rep-issue').value.trim();
-  const file    = $('#rep-img').files?.[0] || null;
-  
+
+  const orderEl = $('#rep-order');
+  const prodEl  = $('#rep-product');
+  const issueEl = $('#rep-issue');
+  const imgEl   = $('#rep-img');
+  if (!orderEl || !prodEl || !issueEl) return;
+
+  const orderId = orderEl.value.trim();
+  const product = prodEl.value.trim();
+  const issue   = issueEl.value.trim();
+  const file    = imgEl && imgEl.files && imgEl.files[0] ? imgEl.files[0] : null;
+
   if (!issue) {
     toast('Please describe the issue', 'warn');
     return;
   }
 
-  // If DB helper exists, use it
   if (window.db_addBuyerReport) {
     window.db_addBuyerReport({
       order_id: orderId || null,
@@ -896,32 +811,27 @@ function handleReport() {
       file
     }).then(()=>{
       toast('Report submitted successfully!', 'ok');
-      $('#rep-order').value = '';
-      $('#rep-product').value = '';
-      $('#rep-issue').value = '';
-      $('#rep-img').value = '';
+      orderEl.value = '';
+      prodEl.value  = '';
+      issueEl.value = '';
+      if (imgEl) imgEl.value = '';
       loadUserReports();
     }).catch(err=>{
       console.error(err);
       toast('Failed to submit report', 'err');
     });
   } else {
-    // Fallback demo
     toast('Report submitted successfully! (demo)', 'ok');
-    $('#rep-order').value = '';
-    $('#rep-product').value = '';
-    $('#rep-issue').value = '';
-    $('#rep-img').value = '';
+    orderEl.value = '';
+    prodEl.value  = '';
+    issueEl.value = '';
+    if (imgEl) imgEl.value = '';
   }
 }
 
 async function loadUserReports() {
-  if (!currentUser) {
-    $('#my-reports').innerHTML = '';
-    return;
-  }
-
   const box = $('#my-reports');
+  if (!box || !currentUser) return;
 
   if (!window.db_fetchBuyerReports) {
     box.innerHTML = '<div class="note">No reports yet.</div>';
@@ -934,6 +844,7 @@ async function loadUserReports() {
       box.innerHTML = '<div class="note">No reports yet.</div>';
       return;
     }
+
     const html = await Promise.all(list.map(async r=>{
       let img = '';
       if (r.image_path && window.getPublicURL) {
@@ -946,29 +857,32 @@ async function loadUserReports() {
           <div><b>Order ID:</b> ${r.order_id || 'N/A'}</div>
           <div><b>Product:</b> ${r.product || 'N/A'}</div>
           <div><b>Issue:</b> ${r.issue}</div>
-          <div><b>Status:</b> <span class="pill" style="background:${r.status === 'resolved' ? '#d4edda' : '#fff3cd'};color:${r.status === 'resolved' ? '#155724' : '#856404'}">${r.status || 'pending'}</span></div>
+          <div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status || 'pending'}</span></div>
           <div class="note">${new Date(r.created_at).toLocaleString()}</div>
           ${img}
         </div>
       `;
     }));
     box.innerHTML = html.join('');
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     box.innerHTML = '<div class="note">Failed to load reports.</div>';
   }
 }
 
-/* ===== Feedback System ===== */
+/* ===== Feedback ===== */
 function handleFeedback() {
   if (!currentUser) {
     toast('Please login to submit feedback.', 'warn');
     return;
   }
-  
-  const text = $('#fb-text').value.trim();
-  const file = $('#fb-img').files?.[0] || null;
-  
+  const textEl = $('#fb-text');
+  const imgEl  = $('#fb-img');
+  if (!textEl) return;
+
+  const text = textEl.value.trim();
+  const file = imgEl && imgEl.files && imgEl.files[0] ? imgEl.files[0] : null;
+
   if (!text) {
     toast('Please enter your feedback', 'warn');
     return;
@@ -978,8 +892,8 @@ function handleFeedback() {
     window.db_addFeedback({ user: currentUser.name, text, file })
       .then(()=>{
         toast('Thank you for your feedback!', 'ok');
-        $('#fb-text').value = '';
-        $('#fb-img').value = '';
+        textEl.value = '';
+        if (imgEl) imgEl.value = '';
         loadFeedback();
       })
       .catch(err=>{
@@ -987,18 +901,17 @@ function handleFeedback() {
         toast('Failed to submit feedback', 'err');
       });
   } else {
-    // Fallback
     toast('Thank you for your feedback! (demo)', 'ok');
-    $('#fb-text').value = '';
-    $('#fb-img').value = '';
+    textEl.value = '';
+    if (imgEl) imgEl.value = '';
   }
 }
 
 async function loadFeedback() {
   const box = $('#fb-list');
+  if (!box) return;
 
   if (!window.db_fetchFeedback) {
-    // Demo feedback
     box.innerHTML = `
       <div class="card">
         <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
@@ -1009,16 +922,6 @@ async function loadFeedback() {
           </div>
         </div>
         <div>Great service! My Netflix account was delivered instantly. Will buy again! 👍</div>
-      </div>
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
-          <div class="user-avatar" style="background:#FFD3D6">M</div>
-          <div>
-            <strong>Maria Santos</strong>
-            <div class="note">1 week ago</div>
-          </div>
-        </div>
-        <div>Fast and reliable. Had a small issue but customer service resolved it quickly.</div>
       </div>
     `;
     return;
@@ -1045,16 +948,17 @@ async function loadFeedback() {
         </div>
       `;
     }).join('');
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     box.innerHTML = '<div class="note">Failed to load feedback.</div>';
   }
 }
 
-/* ===== Account System ===== */
+/* ===== Account Tab ===== */
 async function updateAccountTab() {
   const accountContent = $('#account-content');
-  
+  if (!accountContent) return;
+
   if (!currentUser) {
     accountContent.innerHTML = '<div class="note">Please login to view your account information and orders.</div>';
     return;
@@ -1064,13 +968,13 @@ async function updateAccountTab() {
   if (window.db_listOrdersByEmail) {
     try {
       orders = await window.db_listOrdersByEmail(currentUser.email);
-    } catch (e) {
-      console.error(e);
+    } catch(err) {
+      console.error(err);
     }
   }
 
-  const pending = orders.filter(o => o.status === 'pending');
-  const confirmed = orders.filter(o => o.status === 'confirmed');
+  const pending   = orders.filter(o=>o.status === 'pending');
+  const confirmed = orders.filter(o=>o.status === 'confirmed');
 
   const renderOrders = (arr) => {
     if (!arr.length) return '<div class="note">None.</div>';
@@ -1092,18 +996,126 @@ async function updateAccountTab() {
       <p><strong>Email:</strong> ${currentUser.email}</p>
       <p><strong>Member since:</strong> ${new Date(currentUser.joinDate).toLocaleDateString()}</p>
     </div>
-    
     <div class="card">
       <h4>Pending Orders</h4>
       ${renderOrders(pending)}
     </div>
-
     <div class="card">
       <h4>Confirmed Orders</h4>
       ${renderOrders(confirmed)}
     </div>
   `;
 }
+
+/* ===== INIT ===== */
+function initAiax() {
+  try {
+    // Auth buttons
+    const loginBtn  = $('#login-btn');
+    const logoutBtn = $('#logout-btn');
+    if (loginBtn)  loginBtn.addEventListener('click', openAuth);
+    if (logoutBtn) logoutBtn.addEventListener('click', ()=>{ saveUser(null); toast('Logged out successfully','ok'); });
+
+    // Auth tabs
+    const tabLogin  = $('#tabLogin');
+    const tabSignup = $('#tabSignup');
+    const formLogin = $('#formLogin');
+    const formSu    = $('#formSignup');
+    if (tabLogin && tabSignup && formLogin && formSu) {
+      tabLogin.addEventListener('click', ()=>{
+        formLogin.style.display = 'block';
+        formSu.style.display    = 'none';
+        tabLogin.classList.add('btn-primary');
+        tabSignup.classList.remove('btn-primary');
+      });
+      tabSignup.addEventListener('click', ()=>{
+        formLogin.style.display = 'none';
+        formSu.style.display    = 'block';
+        tabSignup.classList.add('btn-primary');
+        tabLogin.classList.remove('btn-primary');
+      });
+    }
+
+    const btnLoginGo  = $('#btnLoginGo');
+    const btnSignupGo = $('#btnSignupGo');
+    if (btnLoginGo)  btnLoginGo.addEventListener('click', handleLogin);
+    if (btnSignupGo) btnSignupGo.addEventListener('click', handleSignup);
+
+    // Main tabs (Products / Accounts / etc.)
+    document.querySelectorAll('.tab').forEach(tab=>{
+      tab.addEventListener('click', function(){
+        const targetTab = this.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.content-section').forEach(sec=>sec.style.display='none');
+        if (targetTab === 'products') {
+          const s = $('#products-section');
+          if (s) s.style.display = 'block';
+        } else {
+          const s = $(targetTab + '-content');
+          if (s) s.style.display = 'block';
+        }
+        if (targetTab === 'rules')    loadRules();
+        if (targetTab === 'feedback') loadFeedback();
+        if (targetTab === 'accounts') updateAccountTab();
+        if (targetTab === 'reports' && currentUser) loadUserReports();
+      });
+    });
+
+    // Category tabs
+    document.querySelectorAll('.category-tab').forEach(tab=>{
+      tab.addEventListener('click', function(){
+        document.querySelectorAll('.category-tab').forEach(t=>t.classList.remove('active'));
+        this.classList.add('active');
+        filterProductsByCategory(this.dataset.category);
+      });
+    });
+
+    // Product search
+    const search = $('#product-search');
+    if (search) {
+      search.addEventListener('input', e=>{
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('.p-card').forEach(card=>{
+          const name = card.dataset.name || '';
+          card.style.display = name.includes(q) ? 'block' : 'none';
+        });
+      });
+    }
+
+// Checkout form
+    const coForm = $('#coForm');
+    if (coForm) {
+      coForm.addEventListener('submit', handleCheckout);
+      const accType = coForm.querySelector('select[name="account_type"]');
+      const inviteRow = $('#inviteGmailRow');
+      if (accType && inviteRow) {
+        accType.addEventListener('change', e=>{
+          inviteRow.style.display =
+            (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
+        });
+      }
+    }
+
+    // Report & feedback buttons
+    const repBtn = $('#rep-submit');
+    if (repBtn) repBtn.addEventListener('click', handleReport);
+    const fbBtn = $('#fb-submit');
+    if (fbBtn) fbBtn.addEventListener('click', handleFeedback);
+
+    // Initial render
+    refreshAuthUI();
+    refreshContentSections();
+    renderProducts();
+    loadRules();
+    loadFeedback();
+  } catch (e) {
+    console.error('Init error:', e);
+    alert('JS error: ' + e.message);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initAiax);
 </script>
 </body>
 </html>
