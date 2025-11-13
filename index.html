@@ -4,45 +4,398 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Aiaxcart Premium Shop</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  body{background:#fefaf7;color:#5a3e36;font-family:'Segoe UI',Tahoma,Verdana,sans-serif;margin:0}
-  header{background:#FFD3D6;box-shadow:0 4px 15px rgba(0,0,0,.08)}
-  .container{max-width:1200px;margin:0 auto;padding:0 20px}
-  .header-content{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
-  nav ul{display:flex;gap:1rem;margin:0;padding:0;list-style:none}
-  nav a{color:#5a3e36;text-decoration:none;padding:.5rem 1rem;border-radius:8px}
-  nav a.active,nav a:hover{background:#FFC6CA}
-  .user-info{display:none;align-items:center;gap:.7rem}
-  .user-avatar{width:36px;height:36px;border-radius:50%;background:#FFC6CA;display:grid;place-items:center;font-weight:700}
-  .tabs{display:flex;gap:.4rem;background:#fff;border-radius:0 0 12px 12px;padding:.5rem;box-shadow:0 4px 15px rgba(0,0,0,.08);border-top:1px solid #F9E6E4;overflow-x:auto}
-  .tab{padding:.6rem 1rem;border-radius:10px;white-space:nowrap;cursor:pointer}
-  .tab.active{background:#FFD3D6}
-  .products-grid{display:flex;flex-direction:column;gap:1rem;margin:1.2rem 0}
-  .p-card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-  .btn{padding:.65rem 1rem;border:none;border-radius:10px;cursor:pointer}
-  .btn-primary{background:#FFB0B5;color:#fff}
-  .btn-primary:disabled{background:#ddd;color:#777}
-  .card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 4px 15px rgba(0,0,0,.08);margin:1rem 0}
-  .search-wrap{margin:1rem 0;position:relative}
-  .search-wrap input{width:100%;padding:.8rem 1rem .8rem 2.4rem;border:1px solid #F9E6E4;border-radius:10px}
-  .search-wrap span{position:absolute;left:.8rem;top:50%;transform:translateY(-50%)}
-  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#fff3cd;color:#856404;font-size:.8rem;font-weight:700}
-  footer{background:#5a3e36;color:#fff;text-align:center;padding:1.2rem 0;margin-top:2rem}
-  #toast{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:99999}
-  .toast{background:#333;color:#fff;padding:.7rem 1rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);opacity:.98}
-  .toast.ok{background:#28a745}
-  .toast.warn{background:#ff9800}
-  .toast.err{background:#e74c3c}
-  .note{font-size:.85rem;opacity:.8}
-  h2.section-title{margin-top:2rem;margin-bottom:.5rem}
+  :root {
+    --primary: #FF6B8B;
+    --secondary: #FFD3D6;
+    --accent: #9C4DF4;
+    --dark: #5a3e36;
+    --light: #fefaf7;
+    --success: #28a745;
+    --warning: #ff9800;
+    --danger: #e74c3c;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 15px rgba(0,0,0,.08);
+  }
+  
+  body {
+    background: var(--light);
+    color: var(--dark);
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    margin: 0;
+    line-height: 1.6;
+  }
+  
+  /* Header Styles */
+  header {
+    background: var(--secondary);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  nav a {
+    color: var(--dark);
+    text-decoration: none;
+    padding: .5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  nav a.active, nav a:hover {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .user-info {
+    display: none;
+    align-items: center;
+    gap: .7rem;
+  }
+  
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: white;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: .4rem;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: .5rem;
+    box-shadow: var(--shadow);
+    border-top: 1px solid #F9E6E4;
+    overflow-x: auto;
+  }
+  
+  .tab {
+    padding: .6rem 1rem;
+    border-radius: 10px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .tab.active {
+    background: var(--primary);
+    color: white;
+  }
+  
+  /* Category Sections */
+  .category-section {
+    margin: 2.5rem 0;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--secondary);
+  }
+  
+  .section-title {
+    margin: 0;
+    color: var(--dark);
+    font-size: 1.5rem;
+  }
+  
+  .view-all {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease;
+  }
+  
+  .view-all:hover {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+  
+  /* Products Grid */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .p-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  
+  .p-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,.12);
+  }
+  
+  .p-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .p-card .price {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+  
+  .p-card .description {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .stock-badge {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .in-stock {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+  }
+  
+  .out-of-stock {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+  }
+  
+  .btn {
+    padding: .75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #ff4d6d;
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary:disabled {
+    background: #ddd;
+    color: #777;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1.5rem 0;
+  }
+  
+  .search-wrap {
+    margin: 1rem 0;
+    position: relative;
+  }
+  
+  .search-wrap input {
+    width: 100%;
+    padding: .8rem 1rem .8rem 2.4rem;
+    border: 1px solid #F9E6E4;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+  
+  .search-wrap input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  
+  .search-wrap span {
+    position: absolute;
+    left: .8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+  }
+  
+  .pill {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    background: #fff3cd;
+    color: #856404;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+  
+  footer {
+    background: var(--dark);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+  }
+  
+  #toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    display: grid;
+    gap: 8px;
+    z-index: 99999;
+  }
+  
+  .toast {
+    background: #333;
+    color: #fff;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    opacity: .98;
+    max-width: 300px;
+  }
+  
+  .toast.ok {
+    background: var(--success);
+  }
+  
+  .toast.warn {
+    background: var(--warning);
+  }
+  
+  .toast.err {
+    background: var(--danger);
+  }
+  
+  .note {
+    font-size: .85rem;
+    opacity: .8;
+  }
+  
+  /* Category Tabs */
+  .category-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .category-tab {
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: var(--card-bg);
+    border: 1px solid #F9E6E4;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+  }
+  
+  .category-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    nav ul {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .tabs {
+      flex-wrap: wrap;
+    }
+  }
 </style>
-<link rel="stylesheet" href="assets/css/extras.css"/>
 </head>
 <body>
 <div id="toast"></div>
 <header>
   <div class="container header-content">
-    <div class="logo">🛒 Aiaxcart Premium</div>
+    <div class="logo">
+      <i class="fas fa-crown"></i>
+      <span>Aiaxcart Premium</span>
+    </div>
     <nav>
       <ul>
         <li><a class="active" href="index.html">Home</a></li>
@@ -71,15 +424,26 @@
 
 <main class="container">
   <div class="search-wrap">
-    <span>🔍</span>
+    <span><i class="fas fa-search"></i></span>
     <input id="product-search" placeholder="Search products…"/>
   </div>
 
+  <!-- Category Tabs -->
+  <div class="category-tabs" id="category-tabs">
+    <div class="category-tab active" data-category="all">All Categories</div>
+    <div class="category-tab" data-category="entertainment">🎬 Entertainment</div>
+    <div class="category-tab" data-category="streaming">🎧 Streaming</div>
+    <div class="category-tab" data-category="educational">📚 Educational</div>
+    <div class="category-tab" data-category="editing">🎨 Editing</div>
+    <div class="category-tab" data-category="ai">🤖 AI</div>
+  </div>
+
   <section id="products-section" style="margin-top:1.5rem">
-    <h2>Premium Accounts</h2>
-    <div id="products-wrap" class="products-grid"></div>
+    <!-- Categories will be dynamically generated here -->
+    <div id="categories-container"></div>
   </section>
 
+  <!-- Other sections remain the same -->
   <section id="accounts-content" class="card" style="display:none"></section>
 
   <section id="reports-content" class="card" style="display:none">
@@ -127,7 +491,7 @@
   <div class="container">© 2024 Aiaxcart Premium. All rights reserved.</div>
 </footer>
 
-<!-- Checkout Modal -->
+<!-- Checkout Modal (keep your existing modal) -->
 <div id="coOverlay" class="overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
   <div class="modal" style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <h3 id="coTitle">Checkout</h3>
@@ -149,7 +513,7 @@
       <div class="row" id="inviteGmailRow" style="display:none">
         <label>Gmail for Invite</label>
         <input type="email" name="invite_gmail" placeholder="yourgmail@gmail.com">
-        <small class="note">Required when Account Type is “invite”.</small>
+        <small class="note">Required when Account Type is "invite".</small>
       </div>
       <div class="row"><label>Duration</label>
         <select name="duration_key" required>
@@ -168,7 +532,7 @@
   </div>
 </div>
 
-<!-- Auth Modal -->
+<!-- Auth Modal (keep your existing modal) -->
 <div id="authOverlay" class="overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
   <div class="modal" style="background:#fff;border-radius:12px;max-width:480px;width:92%;padding:1.2rem">
     <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
@@ -208,6 +572,24 @@ window.CONFIG_PUBLIC = {
 <script>
 const SB = createDbClient();
 const $ = (id)=>document.getElementById(id);
+
+// Category labels mapping
+const CATEGORY_LABELS = {
+  entertainment: '🎬 Entertainment',
+  streaming: '🎧 Streaming & Music',
+  educational: '📚 Educational',
+  editing: '🎨 Editing & Creative',
+  ai: '🤖 AI Tools'
+};
+
+// Category descriptions
+const CATEGORY_DESCRIPTIONS = {
+  entertainment: 'Premium entertainment platforms for movies, shows, and gaming',
+  streaming: 'Music and video streaming services with premium features',
+  educational: 'Educational platforms and learning resources',
+  editing: 'Creative tools for video, photo, and content editing',
+  ai: 'Artificial intelligence tools and platforms'
+};
 
 /* ===== toast ===== */
 function toast(msg, type='ok'){
@@ -249,130 +631,217 @@ function refreshAuthUI(){
 $('login-btn').onclick=openAuth;
 $('logout-btn').onclick=()=>{ saveUser(null); refreshAuthUI(); toast('Logged out','ok'); };
 
-/* tabs */
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('main .card').forEach(c=>c.style.display='none');
-    $('products-section').style.display='block';
-    tab.classList.add('active');
-    const key=tab.dataset.tab;
-    if(key!=='products'){
-      $('products-section').style.display='none';
-      $(key+'-content').style.display='block';
-      if(key==='reports') loadUserReports();
-      if(key==='feedback') loadFeedback();
-      if(key==='rules') loadRules();
-      if(key==='accounts') updateAccountTab();
+/* Category Tabs */
+document.querySelectorAll('.category-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    
+    const category = this.dataset.category;
+    filterProductsByCategory(category);
+  });
+});
+
+function filterProductsByCategory(category) {
+  const allProducts = document.querySelectorAll('.p-card');
+  const categorySections = document.querySelectorAll('.category-section');
+  
+  if (category === 'all') {
+    // Show all categories
+    categorySections.forEach(section => {
+      section.style.display = 'block';
+    });
+    allProducts.forEach(product => {
+      product.style.display = 'block';
+    });
+  } else {
+    // Hide all categories first
+    categorySections.forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    // Show only the selected category
+    const targetSection = document.querySelector(`.category-section[data-category="${category}"]`);
+    if (targetSection) {
+      targetSection.style.display = 'block';
     }
-  });
-});
+  }
+}
 
-/* auth flows */
-$('tabLogin').onclick=()=>{ $('formLogin').style.display='block'; $('formSignup').style.display='none'; };
-$('tabSignup').onclick=()=>{ $('formLogin').style.display='none'; $('formSignup').style.display='block'; };
-
-$('btnSignupGo').onclick=async()=>{
-  const n=$('suName').value.trim(),
-        e=$('suEmail').value.trim(),
-        p=$('suPass').value,
-        p2=$('suPass2').value;
-  if(!n||!e||!p||p!==p2){ $('authMsg').textContent='Check inputs.'; return; }
-  let arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
-  if(arr.some(x=>x.email===e)){ $('authMsg').textContent='Email exists.'; return; }
-  const u={id:Date.now(),name:n,email:e,password:p,joinDate:new Date().toISOString()};
-  arr.push(u);
-  localStorage.setItem('aiaxcart_users',JSON.stringify(arr));
-  await db_upsertBuyer(u);
-  saveUser(u);
-  refreshAuthUI();
-  closeAuth();
-  toast('Account created','ok');
-};
-$('btnLoginGo').onclick=async()=>{
-  const e=$('liEmail').value.trim(),
-        p=$('liPass').value;
-  const arr=JSON.parse(localStorage.getItem('aiaxcart_users')||'[]');
-  const u=arr.find(x=>x.email===e && x.password===p);
-  if(!u){ $('authMsg').textContent='Invalid credentials.'; return; }
-  await db_upsertBuyer(u);
-  saveUser(u);
-  refreshAuthUI();
-  closeAuth();
-  toast('Welcome back','ok');
-};
-
-/* search */
-$('product-search').addEventListener('input',(e)=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('#products-wrap .p-card').forEach(card=>{
-    card.style.display = (card.dataset.name||'').includes(q) ? '' : 'none';
-  });
-});
-
-/* products grouped by category */
-const CATEGORY_LABELS = {
-  entertainment:'🎬 Entertainment',
-  streaming:'🎧 Streaming',
-  educational:'📚 Educational',
-  editing:'🎨 Editing',
-  ai:'🤖 AI'
-};
-
+/* Updated Products Render Function */
 async function renderProducts(){
-  const wrap=$('products-wrap');
-  wrap.textContent='Loading…';
+  const container = $('#categories-container');
+  container.textContent = 'Loading…';
 
   if(window.AIAX_CATALOG){
     try{ await db_seedCatalogIfEmpty(window.AIAX_CATALOG); }catch(_){}
   }
+  
   try{
-    const rows=await db_listCatalogWithCounts();
-    if(!rows.length){ wrap.innerHTML='<div class="note">No products yet.</div>'; return; }
+    const rows = await db_listCatalogWithCounts();
+    if(!rows.length){ 
+      container.innerHTML='<div class="note">No products available yet.</div>'; 
+      return; 
+    }
 
-    // group by category
-    const byCat={};
-    rows.forEach(p=>{
-      const cat=p.category||'others';
-      (byCat[cat]=byCat[cat]||[]).push(p);
+    // Group products by category
+    const productsByCategory = {};
+    rows.forEach(product => {
+      const category = product.category || 'uncategorized';
+      if (!productsByCategory[category]) {
+        productsByCategory[category] = [];
+      }
+      productsByCategory[category].push(product);
     });
 
-    const catOrder=['entertainment','streaming','educational','editing','ai'];
-    let html='';
-    catOrder.forEach(cat=>{
-      const items=byCat[cat];
-      if(!items||!items.length) return;
-      html += `<h2 class="section-title">${CATEGORY_LABELS[cat]||cat}</h2>`;
-      html += items.map(p=>{
-        const hasStock=(p.available||0)>0;
-        const pricesByType={};
-        (p.prices||[]).forEach(x=>{
-          (pricesByType[x.account_type]=pricesByType[x.account_type]||[]).push(`${x.duration_key}: ₱${x.price_php}`);
-        });
-        const pricesHtml = Object.entries(pricesByType).map(
-          ([t,arr])=>`<div class="note"><b>${t}</b> — ${arr.join(' · ')}</div>`
-        ).join('');
-        return `<div class="p-card" data-name="${(p.name||'').toLowerCase()}">
-          <div style="font-weight:700;font-size:1.05rem">${p.icon||'🛒'} ${p.name}</div>
-          <div>${hasStock
-            ? `<span class="pill" style="background:#d4edda;color:#155724">${p.available} available</span>`
-            : `<span class="pill">Out of stock</span>`}</div>
-          ${pricesHtml}
-          <button class="btn btn-primary" ${hasStock?'':'disabled'}
-            onclick="openCheckout('${p.id}','${p.name}')">
-            ${hasStock?'Buy':'Unavailable'}
-          </button>
-        </div>`;
-      }).join('');
+    let html = '';
+    
+    // Create section for each category
+    Object.entries(productsByCategory).forEach(([category, products]) => {
+      const categoryLabel = CATEGORY_LABELS[category] || category;
+      const categoryDescription = CATEGORY_DESCRIPTIONS[category] || 'Premium accounts and services';
+      
+      // Take only first 3 products for display
+      const displayProducts = products.slice(0, 3);
+      const hasMoreProducts = products.length > 3;
+      
+      html += `
+        <div class="category-section" data-category="${category}">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">${categoryLabel}</h2>
+              <p class="note">${categoryDescription}</p>
+            </div>
+            ${hasMoreProducts ? `
+              <a href="#" class="view-all" data-category="${category}">
+                View All (${products.length}) <i class="fas fa-chevron-right"></i>
+              </a>
+            ` : ''}
+          </div>
+          <div class="products-grid">
+            ${displayProducts.map(product => renderProductCard(product)).join('')}
+          </div>
+        </div>
+      `;
     });
 
-    wrap.innerHTML = html || '<div class="note">No products yet.</div>';
-  }catch(e){
-    console.error(e);
-    wrap.innerHTML='<div class="note">Failed to load products.</div>';
+    container.innerHTML = html || '<div class="note">No products available.</div>';
+    
+    // Add event listeners to View All buttons
+    document.querySelectorAll('.view-all').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const category = this.dataset.category;
+        showAllProducts(category);
+      });
+    });
+    
+  } catch(e) {
+    console.error('Error loading products:', e);
+    container.innerHTML='<div class="note">Failed to load products. Please try again later.</div>';
   }
 }
 
+function renderProductCard(product) {
+  const hasStock = (product.available || 0) > 0;
+  const pricesByType = {};
+  
+  (product.prices || []).forEach(price => {
+    if (!pricesByType[price.account_type]) {
+      pricesByType[price.account_type] = [];
+    }
+    pricesByType[price.account_type].push({
+      duration: price.duration_key,
+      price: price.price_php
+    });
+  });
+  
+  // Get the lowest price for display
+  const allPrices = Object.values(pricesByType).flat();
+  const lowestPrice = allPrices.length > 0 
+    ? Math.min(...allPrices.map(p => p.price))
+    : 0;
+
+  const pricesHtml = Object.entries(pricesByType).map(([type, prices]) => {
+    const priceList = prices.map(p => `${p.duration}: ₱${p.price}`).join(' · ');
+    return `<div class="note"><b>${type}</b> — ${priceList}</div>`;
+  }).join('');
+
+  return `
+    <div class="p-card" data-name="${(product.name || '').toLowerCase()}" data-category="${product.category}">
+      <h3>${product.icon || '🛒'} ${product.name}</h3>
+      <div class="price">Starting at ₱${lowestPrice}</div>
+      <div class="description">Premium access with multiple account options</div>
+      <div class="stock-badge ${hasStock ? 'in-stock' : 'out-of-stock'}">
+        ${hasStock ? `${product.available} available` : 'Out of stock'}
+      </div>
+      ${pricesHtml}
+      <button class="btn btn-primary" ${hasStock ? '' : 'disabled'}
+        onclick="openCheckout('${product.id}','${product.name.replace(/'/g, "\\'")}')">
+        <i class="fas fa-shopping-cart"></i> 
+        ${hasStock ? 'Buy Now' : 'Unavailable'}
+      </button>
+    </div>
+  `;
+}
+
+function showAllProducts(category) {
+  // This would typically navigate to a category page or show a modal
+  // For now, let's just show an alert and filter to show all products of that category
+  filterProductsByCategory(category);
+  toast(`Showing all ${CATEGORY_LABELS[category] || category} products`, 'ok');
+}
+
+/* Search functionality */
+$('product-search').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  const allProducts = document.querySelectorAll('.p-card');
+  const categorySections = document.querySelectorAll('.category-section');
+  
+  let hasVisibleProducts = false;
+  
+  categorySections.forEach(section => {
+    let sectionHasVisible = false;
+    const sectionProducts = section.querySelectorAll('.p-card');
+    
+    sectionProducts.forEach(product => {
+      const productName = product.dataset.name;
+      if (productName.includes(query)) {
+        product.style.display = 'block';
+        sectionHasVisible = true;
+        hasVisibleProducts = true;
+      } else {
+        product.style.display = 'none';
+      }
+    });
+    
+    // Show/hide category section based on visible products
+    section.style.display = sectionHasVisible ? 'block' : 'none';
+  });
+  
+  // If no products found, show message
+  if (!hasVisibleProducts && query) {
+    $('#categories-container').innerHTML = `
+      <div class="card" style="text-align: center;">
+        <h3>No products found</h3>
+        <p class="note">No products match your search for "${query}"</p>
+        <button class="btn btn-primary" onclick="$('product-search').value=''; renderProducts();">
+          Show All Products
+        </button>
+      </div>
+    `;
+  } else if (!query) {
+    // If search is cleared, restore original view
+    categorySections.forEach(section => {
+      section.style.display = 'block';
+    });
+    allProducts.forEach(product => {
+      product.style.display = 'block';
+    });
+  }
+});
+
+// Keep your existing functions (openCheckout, closeCheckout, etc.)
 function openCheckout(product_id, product_name){
   const f=$('coForm');
   f.product_id.value=product_id;
@@ -386,6 +855,7 @@ function openCheckout(product_id, product_name){
     $('co_accType').value.toLowerCase()==='invite' ? 'block' : 'none';
   $('coOverlay').style.display='flex';
 }
+
 function closeCheckout(){ $('coOverlay').style.display='none'; }
 
 $('co_accType').onchange=(e)=>{
@@ -414,8 +884,8 @@ $('coForm').addEventListener('submit',async(e)=>{
       invite_gmail:f.invite_gmail?f.invite_gmail.value.trim():null
     });
     $('coMsg').textContent='✅ Order placed! ID: '+order.id;
-    toast('Order placed','ok');
-    setTimeout(()=>{ $('coMsg').textContent=''; closeCheckout(); },1000);
+    toast('Order placed successfully!','ok');
+    setTimeout(()=>{ $('coMsg').textContent=''; closeCheckout(); },2000);
     renderProducts();
     if(currentUser) updateAccountTab();
   }catch(err){
@@ -425,184 +895,14 @@ $('coForm').addEventListener('submit',async(e)=>{
   }
 });
 
-/* rules */
-async function loadRules(){
-  const wrap=$('rules-wrap');
-  wrap.textContent='Loading…';
-  try{
-    const rules=await db_fetchRules();
-    const byProd={};
-    rules.forEach(r=>{
-      const k=r.product||'general';
-      (byProd[k]=byProd[k]||[]).push(r);
-    });
-    let html='';
-    if(byProd['general']){
-      html+=`<div class="card"><h4>General Rules & Regulations</h4>${
-        byProd['general'].map(r=>`<div class="note">• ${r.text}</div>`).join('')
-      }</div>`;
-    }
-    Object.keys(byProd).filter(k=>'general'!==k).forEach(k=>{
-      html+=`<div class="card"><h4>${k} Rules</h4>${
-        byProd[k].map(r=>`<div class="note">• ${r.text}</div>`).join('')
-      }</div>`;
-    });
-    wrap.innerHTML = html || '<div class="note">No rules yet.</div>';
-  }catch(_){
-    wrap.innerHTML='<div class="note">Failed to load rules.</div>';
-  }
-}
-$('rules-search').addEventListener('input',(e)=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('#rules-wrap .note').forEach(n=>{
-    n.style.display = n.textContent.toLowerCase().includes(q)?'':'none';
-  });
-});
-
-/* reports */
-function gateReportUI(){
-  const on=!!currentUser;
-  $('report-gate').style.display = on?'none':'block';
-  $('report-form').style.display = on?'block':'none';
-}
-$('rep-submit').onclick=async()=>{
-  if(!currentUser) return;
-  const orderId=$('rep-order').value.trim();
-  const product=$('rep-product').value.trim();
-  const issue=$('rep-issue').value.trim();
-  const file = $('rep-img').files?.[0];
-  if(!issue){ alert('Please describe the issue.'); return; }
-  await db_addBuyerReport({
-    order_id:orderId||null,
-    product:product||null,
-    issue,
-    buyer:currentUser.name,
-    email:currentUser.email,
-    file
-  });
-  $('rep-order').value='';
-  $('rep-product').value='';
-  $('rep-issue').value='';
-  $('rep-img').value='';
-  loadUserReports();
-  toast('Report submitted','ok');
-};
-async function loadUserReports(){
-  if(!currentUser){ $('my-reports').innerHTML=''; return; }
-  const list=await db_fetchBuyerReports(currentUser.email);
-  if(!list || !list.length){
-    $('my-reports').innerHTML='<div class="note">No reports yet.</div>';
-    return;
-  }
-  const html = await Promise.all(list.map(async r=>{
-    let img='';
-    if(r.image_path){
-      const url=await getPublicURL(r.image_path);
-      img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:220px;border-radius:8px"></div>`;
-    }
-    return `<div class="card">
-      <div><b>Report ID:</b> ${r.id}</div>
-      <div><b>Order ID:</b> ${r.order_id||'N/A'}</div>
-      <div><b>Product:</b> ${r.product||'N/A'}</div>
-      <div><b>Issue:</b> ${r.issue}</div>
-      <div><b>Status:</b> <span class="pill" style="background:${r.status==='resolved'?'#d4edda':'#fff3cd'};color:${r.status==='resolved'?'#155724':'#856404'}">${r.status||'pending'}</span></div>
-      <div class="note">${new Date(r.created_at).toLocaleString()}</div>
-      ${img}
-    </div>`;
-  }));
-  $('my-reports').innerHTML = html.join('');
-}
-
-/* feedback */
-function gateFeedbackUI(){
-  const on=!!currentUser;
-  $('fb-gate').style.display=on?'none':'block';
-  $('fb-form').style.display=on?'block':'none';
-}
-$('fb-submit').onclick=async()=>{
-  const txt=$('fb-text').value.trim();
-  const file=$('fb-img').files?.[0];
-  if(!currentUser){ alert('Please login.'); return; }
-  if(!txt){ alert('Write some feedback.'); return; }
-  await db_addFeedback({ user:currentUser.name, text:txt, file });
-  $('fb-text').value='';
-  $('fb-img').value='';
-  loadFeedback();
-  toast('Thanks for the feedback!','ok');
-};
-async function loadFeedback(){
-  const list=await db_fetchFeedback();
-  if(!list || !list.length){
-    $('fb-list').innerHTML='<div class="note">No feedback yet.</div>';
-    return;
-  }
-  const html = await Promise.all(list.map(async f=>{
-    let img='';
-    if(f.image_path){
-      const url=await getPublicURL(f.image_path);
-      img=`<div style="margin-top:.5rem"><img src="${url}" style="max-width:220px;border-radius:8px"></div>`;
-    }
-    const initial=(f.user||'?')[0]?.toUpperCase?.()||'U';
-    return `<div class="card">
-      <div style="display:flex;align-items:center;gap:.6rem">
-        <div class="user-avatar" style="background:#FFD3D6;width:32px;height:32px">${initial}</div>
-        <div>
-          <b>${f.user||'User'}</b>
-          <div class="note">${new Date(f.created_at||Date.now()).toLocaleString()}</div>
-        </div>
-      </div>
-      <div style="margin-top:.6rem">${f.text||''}</div>
-      ${img}
-    </div>`;
-  }));
-  $('fb-list').innerHTML = html.join('');
-}
-
-/* My Account */
-async function updateAccountTab(){
-  const box=$('accounts-content');
-  if(!currentUser){
-    box.innerHTML='<div class="note">Please login to view your orders.</div>';
-    return;
-  }
-  const orders=await db_listOrdersByEmail(currentUser.email);
-  const pend=orders.filter(o=>o.status==='pending');
-  const conf=orders.filter(o=>o.status==='confirmed');
-  const row = arr=>arr.map(o=>`
-    <div class="card">
-      <div><b>${o.product_name}</b> • ${o.account_type} • ${o.duration_key}</div>
-      <div class="note">Order ID: ${o.id}</div>
-      <div class="note">Placed: ${new Date(o.created_at).toLocaleString()}</div>
-    </div>
-  `).join('');
-  box.innerHTML = `
-    <h2>My Account</h2>
-    <div class="card">
-      <h3>Profile Information</h3>
-      <p><strong>Name:</strong> ${currentUser.name}</p>
-      <p><strong>Email:</strong> ${currentUser.email}</p>
-      <p><strong>Member since:</strong> ${new Date(currentUser.joinDate||Date.now()).toLocaleDateString()}</p>
-    </div>
-    <div class="card">
-      <h3>Pending Orders</h3>
-      ${row(pend)||'<div class="note">None.</div>'}
-    </div>
-    <div class="card">
-      <h3>Confirmed Orders</h3>
-      ${row(conf)||'<div class="note">None.</div>'}
-    </div>`;
-}
-
-/* boot */
+// Initialize
 document.addEventListener('DOMContentLoaded', async ()=>{
   refreshAuthUI();
-  gateReportUI();
-  gateFeedbackUI();
   await renderProducts();
-  await loadRules();
-  await loadFeedback();
-  if(currentUser) updateAccountTab();
 });
+
+// Keep your other existing functions (tabs, auth flows, etc.) from your original index.html
+// They should work with the updated product rendering
 </script>
 </body>
 </html>
