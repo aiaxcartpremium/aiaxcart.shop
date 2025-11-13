@@ -492,21 +492,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ✅ Checkout form (fixed)
-  const coForm = $('#coForm');
-  if (coForm) {
-    coForm.addEventListener('submit', handleCheckout);
+ // ✅ Checkout form (fixed)
+const coForm = $('#coForm');
+if (coForm) {
+  coForm.addEventListener('submit', handleCheckout);
 
-    const accTypeSelect = coForm.querySelector('select[name="account_type"]');
-    if (accTypeSelect) {
-      accTypeSelect.addEventListener('change', function(e) {
-        const row = $('#inviteGmailRow');
-        if (!row) return;
-        row.style.display =
-          (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
-      });
-    }
+  const accTypeSelect = coForm.querySelector('select[name="account_type"]');
+  if (accTypeSelect) {
+    accTypeSelect.addEventListener('change', function(e) {
+      const row = $('#inviteGmailRow');
+      if (!row) return;
+      row.style.display =
+        (e.target.value || '').toLowerCase() === 'invite' ? 'block' : 'none';
+    });
   }
+}
 
   // Report form
   $('#rep-submit').addEventListener('click', handleReport);
